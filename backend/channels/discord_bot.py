@@ -9,6 +9,7 @@ endpoint the web UI uses) and formats the answer. Users can:
 Run from the backend/ directory:  python -m channels.discord_bot
 """
 
+import base64
 import hashlib
 import logging
 
@@ -77,8 +78,23 @@ def format_response(data: dict) -> str:
     return text
 
 
-async def call_api(text: str, user_id: int) -> str:
+IMAGE_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
+MAX_IMAGE_BYTES = 5_000_000
+
+
+def first_image(attachments: list) -> "discord.Attachment | None":
+    """The first attached image the API accepts (type and size), if any."""
+    for a in attachments:
+        if (a.content_type or "").split(";")[0] in IMAGE_TYPES and a.size <= MAX_IMAGE_BYTES:
+            return a
+    return None
+
+
+async def call_api(text: str, user_id: int, image: "discord.Attachment | None" = None) -> str:
     payload = {"text": text, "channel": "discord", "session_id": session_id_for(user_id)}
+    if image is not None:  # same API as the web page: the image is read, never stored
+        payload["image"] = base64.b64encode(await image.read()).decode()
+        payload["image_media_type"] = (image.content_type or "").split(";")[0]
     try:
         async with async_http_client(timeout=90.0) as client:
             resp = await client.post(f"{settings.api_base_url}/api/check", json=payload)
@@ -119,22 +135,30 @@ class TapCheckBot(discord.Client):
         if not is_dm and self.user not in message.mentions:
             return
         text = message.content.replace(f"<@{self.user.id}>", "").replace(f"<@!{self.user.id}>", "").strip()
-        if not text:
-            await message.reply("Wyślij treść doniesienia albo link, a sprawdzę je w wiarygodnych źródłach.")
+        image = first_image(message.attachments)
+        if not text and image is None:
+            await message.reply(
+                "Wyślij pytanie, treść doniesienia, link albo zrzut ekranu (PNG/JPG/WebP do 5 MB), "
+                "a sprawdzę je w wiarygodnych źródłach."
+            )
             return
         async with message.channel.typing():
-            reply = await call_api(text, message.author.id)
+            reply = await call_api(text, message.author.id, image)
         await message.reply(reply, suppress_embeds=True)
 
 
 bot = TapCheckBot()
 
 
-@bot.tree.command(name="sprawdz", description="Sprawdź doniesienie lub link w wiarygodnych źródłach")
-@app_commands.describe(tresc="Treść doniesienia albo link")
-async def sprawdz(interaction: discord.Interaction, tresc: str) -> None:
+@bot.tree.command(name="sprawdz", description="Sprawdź doniesienie, pytanie, link lub zrzut ekranu w wiarygodnych źródłach")
+@app_commands.describe(tresc="Pytanie, treść doniesienia albo link", obraz="Zrzut ekranu lub zdjęcie (opcjonalnie)")
+async def sprawdz(interaction: discord.Interaction, tresc: str = "", obraz: discord.Attachment | None = None) -> None:
+    image = first_image([obraz]) if obraz else None
+    if not tresc.strip() and image is None:
+        await interaction.response.send_message("Podaj treść, link albo dołącz obraz (PNG/JPG/WebP do 5 MB).", ephemeral=True)
+        return
     await interaction.response.defer(thinking=True)
-    await interaction.followup.send(await call_api(tresc, interaction.user.id), suppress_embeds=True)
+    await interaction.followup.send(await call_api(tresc, interaction.user.id, image), suppress_embeds=True)
 
 
 def main() -> None:

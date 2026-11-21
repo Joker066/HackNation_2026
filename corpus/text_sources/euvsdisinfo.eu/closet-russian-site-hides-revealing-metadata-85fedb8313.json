@@ -1,0 +1,12 @@
+{
+ "url": "https://euvsdisinfo.eu/closet-russian-site-hides-revealing-metadata/",
+ "title": "Closet Russian Site Hides Revealing Metadata",
+ "publisher": "EUvsDisinfo (EEAS)",
+ "published_at": null,
+ "retrieved_at": "2026-11-21T18:25:27.767381+00:00",
+ "text": "EUvsDisinfo – analiza: Closet Russian Site Hides Revealing Metadata. Recently euvsdisinfo.eu published an article about the Russia-based site South Front , describing how the site is based in Russia, how its content is edited in Russia and how money, donated to the site, goes to an account in Russia. As the site is closely following reporting along Russian foreign policy narratives, the argument was solid. South Front is a Russian site. All this could be discovered through open resources for checking meta-data. Nothing secret, nothing strange. You don't need to be employing the EU Super Secret Super Mega Computer to perform a whois-search . And two days after the article was published, South Front edited its metadata to get rid of anything Russian. They removed most Russian finger-prints, so to say. Or, to put it more exactly, they anonymised the source of their videos. Earlier, one could see the file of the video editor Anastasia. [caption id=\"attachment_92886\" align=\"aligncenter\" width=\"788\"] Before [/caption] [caption id=\"attachment_93720\" align=\"aligncenter\" width=\"741\"] After [/caption] Video-editor Anastasia doesn't get to see her name in print any more. But judging from the content, South Front hasn't deviated from the instructions from Moscow; the site has just attempted to hide its Russian connections better. Getting deeper into the closet. Anyway, thanks, South Front guys, for reading.",
+ "lang": "en",
+ "license": "EUvsDisinfo database (EEAS East StratCom Task Force), via MCP API",
+ "catalog_id": 42,
+ "euvsdisinfo_type": "article"
+}

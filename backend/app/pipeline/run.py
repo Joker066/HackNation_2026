@@ -15,15 +15,18 @@ from app.security.pii import mask_pii
 from app.store.audit import AuditLog
 from app.sources.euvsdisinfo import EUvsDisinfo, EUvsDisinfoError
 from app.sources.google_factcheck import FactCheckError, GoogleFactCheck
+from app.sources.web_search import WebSearch
 from app.store import text_sources
-from app.store.corpus import CatalogEntry, Corpus
+from app.store.corpus import CatalogEntry, Corpus, Passage
 
 from .assess import assess, fact_check_rating, quote_is_verbatim, stance_from_rating
 from .claims import ExtractedClaim, extract_claims
 from .compose import compose
+from .image import IMAGE_LIMITATIONS, ImageError, as_text, decode_image, read_image
 from .ingest import IngestError, ingest
 from .scoring import DIRECTNESS_FACTOR
 from .verdict import decide, is_archival
+from .web_evidence import web_search_passages
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +49,7 @@ class Services:
     catalog: list[CatalogEntry] = field(default_factory=list)
     factcheck: GoogleFactCheck | None = None
     euvsdisinfo: EUvsDisinfo | None = None
+    web_search: "WebSearch | None" = None  # fallback when own sources leave a claim undecided
     save_fetched: bool = False  # write live-fetched documents to corpus/text_sources/
 
 
@@ -114,6 +118,92 @@ def _source_warnings(evidence: list[Evidence]) -> list[str]:
     return list(dict.fromkeys(notes))[:MAX_SOURCE_WARNINGS]
 
 
+@dataclass
+class _Judgement:
+    evidence: list[Evidence] = field(default_factory=list)
+    findings: str = ""
+    misleading: bool = False
+    misleading_reason: str = ""
+
+
+def _clean(passages: list[Passage], events: list[str]) -> list[Passage]:
+    """Drop passages that contain instructions aimed at the model (and log them)."""
+    clean = []
+    for p in passages:
+        if looks_like_injection(p.text):
+            events.append(f"Pominięto fragment źródła z instrukcjami dla modelu: {p.url}")
+        else:
+            clean.append(p)
+    return clean
+
+
+def _judge(svc: Services, claim: ExtractedClaim, passages: list[Passage], usage: LLMUsage) -> _Judgement:
+    """Model judges each passage; code verifies quotes, translates ratings and builds evidence."""
+    if not passages:
+        return _Judgement()
+    assessment, u = assess(svc.llm, claim, passages)
+    usage.add(u)
+    by_id = {p.passage_id: p for p in passages}
+    seen_quotes: set[tuple[str, str]] = set()
+    rating_says_misleading = False
+    evidence = []
+    for j in assessment.passages:
+        p = by_id.get(j.passage_id)
+        if p is None or j.stance == "irrelevant":
+            continue
+        stance = j.stance
+        rating = fact_check_rating(p.text)
+        if rating is not None:
+            # Fact-check record: the model only judged whether it is about the same claim;
+            # the rating is translated into a stance here, deterministically.
+            mapped = stance_from_rating(rating)
+            if j.same_claim and mapped is not None:
+                stance, rating_misleading = mapped
+                rating_says_misleading = rating_says_misleading or rating_misleading
+            else:
+                stance = "context"
+        if not quote_is_verbatim(j.quote, p.text):
+            log.info("dropped unverifiable quote for passage %s", p.passage_id)
+            continue
+        if (p.url, j.quote.strip()) in seen_quotes:  # overlapping passages of one document
+            continue
+        seen_quotes.add((p.url, j.quote.strip()))
+        evidence.append(
+            Evidence(
+                stance=Stance(stance),
+                title=p.title,
+                publisher=p.publisher,
+                url=p.url,
+                published_at=p.published_at,
+                retrieved_at=p.retrieved_at,
+                quote=j.quote.strip(),
+                source_type=p.source_type,
+                credibility=p.credibility,
+                role=p.role,
+                update_frequency=p.update_frequency,
+                directness=DIRECTNESS_FACTOR[j.directness],
+                archival_warning=is_archival(p.published_at, svc.settings.archival_after_days),
+            )
+        )
+    return _Judgement(
+        evidence=evidence,
+        findings=assessment.findings_summary,
+        misleading=assessment.misleading_context or rating_says_misleading,
+        misleading_reason=assessment.misleading_reason
+        or ("Fact-checker ocenił to twierdzenie jako częściowo prawdziwe lub pozbawione kontekstu." if rating_says_misleading else ""),
+    )
+
+
+def _decide(claim: ExtractedClaim, j: _Judgement):
+    return decide(
+        kind=claim.kind,
+        evidence=j.evidence,
+        misleading_context=j.misleading,
+        misleading_reason=j.misleading_reason,
+        time_sensitive=claim.time_sensitive,
+    )
+
+
 def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
     usage = LLMUsage(model=getattr(svc.llm, "name", "unknown"))
     events: list[str] = []
@@ -122,6 +212,7 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         decision = decide(kind=claim.kind, evidence=[], misleading_context=False)
         return _ClaimOutcome(compose(claim.text, decision, [], "", []), usage)
 
+    # 1. Our own sources (corpus + live fact-check and disinformation databases).
     retrieval_error = False
     live_notes = _fetch_live_sources(svc, claim)
     try:
@@ -131,73 +222,29 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
     except Exception:  # a search failure must not turn into a verdict
         log.exception("corpus search failed")
         passages, retrieval_error = [], True
+    judgement = _judge(svc, claim, _clean(passages, events), usage)
+    decision = _decide(claim, judgement)
 
-    clean = []
-    for p in passages:
-        if looks_like_injection(p.text):
-            events.append(f"Pominięto fragment źródła z instrukcjami dla modelu: {p.url}")
-        else:
-            clean.append(p)
-
-    findings, misleading, misleading_reason, evidence = "", False, "", []
-    if clean:
-        assessment, u = assess(svc.llm, claim, clean)
-        usage.add(u)
-        by_id = {p.passage_id: p for p in clean}
-        seen_quotes: set[tuple[str, str]] = set()
-        rating_says_misleading = False
-        for j in assessment.passages:
-            p = by_id.get(j.passage_id)
-            if p is None or j.stance == "irrelevant":
-                continue
-            stance = j.stance
-            rating = fact_check_rating(p.text)
-            if rating is not None:
-                # Fact-check record: the model only judged whether it is about the same claim;
-                # the rating is translated into a stance here, deterministically.
-                mapped = stance_from_rating(rating)
-                if j.same_claim and mapped is not None:
-                    stance, rating_misleading = mapped
-                    rating_says_misleading = rating_says_misleading or rating_misleading
-                else:
-                    stance = "context"
-            if not quote_is_verbatim(j.quote, p.text):
-                log.info("dropped unverifiable quote for passage %s", p.passage_id)
-                continue
-            if (p.url, j.quote.strip()) in seen_quotes:  # overlapping passages of one document
-                continue
-            seen_quotes.add((p.url, j.quote.strip()))
-            evidence.append(
-                Evidence(
-                    stance=Stance(stance),
-                    title=p.title,
-                    publisher=p.publisher,
-                    url=p.url,
-                    published_at=p.published_at,
-                    retrieved_at=p.retrieved_at,
-                    quote=j.quote.strip(),
-                    source_type=p.source_type,
-                    credibility=p.credibility,
-                    role=p.role,
-                    update_frequency=p.update_frequency,
-                    directness=DIRECTNESS_FACTOR[j.directness],
-                    archival_warning=is_archival(p.published_at, svc.settings.archival_after_days),
-                )
+    # 2. Still undecided: search allowlisted domains on the web, judge those pages the same way.
+    if decision.verdict == Verdict.insufficient and svc.web_search is not None:
+        web_passages, web_note = web_search_passages(svc, claim, usage)
+        if web_note:
+            live_notes.append(web_note)
+        known = {e.url for e in judgement.evidence}
+        web_passages = [p for p in _clean(web_passages, events) if p.url not in known]
+        if web_passages:
+            extra = _judge(svc, claim, web_passages, usage)
+            # Search results may confirm or refute, but cannot by themselves make a claim
+            # "misleading": related articles about other dates or places too easily trigger that
+            # flag. It stays reserved for our audited sources and fact-check ratings.
+            judgement = _Judgement(
+                evidence=judgement.evidence + extra.evidence,
+                findings=extra.findings or judgement.findings,
+                misleading=judgement.misleading,
+                misleading_reason=judgement.misleading_reason,
             )
-        findings, misleading, misleading_reason = (
-            assessment.findings_summary,
-            assessment.misleading_context or rating_says_misleading,
-            assessment.misleading_reason
-            or ("Fact-checker ocenił to twierdzenie jako częściowo prawdziwe lub pozbawione kontekstu." if rating_says_misleading else ""),
-        )
+            decision = _decide(claim, judgement)
 
-    decision = decide(
-        kind=claim.kind,
-        evidence=evidence,
-        misleading_context=misleading,
-        misleading_reason=misleading_reason,
-        time_sensitive=claim.time_sensitive,
-    )
     if decision.verdict == Verdict.insufficient and claim.verifying_source.strip():
         decision.limitations = (
             f"{decision.limitations} Do rozstrzygnięcia potrzebny byłby np.: {claim.verifying_source.strip().rstrip('.')}."
@@ -207,8 +254,10 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
     if live_notes:
         decision.limitations = " ".join([decision.limitations, *live_notes]).strip()
         retrieval_error = True
-    warnings = _source_warnings(evidence)
-    return _ClaimOutcome(compose(claim.text, decision, evidence, findings, warnings), usage, events, retrieval_error)
+    warnings = _source_warnings(judgement.evidence)
+    return _ClaimOutcome(
+        compose(claim.text, decision, judgement.evidence, judgement.findings, warnings), usage, events, retrieval_error
+    )
 
 
 def run_check(svc: Services, req: CheckRequest) -> CheckResponse:
@@ -221,17 +270,33 @@ def run_check(svc: Services, req: CheckRequest) -> CheckResponse:
         result_url=f"{svc.settings.public_base_url.rstrip('/')}/r/{request_id}",
     )
     usage = LLMUsage(model=getattr(svc.llm, "name", "unknown"))
-    masked_input = mask_pii((req.text or "") + (f" {req.url}" if req.url else ""))
+    # The audit log never stores the image itself, only a marker (plus the masked text read from it below).
+    masked_input = mask_pii((req.text or "") + (f" {req.url}" if req.url else "") + (" [obraz]" if req.image else ""))
     retrieval_errors = 0
 
     try:
         ingested = ingest(req, svc.settings)
-        text = mask_pii(ingested.text)
+        notes = list(ingested.notes)
+        raw_text = ingested.text
+        if req.image:
+            image = decode_image(req.image, req.image_media_type)
+            reading, u = read_image(svc.llm, image)
+            usage.add(u)
+            if not reading.readable and not raw_text.strip():
+                raise ImageError(
+                    Status.needs_clarification,
+                    "Nie udało się odczytać z obrazu treści do sprawdzenia. Wyślij wyraźniejszy obraz albo wklej tekst.",
+                )
+            response.image_text = mask_pii(as_text(reading))
+            raw_text = f"{raw_text}\n\n{as_text(reading)}".strip()
+            notes.append(IMAGE_LIMITATIONS)
+        text = mask_pii(raw_text)
         if looks_like_injection(text):
             response.security_events.append("Wiadomość zawierała polecenia dla modelu — zostały zignorowane.")
 
         extraction, u = extract_claims(svc.llm, text, svc.settings.max_claims)
         usage.add(u)
+        response.input_kind = extraction.input_kind
         if extraction.status != "ok" or not extraction.claims:
             response.status = (
                 Status.out_of_scope if extraction.status == "out_of_scope" else Status.needs_clarification
@@ -245,13 +310,13 @@ def run_check(svc: Services, req: CheckRequest) -> CheckResponse:
             with ThreadPoolExecutor(max_workers=len(extraction.claims)) as pool:
                 outcomes = list(pool.map(lambda c: _check_claim(svc, c), extraction.claims))
             for o in outcomes:
-                if ingested.notes:
-                    o.result.limitations = " ".join([o.result.limitations, *ingested.notes]).strip()
+                if notes:
+                    o.result.limitations = " ".join([o.result.limitations, *notes]).strip()
                 response.claims.append(o.result)
                 response.security_events.extend(o.security_events)
                 usage.add(o.usage)
                 retrieval_errors += int(o.retrieval_error)
-    except IngestError as e:
+    except (IngestError, ImageError) as e:
         response.status, response.status_detail = e.status, e.message
     except LLMError as e:
         log.warning("LLM error (%s): %s", e.kind, e)

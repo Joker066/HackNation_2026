@@ -32,9 +32,19 @@ class LLMUsage:
         self.cost_usd += other.cost_usd
 
 
+@dataclass
+class ImageInput:
+    """An image passed to the model (screenshot or photo sent by the user)."""
+
+    data: bytes
+    media_type: str  # image/png | image/jpeg | image/webp | image/gif
+
+
 class LLMProvider(Protocol):
     name: str
 
-    def generate(self, *, system: str, user: str, schema: type[T]) -> tuple[T, LLMUsage]:
+    def generate(
+        self, *, system: str, user: str, schema: type[T], images: list[ImageInput] | None = None
+    ) -> tuple[T, LLMUsage]:
         """Return an instance of `schema` filled in by the model, plus token usage."""
         ...

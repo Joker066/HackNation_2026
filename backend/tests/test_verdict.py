@@ -47,8 +47,17 @@ def run(evidence, misleading=False, present=True):
 
 def test_recency_half_life():
     assert recency_factor(NOW - timedelta(hours=6), "hourly", True, NOW) == pytest.approx(0.5)
-    assert recency_factor(NOW - timedelta(days=3), "daily", True, NOW) == pytest.approx(0.5)
+    assert recency_factor(NOW - timedelta(days=1), "snapshot-daily", True, NOW) == pytest.approx(0.5)
+    assert recency_factor(NOW - timedelta(days=180), "daily", True, NOW) == pytest.approx(0.5)
     assert recency_factor(NOW - timedelta(days=3000), "rarely", True, NOW) == 1.0
+
+
+def test_events_decisions_and_fact_checks_do_not_go_stale_in_days():
+    """Regression: a 4-day-old government decision, a 4-week-old CERT advisory and a 2-year-old
+    fact-check used to lose most of their weight when the claim was (wrongly) time-sensitive."""
+    assert recency_factor(NOW - timedelta(days=4), "daily", True, NOW) > 0.98
+    assert recency_factor(NOW - timedelta(days=28), "weekly", True, NOW) > 0.89
+    assert recency_factor(NOW - timedelta(days=700), "event-driven", True, NOW) == 1.0
 
 
 def test_recency_ignored_for_claims_about_the_past():
@@ -195,9 +204,14 @@ def test_catalog_matching(catalog, url, expected_id):
     assert match_catalog(url, catalog).id == expected_id
 
 
-@pytest.mark.parametrize("url", ["https://www.gov.pl/web/zdrowie/cos", "https://example.com/news"])
-def test_unlisted_sources_are_rejected(catalog, url):
-    assert match_catalog(url, catalog) is None
+def test_unlisted_sources_are_rejected(catalog):
+    assert match_catalog("https://example.com/news", catalog) is None
+
+
+def test_other_gov_pl_sections_use_the_catch_all_row_with_lowest_priority(catalog):
+    other = match_catalog("https://www.gov.pl/web/zdrowie/cos", catalog)
+    assert other.id == 48 and other.credibility == 4
+    assert match_catalog("https://www.gov.pl/web/gis/ostrzezenie-x", catalog).id == 9  # specific row wins
 
 
 @pytest.mark.parametrize(

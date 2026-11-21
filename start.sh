@@ -42,7 +42,9 @@ if ! env_has ANTHROPIC_API_KEY && ! grep -qE "^LLM_PROVIDER=fake" .env; then
   say "Warning: no ANTHROPIC_API_KEY in .env. Checks will return a technical error until it is set."
 fi
 
-# --- 3. Search index --------------------------------------------------------------
+# --- 3. Retention and search index ---------------------------------------------------
+# Delete full-text articles past the retention period (docs/sources.md); rebuilds the index if needed.
+(cd backend && ../.venv/bin/python -m scripts.purge_sources --quiet --rebuild-index | tail -1) || true
 if [ ! -f var/corpus.db ]; then
   say "Building the search index from corpus/text_sources/…"
   (cd backend && ../.venv/bin/python -m scripts.build_index --rebuild | tail -1)

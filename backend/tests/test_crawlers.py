@@ -378,3 +378,47 @@ def test_umgdy_article_excludes_sidebar():
     assert "skuteczniejsza ochrona mieszkańców" in doc.text
     assert "Klifu Orłowskiego" not in doc.text  # sidebar dropped
     assert doc.extra == {}  # empty author not stored
+
+
+# --- gov.pl (generic) ---------------------------------------------------------------
+
+from crawlers.govpl import GOVPL_CRAWLERS  # noqa: E402
+
+GOVPL_LISTING = """
+<div class="art-prev"><ul>
+ <li><a href="/web/premier/premier-zdecydowalismy-o-zamrozeniu-cen-gazu">
+   <div class="event"><span class="date">17.11.2026</span></div><div class="title">Premier: zamrożenie cen gazu</div></a></li>
+ <li><a href="/web/energia/panstwa-v4-i-usa"><span class="date">19.11.2026</span><div class="title">Inny resort</div></a></li>
+ <li><a href="https://example.com/x"><div class="title">Zewnętrzny link</div></a></li>
+</ul></div>
+"""
+GOVPL_ARTICLE = """
+<article class="article-area__article">
+ <h2>Premier: Zdecydowaliśmy o zamrożeniu cen gazu</h2>
+ <p class="event-date">17.11.2026</p>
+ <div class="main-photo"><img src="x.jpg"> Fot. KPRM</div>
+ <div class="editor-content"><p>Rada Ministrów przyjęła projekt ustawy zamrażającej ceny gazu dla gospodarstw domowych.</p></div>
+ <div class="gallery">Galeria zdjęć</div>
+</article>
+"""
+
+
+def test_govpl_listing_keeps_only_own_section():
+    premier = next(c for c in GOVPL_CRAWLERS if c.name == "govpl_premier")
+    links = premier(FakeFetcher({})).parse_listing(GOVPL_LISTING, "https://www.gov.pl/web/premier/wydarzenia")
+    assert [l.url for l in links] == ["https://www.gov.pl/web/premier/premier-zdecydowalismy-o-zamrozeniu-cen-gazu"]
+    assert links[0].published_at == datetime(2026, 11, 17, tzinfo=WARSAW)
+
+
+def test_govpl_article():
+    premier = next(c for c in GOVPL_CRAWLERS if c.name == "govpl_premier")
+    doc = premier(FakeFetcher({})).parse_article(GOVPL_ARTICLE, ArticleLink(url="https://www.gov.pl/web/premier/x"))
+    assert doc.title.startswith("Premier: Zdecydowaliśmy")
+    assert doc.published_at == datetime(2026, 11, 17, tzinfo=WARSAW)
+    assert "zamrażającej ceny gazu" in doc.text and "Fot. KPRM" not in doc.text and "Galeria" not in doc.text
+
+
+def test_govpl_sections_have_paginated_listings_and_valid_catalog_rows():
+    for cls in GOVPL_CRAWLERS:
+        assert cls.listing_urls[1].endswith("?page=2&size=10")
+        cls(FakeFetcher({}))  # raises if the catalogue row does not exist

@@ -9,7 +9,7 @@ from collections.abc import Callable
 
 from pydantic import BaseModel
 
-from .base import LLMUsage, T
+from .base import ImageInput, LLMUsage, T
 
 Handler = Callable[[str], BaseModel]
 
@@ -20,7 +20,9 @@ class FakeProvider:
     def __init__(self, handlers: dict[type, Handler] | None = None):
         self.handlers = handlers or {}
 
-    def generate(self, *, system: str, user: str, schema: type[T]) -> tuple[T, LLMUsage]:
+    def generate(
+        self, *, system: str, user: str, schema: type[T], images: list[ImageInput] | None = None
+    ) -> tuple[T, LLMUsage]:
         if schema in self.handlers:
             result = self.handlers[schema](user)
         else:
@@ -38,6 +40,7 @@ def _default(schema: type[BaseModel], user: str) -> BaseModel:
         sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", body) if len(s.strip()) > 10]
         return ClaimExtraction(
             status="ok" if sentences else "needs_clarification",
+            input_kind="statement",
             claims=[
                 ExtractedClaim(text=s, kind="factual", search_queries=[s], english_query="", implied_time_or_place="", time_sensitive=False, verifying_source="")
                 for s in sentences[:5]

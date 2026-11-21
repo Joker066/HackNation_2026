@@ -27,13 +27,16 @@ class Settings(BaseSettings):
     euvsdisinfo_api_key: str | None = None
     euvsdisinfo_url: str = "https://mcp.euvsd.info/mcp"
     euvsdisinfo_queries_per_claim: int = 2
+    web_search_enabled: bool = True  # fallback search on allowlisted domains (needs the anthropic provider)
+    web_search_pages: int = 4  # search results fetched per undecided claim
 
     # --- Storage ------------------------------------------------------------
     corpus_db_path: Path = REPO_ROOT / "var" / "corpus.db"
     audit_db_path: Path = REPO_ROOT / "var" / "audit.db"
     sources_catalog_path: Path = REPO_ROOT / "corpus" / "sources.csv"
     factcheckers_path: Path = REPO_ROOT / "corpus" / "factcheckers.csv"
-    retention_days: int = 30
+    retention_days: int = 30  # audit log (user checks)
+    corpus_retention_months: int = 12  # full-text crawled articles (scripts/purge_sources.py)
 
     # --- Verification behaviour ----------------------------------------------
     max_input_chars: int = 5000

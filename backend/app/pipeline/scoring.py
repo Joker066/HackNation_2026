@@ -36,16 +36,23 @@ from datetime import UTC, datetime
 from app.schemas import Evidence, Stance
 
 # Half-life in days per catalogue update_frequency. None = does not go stale.
+# Half-life of evidence for TIME-SENSITIVE claims, by how fast the source's information goes
+# stale (not how often it publishes):
+# - current-state data (warnings, measurements, the RCB daily snapshot) goes stale in hours;
+# - news and advisories describe events and decisions, which stay true: only very old items
+#   about a "current" situation lose weight;
+# - fact-checks, disinformation cases and laws do not go stale (a recurring hoax is still false).
 HALF_LIFE_DAYS: dict[str, float | None] = {
     "real-time": 0.125,  # 3 hours
     "continuous": 0.125,
     "hourly": 0.25,  # 6 hours
-    "daily": 3,
-    "weekly": 30,
-    "event-driven": 90,
+    "snapshot-daily": 1,  # e.g. RCB daily report: the state of the day
+    "daily": 180,
+    "weekly": 180,
+    "event-driven": None,
     "rarely": None,
 }
-DEFAULT_HALF_LIFE = 30.0
+DEFAULT_HALF_LIFE = 180.0
 UNKNOWN_DATE_FACTOR = 0.5  # undated material about the present counts half
 MAX_WEIGHT = 0.95  # no single source is ever treated as certain
 

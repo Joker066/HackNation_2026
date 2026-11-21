@@ -60,6 +60,8 @@ class CatalogEntry:
     credibility: int
     role: str
     update_frequency: str
+    licence: str = ""
+    storage: str = "full_text"  # full_text | excerpt | metadata | none
 
 
 @dataclass
@@ -98,6 +100,8 @@ def load_catalog(path: Path) -> list[CatalogEntry]:
                 credibility=int(row["credibility"]),
                 role=row["role"],
                 update_frequency=row["update_frequency"],
+                licence=row.get("licence", ""),
+                storage=row.get("storage", "full_text") or "full_text",
             )
             for row in csv.DictReader(f)
         ]
@@ -106,6 +110,8 @@ def load_catalog(path: Path) -> list[CatalogEntry]:
 def _match_keys(entry: CatalogEntry) -> list[tuple[int, str]]:
     """(priority, prefix) pairs a document URL can match this entry by."""
     norm = normalise_url(entry.url)
+    if norm == "gov.pl":  # catch-all row for gov.pl sections not listed separately: lowest priority
+        return [(0, "gov.pl")]
     keys = [(3, norm)]  # the listed page itself and anything below it
     parts = norm.split("/")
     if parts[0] == "gov.pl" and len(parts) >= 3 and parts[1] == "web":

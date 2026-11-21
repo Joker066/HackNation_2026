@@ -24,6 +24,7 @@ REFRESH_AFTER = {
     "continuous": timedelta(hours=1),
     "hourly": timedelta(hours=1),
     "daily": timedelta(days=1),
+    "snapshot-daily": timedelta(hours=6),
     "weekly": timedelta(days=7),
     "event-driven": timedelta(days=7),
     "rarely": timedelta(days=30),

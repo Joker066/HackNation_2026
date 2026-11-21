@@ -2,12 +2,14 @@
 
 import logging
 
+import base64
+
 import anthropic
 import httpx2
 
 from app.config import Settings
 
-from .base import LLMError, LLMUsage, T
+from .base import ImageInput, LLMError, LLMUsage, T
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +35,18 @@ class AnthropicProvider:
             api_key=settings.anthropic_api_key, timeout=45.0, max_retries=1, http_client=http_client
         )
 
-    def generate(self, *, system: str, user: str, schema: type[T]) -> tuple[T, LLMUsage]:
+    def generate(
+        self, *, system: str, user: str, schema: type[T], images: list[ImageInput] | None = None
+    ) -> tuple[T, LLMUsage]:
+        content: str | list = user
+        if images:  # images first, then the text (recommended order)
+            content = [
+                {
+                    "type": "image",
+                    "source": {"type": "base64", "media_type": img.media_type, "data": base64.b64encode(img.data).decode()},
+                }
+                for img in images
+            ] + [{"type": "text", "text": user}]
         try:
             extra = {}
             if self.model.startswith(FALLBACK_MODELS):
@@ -43,7 +56,7 @@ class AnthropicProvider:
                 model=self.model,
                 max_tokens=8000,
                 system=system,
-                messages=[{"role": "user", "content": user}],
+                messages=[{"role": "user", "content": content}],
                 output_format=schema,
                 output_config={"effort": self.effort},
                 **extra,

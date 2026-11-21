@@ -17,6 +17,7 @@ from app.security.ratelimit import RateLimiter
 from app.store.audit import AuditLog
 from app.sources.euvsdisinfo import EUvsDisinfo
 from app.sources.google_factcheck import GoogleFactCheck, load_factcheckers
+from app.sources.web_search import WebSearch, allowlist
 from app.store.corpus import Corpus, load_catalog
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -38,6 +39,8 @@ services = Services(
     ),
     save_fetched=True,
 )
+if settings.web_search_enabled and settings.llm_provider == "anthropic":
+    services.web_search = WebSearch(services.llm.client, settings.llm_model, allowlist(services.catalog))
 services.audit.purge_older_than(settings.retention_days)
 limiter = RateLimiter(settings.rate_limit_per_minute)
 
@@ -111,6 +114,7 @@ def health() -> dict:
         "live_sources": {
             "google_factcheck": services.factcheck is not None,
             "euvsdisinfo": services.euvsdisinfo is not None,
+            "web_search": services.web_search is not None,
         },
         "discord_invite_url": settings.discord_invite_url,
         "corpus": services.corpus.stats(),

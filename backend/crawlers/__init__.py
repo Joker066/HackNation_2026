@@ -2,6 +2,7 @@
 
 from .base import Crawler
 from .cert import CertCrawler
+from .govpl import GOVPL_CRAWLERS
 from .kgsok import KgsokCrawler
 from .rcb import RcbDailyReport
 from .umgdy import UmgdyCrawler
@@ -16,5 +17,6 @@ REGISTRY: dict[str, type[Crawler]] = {
         CertCrawler,
         KgsokCrawler,
         UmgdyCrawler,
+        *GOVPL_CRAWLERS,
     ]
 }

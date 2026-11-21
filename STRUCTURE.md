@@ -117,6 +117,8 @@ Rules from the task that are enforced in code:
 | Second channel | **Discord bot** (`discord.py`) | Allowed by the task, free, no business account; reliable for the jury demo |
 | Search | **SQLite FTS5 / BM25** (crude Polish stemming) | No extra infrastructure; embeddings would be the next step |
 | Live sources | **Google Fact Check API** (ClaimReview) + **EUvsDisinfo MCP** (`search` tool) | Fact-checks per claim; known disinformation narratives as context only |
+| Web search fallback | Claude `web_search` tool, **allowlist = catalogue domains**; pages read by our fetcher | Only for undecided claims; coverage for current news; media never stored |
+| Media input | Screenshots/photos read by the model (transcription + date + source), then the normal pipeline | Scenario F; image never stored; limits always disclosed |
 | LLM | **Claude Haiku 5.5** (`claude-haiku-5-5`, effort `low`) behind a provider interface; `fake` provider for offline tests | ~$0.001 per check; `medium` effort measured: no quality gain, slower. Swappable (`LLM_PROVIDER`, `LLM_MODEL`) |
 | Storage | **SQLite** (audit log, corpus index) + `corpus/text_sources/*.json` | One file per document: rebuildable offline, auditable |
 | Packaging | **`start.sh`** (API + web + bot, first-run setup) | One command for the jury; Docker not done yet |
@@ -157,5 +159,6 @@ HackNation_2026/
 
 Done: skeleton, corpus (490+ documents, 10 domains, 2 source types), full pipeline, scoring, web page,
 Discord bot (scenarios G and J tested live), safety and privacy basics, URL input, EUvsDisinfo
-matching (scenario I), 30-case evaluation (latest: macro-F1 0.91, abstention 100%, injection 100%,
-median 5.2 s, $0.001 per check). Open items and priorities: see `TODO.md`.
+matching (scenario I), single input box (model recognises the input kind, links fetched by code),
+screenshot input (scenario F), web-search fallback. 30-case evaluation (latest: macro-F1 0.97,
+accuracy 97%, abstention 100%, injection 100%, median 7.2 s, $0.004 per check). Open items and priorities: see `TODO.md`.

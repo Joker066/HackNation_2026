@@ -73,6 +73,8 @@ class ClaimResult(BaseModel):
 class CheckRequest(BaseModel):
     text: str | None = None
     url: str | None = None
+    image: str | None = None  # base64 or data URL of a screenshot/photo (never stored)
+    image_media_type: str | None = None  # image/png | image/jpeg | image/webp | image/gif
     channel: str = "web"
     session_id: str | None = None
 
@@ -82,6 +84,8 @@ class CheckResponse(BaseModel):
     created_at: datetime
     status: Status
     status_detail: str | None = None  # plain Polish message for non-ok statuses
+    input_kind: str | None = None  # question | statement | message | article | mixed (decided by the model)
+    image_text: str | None = None  # what was read from an uploaded image (PII-masked), for transparency
     claims: list[ClaimResult] = Field(default_factory=list)
     security_events: list[str] = Field(default_factory=list)
     result_url: str | None = None

@@ -1,6 +1,6 @@
 from app.config import Settings
 
-from .base import LLMError, LLMProvider, LLMUsage
+from .base import ImageInput, LLMError, LLMProvider, LLMUsage
 
 
 def build_provider(settings: Settings) -> LLMProvider:
@@ -16,4 +16,4 @@ def build_provider(settings: Settings) -> LLMProvider:
     raise ValueError(f"Unknown LLM_PROVIDER: {settings.llm_provider!r}")
 
 
-__all__ = ["LLMError", "LLMProvider", "LLMUsage", "build_provider"]
+__all__ = ["ImageInput", "LLMError", "LLMProvider", "LLMUsage", "build_provider"]

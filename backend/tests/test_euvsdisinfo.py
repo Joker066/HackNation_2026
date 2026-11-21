@@ -44,6 +44,7 @@ class StubEU:
 def claims(user):
     return ClaimExtraction(
         status="ok",
+        input_kind="statement",
         claims=[
             ExtractedClaim(
                 text="Polska przygotowuje aneksję zachodniej Ukrainy.",

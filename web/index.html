@@ -196,10 +196,6 @@
             border-color: #0284C7 !important;
         }
 
-        /* Płynny suwak zakładek (Sliding Pill) */
-        #tabIndicator {
-            transition: transform 0.48s var(--ease-bubble), width 0.48s var(--ease-bubble);
-        }
 
         /* Płynne pojawianie się karty wyniku i modali */
         @keyframes slideFadeIn {
@@ -395,7 +391,7 @@
 
         <div id="mobileMenu" class="hidden lg:hidden max-w-7xl mx-auto mt-2 ocean-glass-strong rounded-[2rem] px-4 pt-3 pb-5 space-y-1.5 hc-bg">
             <button onclick="toggleMobileMenu(); scrollToSection('sekcja-przewodnik')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Szybki przewodnik po stronie</button>
-            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-sprawdz')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Sprawdź link lub wiadomość</button>
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-sprawdz')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Sprawdź – wklej cokolwiek</button>
             <button onclick="toggleMobileMenu(); scrollToSection('sekcja-ostrzezenia')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Najnowsze ostrzeżenia CERT Polska</button>
             <button onclick="toggleMobileMenu(); scrollToSection('sekcja-jak-to-dziala')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Jak to działa? (3 kroki)</button>
             <button onclick="toggleMobileMenu(); scrollToSection('sekcja-pomoc')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Discord i zgłaszanie oszustw</button>
@@ -419,7 +415,7 @@
                         Sprawdź, zanim klikniesz <br class="hidden sm:inline">lub uwierzysz.
                     </h1>
                     <p class="text-base sm:text-lg text-slate-700 font-medium leading-relaxed max-w-2xl mx-auto bg-white/75 backdrop-blur-md px-5 py-2.5 rounded-3xl border border-white/90 hc-text-muted">
-                        Wklej podejrzaną wiadomość, pogłoskę albo link. Pokażemy, co mówią na ten temat komunikaty urzędowe i fact-checkerzy – z cytatami i linkami do źródeł.
+                        Wklej cokolwiek: podejrzaną wiadomość, pytanie, pogłoskę, link albo zrzut ekranu. Sami rozpoznamy, co to jest, i pokażemy, co mówią komunikaty urzędowe i fact-checkerzy – z cytatami i linkami do źródeł.
                     </p>
                 </div>
 
@@ -476,34 +472,18 @@
                             <i data-lucide="radar" class="w-8 h-8 animate-spin" style="animation-duration: 3s;"></i>
                         </div>
                         <h3 class="font-display font-extrabold text-xl text-gov-navy mb-1.5 hc-text">Sprawdzamy w zbiorze źródeł…</h3>
-                        <p id="scanStepText" class="text-sm text-slate-600 transition-opacity duration-300 hc-text-muted">Szukamy twierdzeń do sprawdzenia…</p>
+                        <p id="scanStepText" class="text-sm text-slate-600 transition-opacity duration-300 hc-text-muted">Rozpoznajemy, co wklejono…</p>
                         <p class="text-xs text-slate-400 mt-3 hc-text-muted">Zwykle trwa to 10–30 sekund.</p>
                     </div>
 
-                    <!-- Zakładki -->
-                    <div class="relative grid grid-cols-1 sm:grid-cols-3 gap-1.5 p-2 bg-sky-50/90 rounded-full mb-7 hc-bg border border-sky-200/70" role="tablist" id="tabContainer">
-                        <div id="tabIndicator" class="hidden sm:block absolute top-2 bottom-2 left-2 bg-white rounded-full shadow-md pointer-events-none hc-card"></div>
-                        <button onclick="switchTab('text')" id="tab-text" role="tab" aria-selected="true" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-bold text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
-                            <i data-lucide="message-square-warning" class="w-4 h-4 text-gov-oceanDark"></i>
-                            <span>Wiadomość / SMS / e-mail</span>
-                        </button>
-                        <button onclick="switchTab('news')" id="tab-news" role="tab" aria-selected="false" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
-                            <i data-lucide="newspaper" class="w-4 h-4"></i>
-                            <span>Informacja / pogłoska</span>
-                        </button>
-                        <button onclick="switchTab('link')" id="tab-link" role="tab" aria-selected="false" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
-                            <i data-lucide="globe" class="w-4 h-4"></i>
-                            <span>Link do artykułu</span>
-                        </button>
-                    </div>
-
-                    <!-- Pole tekstowe -->
+                    <!-- Jedno pole: system sam rozpoznaje, co wklejono -->
                     <div class="relative mb-6">
-                        <label for="verifyInput" id="inputLabel" class="block text-sm sm:text-base font-bold text-gov-navy mb-2.5 pl-2 transition-opacity duration-200 hc-text">
-                            Wklej treść podejrzanej wiadomości SMS lub e-mail:
+                        <label for="verifyInput" class="block text-sm sm:text-base font-bold text-gov-navy mb-1 pl-2 hc-text">
+                            Wklej wiadomość, pytanie, informację albo link
                         </label>
+                        <p class="text-xs sm:text-sm text-slate-500 mb-2.5 pl-2 hc-text-muted">Nie musisz wybierać rodzaju — sami rozpoznamy, co to jest. Linki w treści też sprawdzimy.</p>
                         <div class="relative group">
-                            <textarea id="verifyInput" rows="4" maxlength="5000" placeholder="" class="w-full rounded-[1.75rem] border-2 border-sky-200/80 bg-white/95 focus:bg-white focus:border-gov-ocean focus:ring-4 focus:ring-gov-ocean/15 p-5 pr-36 text-base text-gov-navy placeholder-slate-400 transition-all duration-300 resize-none shadow-inner hc-input"></textarea>
+                            <textarea id="verifyInput" rows="4" maxlength="5000" placeholder="np. „Czy od jutra bankomaty nie będą działać?”, treść SMS-a albo https://…" class="w-full rounded-[1.75rem] border-2 border-sky-200/80 bg-white/95 focus:bg-white focus:border-gov-ocean focus:ring-4 focus:ring-gov-ocean/15 p-5 pr-36 text-base text-gov-navy placeholder-slate-400 transition-all duration-300 resize-none shadow-inner hc-input"></textarea>
                             <div class="absolute right-3.5 top-3.5 flex items-center space-x-1.5">
                                 <button onclick="clearInput()" id="clearBtn" title="Wyczyść pole" class="hidden p-2.5 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 transition-all duration-200 cursor-pointer">
                                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -512,6 +492,18 @@
                                     <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
                                     <span>Wklej</span>
                                 </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 mt-3 pl-1">
+                            <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" onchange="onImageChosen(this.files[0])">
+                            <button type="button" onclick="$('imageInput').click()" class="ocean-btn inline-flex items-center space-x-2 text-xs sm:text-sm font-bold px-4 py-2 rounded-full bg-white text-gov-oceanDark border border-sky-200/80 shadow-xs cursor-pointer hc-card">
+                                <i data-lucide="image-plus" class="w-4 h-4"></i><span>Dodaj zrzut ekranu lub zdjęcie</span>
+                            </button>
+                            <span class="text-xs text-slate-500 hc-text-muted">albo wklej obraz (Ctrl+V) lub przeciągnij go tutaj · PNG, JPG, WebP, do 5 MB</span>
+                            <div id="imagePreview" class="hidden items-center space-x-3 bg-white/90 border border-sky-200/80 rounded-2xl p-2 pr-3 hc-card">
+                                <img id="imageThumb" alt="Podgląd dodanego obrazu" class="h-14 w-auto max-w-[8rem] rounded-xl object-cover">
+                                <span id="imageName" class="text-xs text-slate-600 max-w-[10rem] truncate hc-text-muted"></span>
+                                <button type="button" onclick="clearImage()" title="Usuń obraz" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
                             </div>
                         </div>
                         <p class="text-xs text-slate-500 mt-2 pl-2 hc-text-muted">Nie wpisuj swoich danych osobowych. Oczywiste dane (e-mail, telefon, PESEL) automatycznie maskujemy.</p>
@@ -592,8 +584,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                     <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
                         <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">1</div>
-                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Wklej wiadomość lub link</h3>
-                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Treść SMS-a, e-maila, posta albo link do artykułu. System wyszukuje w niej twierdzenia, które da się sprawdzić, i oddziela je od opinii.</p>
+                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Wklej cokolwiek</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Pytanie, treść SMS-a lub e-maila, post, link albo zrzut ekranu – nie musisz wybierać rodzaju. System sam rozpoznaje, co to jest, pobiera podane strony i wyszukuje twierdzenia, które da się sprawdzić, oddzielając je od opinii.</p>
                     </div>
                     <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
                         <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">2</div>
@@ -677,7 +669,7 @@
                 <div>
                     <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Na skróty</h4>
                     <ul class="space-y-2.5 text-sm">
-                        <li><button onclick="scrollToSection('sekcja-sprawdz')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Sprawdź wiadomość lub link</button></li>
+                        <li><button onclick="scrollToSection('sekcja-sprawdz')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Sprawdź wiadomość, pytanie lub link</button></li>
                         <li><button onclick="scrollToSection('sekcja-ostrzezenia')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Ostrzeżenia CERT Polska</button></li>
                         <li><button onclick="scrollToSection('sekcja-jak-to-dziala')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Jak to działa</button></li>
                         <li><button onclick="scrollToSection('sekcja-pomoc')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Discord i zgłaszanie oszustw</button></li>
@@ -719,7 +711,6 @@
         // ------------------------------------------------------------------
         const $ = (id) => document.getElementById(id);
         const verifyInput = $('verifyInput');
-        let currentTab = 'text';
 
         function esc(value) {
             // Everything that comes from the API or the user is escaped before rendering.
@@ -809,7 +800,7 @@
         }
 
         const GUIDE = [
-            ['sekcja-sprawdz', 'search-check', 'bg-sky-100 text-gov-oceanDark group-hover:bg-gov-ocean', '1. Sprawdź wiadomość lub link', 'Wklej treść SMS-a, e-maila, posta albo link do artykułu i zobacz, co mówią źródła.'],
+            ['sekcja-sprawdz', 'search-check', 'bg-sky-100 text-gov-oceanDark group-hover:bg-gov-ocean', '1. Sprawdź cokolwiek', 'Wklej pytanie, wiadomość, informację, link albo zrzut ekranu – sami rozpoznamy, co to jest, i pokażemy, co mówią źródła.'],
             ['sekcja-ostrzezenia', 'alert-triangle', 'bg-amber-100 text-amber-800 group-hover:bg-amber-600', '2. Najnowsze ostrzeżenia CERT Polska', 'Aktualne kampanie oszustów opisane przez CERT Polska – z linkami do komunikatów.'],
             ['sekcja-jak-to-dziala', 'list-ordered', 'bg-teal-100 text-gov-tealDark group-hover:bg-gov-teal', '3. Jak to działa? (3 kroki)', 'Skąd bierzemy odpowiedzi i jak powstaje ocena – prostym językiem.'],
             ['sekcja-pomoc', 'message-circle', 'bg-indigo-100 text-indigo-800 group-hover:bg-gov-navy', '4. Discord i zgłaszanie oszustw', 'Sprawdzaj przez bota na Discordzie. Gdzie zgłosić podejrzany SMS lub stronę.'],
@@ -835,54 +826,66 @@
         }
 
         // ------------------------------------------------------------------
-        // Input tabs and examples
+        // Examples
         // ------------------------------------------------------------------
-        const TABS = {
-            text: { label: 'Wklej treść podejrzanej wiadomości SMS lub e-mail:', placeholder: 'np. „PGE: Masz nadpłatę za energię 213,45 zł. Odbierz zwrot na stronie: http://…”' },
-            news: { label: 'Wklej informację, pogłoskę albo cytat do sprawdzenia:', placeholder: 'np. „Wczoraj RCB wysłało alert o ataku powietrznym do mieszkańców Podkarpacia”' },
-            link: { label: 'Wklej link do artykułu lub posta (http lub https):', placeholder: 'np. https://www.przyklad.pl/artykul' },
-        };
         const EXAMPLES = {
-            energy: ['text', 'PGE informuje: masz nadpłatę za energię elektryczną w wysokości 213,45 zł. Aby odebrać zwrot pieniędzy, zaloguj się na stronie: http://pge-zwrot-nadplaty.pl'],
-            rcb: ['news', 'RCB wysłało SMS-y z ostrzeżeniem o rosyjskim ataku powietrznym na Ukrainę do mieszkańców województwa podkarpackiego.'],
-            nato: ['news', 'Prezydent Rosji Władimir Putin zgodził się w 1996 roku na wejście Polski do NATO.'],
+            energy: 'PGE informuje: masz nadpłatę za energię elektryczną w wysokości 213,45 zł. Aby odebrać zwrot pieniędzy, zaloguj się na stronie: http://pge-zwrot-nadplaty.pl',
+            rcb: 'RCB wysłało SMS-y z ostrzeżeniem o rosyjskim ataku powietrznym na Ukrainę do mieszkańców województwa podkarpackiego.',
+            nato: 'Czy Władimir Putin zgodził się w 1996 roku na wejście Polski do NATO?',
         };
-
-        function updateTabIndicator(tab) {
-            const indicator = $('tabIndicator');
-            const btn = $(`tab-${tab}`);
-            if (!indicator || !btn) return;
-            const index = Object.keys(TABS).indexOf(tab);
-            indicator.style.width = `${btn.offsetWidth}px`;
-            indicator.style.transform = `translateX(${index * (btn.offsetWidth + 6)}px)`;
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            updateTabIndicator(tab);
-            Object.keys(TABS).forEach((t) => {
-                const el = $(`tab-${t}`);
-                const active = t === tab;
-                el.className = active
-                    ? 'relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-bold text-gov-navy bg-white sm:bg-transparent shadow-xs sm:shadow-none transition-colors duration-300 cursor-pointer hc-text'
-                    : 'relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text';
-                el.setAttribute('aria-selected', active ? 'true' : 'false');
-            });
-            $('inputLabel').textContent = TABS[tab].label;
-            verifyInput.placeholder = TABS[tab].placeholder;
-        }
 
         function runExample(name) {
-            const [tab, text] = EXAMPLES[name];
-            switchTab(tab);
-            verifyInput.value = text;
+            verifyInput.value = EXAMPLES[name];
             $('clearBtn').classList.remove('hidden');
             startVerification();
         }
 
         verifyInput.addEventListener('input', () => $('clearBtn').classList.toggle('hidden', !verifyInput.value.trim()));
 
+        // ------------------------------------------------------------------
+        // Image (screenshot / photo) input
+        // ------------------------------------------------------------------
+        const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+        let imageDataUrl = null;
+
+        function onImageChosen(file) {
+            if (!file) return;
+            if (!IMAGE_TYPES.includes(file.type)) { showToast('Obsługiwane są obrazy PNG, JPG, WebP lub GIF.'); return; }
+            if (file.size > 5 * 1024 * 1024) { showToast('Obraz jest za duży (maksymalnie 5 MB).'); return; }
+            const reader = new FileReader();
+            reader.onload = () => {
+                imageDataUrl = reader.result;
+                $('imageThumb').src = imageDataUrl;
+                $('imageName').textContent = file.name || 'wklejony obraz';
+                $('imagePreview').classList.remove('hidden');
+                $('imagePreview').classList.add('flex');
+                showToast('Dodano obraz. Możesz dopisać pytanie albo od razu kliknąć „Sprawdź teraz”.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            imageDataUrl = null;
+            $('imageInput').value = '';
+            $('imagePreview').classList.add('hidden');
+            $('imagePreview').classList.remove('flex');
+        }
+
+        verifyInput.addEventListener('paste', (event) => {
+            const item = [...(event.clipboardData?.items || [])].find((it) => it.kind === 'file' && IMAGE_TYPES.includes(it.type));
+            if (item) { event.preventDefault(); onImageChosen(item.getAsFile()); }
+        });
+        const dropZone = $('sekcja-sprawdz');
+        dropZone.addEventListener('dragover', (event) => { event.preventDefault(); dropZone.classList.add('ring-4', 'ring-gov-ocean/30'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('ring-4', 'ring-gov-ocean/30'));
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('ring-4', 'ring-gov-ocean/30');
+            onImageChosen(event.dataTransfer?.files?.[0]);
+        });
+
         function clearInput() {
+            clearImage();
             verifyInput.value = '';
             $('clearBtn').classList.add('hidden');
             $('resultContainer').classList.add('hidden');
@@ -902,6 +905,7 @@
         // Verification: calls the real API (POST /api/check)
         // ------------------------------------------------------------------
         const SCAN_STEPS = [
+            'Rozpoznajemy, co wklejono, odczytujemy obraz i pobieramy podane strony…',
             'Szukamy twierdzeń, które da się sprawdzić…',
             'Przeszukujemy komunikaty urzędowe i weryfikacje fact-checkerów…',
             'Porównujemy fragmenty źródeł z twierdzeniem…',
@@ -911,8 +915,7 @@
 
         async function startVerification() {
             const value = verifyInput.value.trim();
-            if (!value) { showToast('Najpierw wklej wiadomość, informację lub link.'); verifyInput.focus(); return; }
-            if (currentTab === 'link' && !/^https?:\/\/\S+$/i.test(value)) { showToast('Link musi zaczynać się od http:// lub https://'); return; }
+            if (!value && !imageDataUrl) { showToast('Najpierw wklej pytanie, wiadomość, link albo dodaj zrzut ekranu.'); verifyInput.focus(); return; }
 
             const overlay = $('scannerOverlay');
             const stepText = $('scanStepText');
@@ -922,8 +925,8 @@
             $('checkBtn').disabled = true;
             const timer = setInterval(() => { step = Math.min(step + 1, SCAN_STEPS.length - 1); stepText.textContent = SCAN_STEPS[step]; }, 4000);
 
-            const body = { channel: 'web', session_id: sessionId() };
-            if (currentTab === 'link') body.url = value; else body.text = value;
+            const body = { text: value, channel: 'web', session_id: sessionId() };
+            if (imageDataUrl) body.image = imageDataUrl;
 
             try {
                 const resp = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -950,6 +953,10 @@
             supports: { label: 'Potwierdza', cls: 'border-emerald-500' },
             refutes: { label: 'Zaprzecza', cls: 'border-rose-500' },
             context: { label: 'Kontekst', cls: 'border-amber-500' },
+        };
+        const KINDS = {
+            question: 'pytanie', statement: 'informacja do sprawdzenia', message: 'przekazana wiadomość',
+            article: 'artykuł ze strony', mixed: 'pytanie z linkiem lub wiadomością',
         };
         const SOURCE_TYPES = { official: 'źródło urzędowe', dataset: 'dane publiczne', factcheck: 'fact-checking', media: 'media' };
 
@@ -1041,8 +1048,16 @@
                 </button>` : '';
             box.innerHTML = `
                 <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-                    <h3 class="font-display font-extrabold text-xl text-gov-navy hc-text">Wynik sprawdzenia</h3>${link}
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-display font-extrabold text-xl text-gov-navy hc-text">Wynik sprawdzenia</h3>
+                        ${KINDS[data.input_kind] ? `<span class="text-xs font-semibold text-gov-oceanDark bg-sky-50 border border-sky-200/80 px-3 py-1 rounded-full hc-card">Rozpoznano: ${KINDS[data.input_kind]}</span>` : ''}
+                    </div>${link}
                 </div>
+                ${data.image_text ? `
+                <details class="rounded-2xl bg-sky-50/80 border border-sky-200 p-4 mb-5 hc-card">
+                    <summary class="cursor-pointer text-sm font-bold text-gov-navy hc-text">Co odczytaliśmy z obrazu</summary>
+                    <pre class="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-700 hc-text-muted">${esc(data.image_text)}</pre>
+                </details>` : ''}
                 ${security}
                 ${data.claims.map(claimCard).join('')}
                 <p class="text-xs text-slate-500 hc-text-muted">Tap &amp; Check pomaga ocenić informacje, ale nie jest „sędzią prawdy”. Zawsze możesz samodzielnie przeczytać źródła.</p>`;
@@ -1130,10 +1145,8 @@
         // Start
         // ------------------------------------------------------------------
         renderGuide();
-        switchTab('text');
         refreshIcons();
-        window.addEventListener('load', () => { updateTabIndicator(currentTab); initScrollReveal(); });
-        window.addEventListener('resize', () => updateTabIndicator(currentTab));
+        window.addEventListener('load', initScrollReveal);
         loadWarnings();
         loadHealth();
         loadSharedResult();

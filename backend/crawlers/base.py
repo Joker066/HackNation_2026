@@ -30,6 +30,8 @@ from .fetch import FetchError, Fetcher
 
 log = logging.getLogger(__name__)
 
+EXCERPT_CHARS = 700  # for sources whose licence does not allow storing full articles
+
 # zero-width space / joiners and byte-order mark, common in CMS-generated HTML
 INVISIBLE = str.maketrans("", "", "​‌‍⁠﻿")
 
@@ -89,6 +91,15 @@ class Crawler(ABC):
         return BeautifulSoup(html, "html.parser")
 
     @staticmethod
+    def excerpt(text: str, limit: int = EXCERPT_CHARS) -> str:
+        """Opening of an article, cut at a sentence end: for rights-restricted sources."""
+        if len(text) <= limit:
+            return text
+        cut = text[:limit]
+        end = max(cut.rfind(". "), cut.rfind(".\n"), cut.rfind("! "), cut.rfind("? "))
+        return (cut[: end + 1] if end > limit // 3 else cut.rsplit(" ", 1)[0]).rstrip() + " […]"
+
+    @staticmethod
     def strip_emoji(text: str) -> str:
         """Remove emoji and pictographs (⚠️ 📩 💰).
 
@@ -111,15 +122,18 @@ class Crawler(ABC):
     # -- saving -------------------------------------------------------------------
 
     def _record(self, doc: Document, **extra) -> dict:
+        # The catalogue decides how much may be stored (corpus/sources.csv, column "storage").
+        excerpt_only = self.entry.storage == "excerpt"
         return {
             "url": doc.url,
             "title": doc.title,
             "publisher": self.entry.publisher,
             "published_at": doc.published_at.isoformat() if doc.published_at else None,
             "retrieved_at": datetime.now(UTC).isoformat(),
-            "text": doc.text,
+            "text": self.excerpt(doc.text) if excerpt_only else doc.text,
+            "storage": "excerpt" if excerpt_only else "full_text",
             "lang": "pl",
-            "license": self.license,
+            "license": self.entry.licence or self.license,
             "catalog_id": self.catalog_id,
             "crawler": self.name,
             **doc.extra,

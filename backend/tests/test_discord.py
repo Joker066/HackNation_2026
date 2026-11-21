@@ -46,3 +46,15 @@ def test_misleading_verdict_has_no_score():
     c = claim(1) | {"verdict": "wprowadzające_w_błąd", "score": 0.0}
     text = format_response({"status": "ok", "claims": [c], "security_events": [], "result_url": None})
     assert "WPROWADZA W BŁĄD" in text and "wynik dowodów" not in text
+
+
+def test_first_image_picks_supported_attachment():
+    from types import SimpleNamespace
+
+    from channels.discord_bot import first_image
+
+    pdf = SimpleNamespace(content_type="application/pdf", size=1000)
+    huge = SimpleNamespace(content_type="image/png", size=9_000_000)
+    ok = SimpleNamespace(content_type="image/jpeg; charset=binary", size=200_000)
+    assert first_image([pdf, huge, ok]) is ok
+    assert first_image([pdf]) is None

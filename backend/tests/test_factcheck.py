@@ -55,6 +55,7 @@ class StubFactCheck:
 def claims(user):
     return ClaimExtraction(
         status="ok",
+        input_kind="statement",
         claims=[
             ExtractedClaim(
                 text="Putin w 1996 roku zgodził się na wejście Polski do NATO.",
