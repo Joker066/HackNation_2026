@@ -1,10 +1,10 @@
 # TODO
 
 ## Next
-- [ ] **Discord live test (do first)**: reset the bot token, invite the bot to a demo server, set
-      `DISCORD_INVITE_URL`, then check DM, @mention and `/sprawdz`. Scenario G: the same question via
-      web and Discord must give the same verdict and the same sources (100% required). Also test
-      outage handling (API down → "błąd techniczny", not a verdict) and the 2,000-character limit.
+- [x] **Discord live test** (2026-11-21): token reset, bot on the demo server; `/sprawdz`, @mention and
+      DM work; scenario G passed (same verdict −0.8 and same Demagog source on web and Discord);
+      scenario J passed (API down → "błąd techniczny", no verdict); 2,000-character limit unit-tested.
+- [ ] Set `DISCORD_INVITE_URL` (non-expiring invite for the jury) so the web page shows the join button.
 - [x] **EUvsDisinfo connector** (scenario I): search known disinformation cases per claim; show
       matches as `source_warnings` / `context_only` evidence (weight 0, never decides a verdict).
 - [ ] **Answer quality**: too many "can't verify" answers and low |score|. Diagnose and fix

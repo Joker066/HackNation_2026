@@ -96,11 +96,19 @@ class TapCheckBot(discord.Client):
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
 
-    async def setup_hook(self) -> None:
-        await self.tree.sync()
+    async def _sync_commands(self, guild: discord.abc.Snowflake) -> None:
+        # Per-server registration shows /sprawdz immediately (global sync can take up to an hour).
+        self.tree.copy_global_to(guild=guild)
+        await self.tree.sync(guild=guild)
 
     async def on_ready(self) -> None:
-        log.info("Logged in as %s", self.user)
+        for guild in self.guilds:
+            await self._sync_commands(guild)
+        log.info("Logged in as %s; /sprawdz registered on %d server(s)", self.user, len(self.guilds))
+
+    async def on_guild_join(self, guild: discord.Guild) -> None:
+        await self._sync_commands(guild)
+        log.info("Joined %s; /sprawdz registered", guild.name)
 
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot or self.user is None:
