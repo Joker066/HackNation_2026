@@ -14,7 +14,7 @@ VERDICT_SENTENCE = {
     Verdict.false: "Sprawdzone źródła przeczą temu twierdzeniu.",
     Verdict.misleading: "To twierdzenie wprowadza w błąd: fakty są wyrwane z kontekstu.",
     Verdict.insufficient: "Nie da się tego teraz rozstrzygnąć — brakuje wystarczających dowodów.",
-    Verdict.unverifiable: "Tego nie da się zweryfikować, bo nie jest to twierdzenie o faktach.",
+    Verdict.unverifiable: "Tego nie da się zweryfikować na podstawie źródeł.",
 }
 
 STRENGTH_LABEL = {Strength.high: "wysoka", Strength.medium: "średnia", Strength.low: "niska"}

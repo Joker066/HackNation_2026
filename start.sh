@@ -67,7 +67,8 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 say "Starting API + web page on port $PORT…"
-(cd backend && exec ../.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port "$PORT") &
+# --proxy-headers: behind a proxy/tunnel, use the visitor's real IP (per-visitor rate limit)
+(cd backend && exec ../.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port "$PORT" --proxy-headers --forwarded-allow-ips 127.0.0.1) &
 PIDS+=($!)
 
 for _ in $(seq 1 60); do

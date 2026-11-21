@@ -229,3 +229,9 @@ def test_site_domain(host, site):
     from app.store.corpus import site_domain
 
     assert site_domain(host) == site
+
+
+def test_identity_from_appearance_is_unverifiable_with_a_clear_reason():
+    r = decide(kind="appearance_identity", evidence=[ev(Stance.supports, "X", 5)], misleading_context=False)
+    assert r.verdict == Verdict.unverifiable and r.strength is None and r.score is None
+    assert "po wyglądzie twarzy" in r.limitations

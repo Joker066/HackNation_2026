@@ -56,7 +56,11 @@ Return:
 - visible_date: any date/time shown on the image exactly as written; empty string if none.
 - visible_source: the account, sender, phone number, website or outlet shown; empty if none.
 - description: 1-2 plain Polish sentences on what the image shows (e.g. "Zrzut ekranu wpisu
-  z Facebooka ze zdjęciem zalanej ulicy"). Describe only what is visible; do not judge truth."""
+  z Facebooka ze zdjęciem zalanej ulicy"). Describe only what is visible; do not judge truth.
+
+Never identify people from their face or appearance. Describe them neutrally ("mężczyzna
+w garniturze przy mównicy"). Name a person only if the name is WRITTEN on the image (caption,
+name tag, TV chyron), and then say so ("podpis na obrazie: …")."""
 
 
 class ImageError(Exception):

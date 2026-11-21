@@ -57,8 +57,9 @@ misleading_context: true only if the passages show that the claim's facts are re
 presented in a different time, place or context than they come from (e.g. an old event shown
 as new). Explain in misleading_reason (Polish, one sentence); otherwise empty string.
 
-findings_summary: 1-3 short, plain Polish sentences on what the passages say about the claim,
-for a reader without technical knowledge. Use only facts from the passages. Do not state a
+findings_summary: 1-3 short, plain Polish sentences on what the sources say about the claim,
+for a reader without technical knowledge. Write only in Polish: never use English words, and
+call the material "źródła" (or name the publisher), never "passages" or "fragmenty". Use only facts from the passages. Do not state a
 verdict (no "prawda", "fałsz", "potwierdzone"). Empty string if nothing is relevant.
 
 Today's date: {today}."""

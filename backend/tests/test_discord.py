@@ -58,3 +58,9 @@ def test_first_image_picks_supported_attachment():
     ok = SimpleNamespace(content_type="image/jpeg; charset=binary", size=200_000)
     assert first_image([pdf, huge, ok]) is ok
     assert first_image([pdf]) is None
+
+
+def test_zero_score_is_not_shown():
+    c = claim(1) | {"verdict": "brak_wystarczających_dowodów", "score": 0.0}
+    text = format_response({"status": "ok", "claims": [c], "security_events": [], "result_url": None})
+    assert "wynik dowodów" not in text

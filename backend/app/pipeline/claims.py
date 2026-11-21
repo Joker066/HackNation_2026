@@ -10,7 +10,7 @@ from app.llm import LLMProvider, LLMUsage
 
 class ExtractedClaim(BaseModel):
     text: str
-    kind: Literal["factual", "opinion", "prediction"]
+    kind: Literal["factual", "opinion", "prediction", "appearance_identity"]
     search_queries: list[str]
     english_query: str
     implied_time_or_place: str
@@ -53,6 +53,10 @@ Task:
   Prefer the 1-3 central claims; skip background details and the author's commentary.
 - Rewrite each claim in Polish as one self-contained sentence (resolve pronouns, keep names,
   numbers and dates exactly as given). Do not add facts that are not in the input.
+- Make times explicit using today's date: "wczoraj" → the actual date, "w zeszłym tygodniu" →
+  the date range, a month or day without a year → the most recent such date ("w marcu"
+  → "w marcu 2026" if today is in November 2026). Unless the input names another year, a
+  claim is about that most recent date, not about earlier years.
 - kind: "factual" if it states something checkable about the world, including statements
   about people that sources could confirm or refute (e.g. a conviction, an arrest warrant, an
   official charge); "opinion" only for pure value judgements with no checkable core
@@ -62,6 +66,10 @@ Task:
   new rules or bans taking effect, planned strikes or events ("Od stycznia wzrosną opłaty za
   wodę", "W sobotę pociągi nie pojadą z powodu strajku") — whether they were officially
   announced can be checked.
+- kind "appearance_identity": the claim says WHO a person shown in a photo or video is ("ten pan
+  na zdjęciu to X", "to jest X na nagraniu"). We never identify people from their appearance
+  (biometric data), so such claims cannot be checked. Other claims about the same image (what
+  happened, when, where, what the caption says) stay "factual".
 - search_queries: 4-6 SHORT keyword queries (2-4 words each) in Polish for fact-check and
   official-source search engines that match words literally. Use the distinctive nouns, names,
   places and numbers from the claim, in the forms a news headline or fact-check title would

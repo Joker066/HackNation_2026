@@ -68,6 +68,15 @@ def decide(
     time_sensitive: bool = False,
     now: datetime | None = None,
 ) -> VerdictResult:
+    if kind == "appearance_identity":
+        return VerdictResult(
+            Verdict.unverifiable,
+            None,
+            ["twierdzenie dotyczy tego, kim jest osoba na zdjęciu lub nagraniu"],
+            "Nie rozpoznajemy osób na zdjęciach po wyglądzie twarzy (to dane biometryczne). Możemy sprawdzić "
+            "tylko to, co jest na obrazie napisane (podpis, nazwisko), oraz informacje o samym zdarzeniu — "
+            "np. zapytaj, czy dana osoba była w tym miejscu i czasie.",
+        )
     if kind in ("opinion", "prediction"):
         what = "opinią" if kind == "opinion" else "przewidywaniem dotyczącym przyszłości"
         return VerdictResult(

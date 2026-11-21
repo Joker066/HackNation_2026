@@ -69,3 +69,20 @@ def test_unreadable_image_asks_for_clarification(tmp_path):
 def test_invalid_upload_is_not_a_verdict(tmp_path):
     r = run_check(make(tmp_path, reading()), CheckRequest(image=PNG_B64, image_media_type="application/pdf"))
     assert r.status == Status.needs_clarification and r.claims == []
+
+
+def test_who_is_in_the_photo_is_not_checked_and_not_searched(tmp_path):
+    def identity_claim(user):
+        return ClaimExtraction(status="ok", input_kind="mixed", claims=[ExtractedClaim(
+            text="Mężczyzna na zdjęciu to Donald Trump.", kind="appearance_identity", search_queries=["Trump"],
+            english_query="Trump", implied_time_or_place="", time_sensitive=False, verifying_source="")])
+
+    class NoSearch:
+        def search(self, *a, **k):
+            raise AssertionError("identity claims must not trigger a web search")
+
+    svc = make(tmp_path, reading())
+    svc.llm.handlers[ClaimExtraction] = identity_claim
+    svc.web_search = NoSearch()
+    claim = run_check(svc, CheckRequest(text="ten pan na zdjęciu to Trump", image=PNG_B64, image_media_type="image/png")).claims[0]
+    assert claim.verdict.value == "nie_podlega_weryfikacji" and "po wyglądzie twarzy" in claim.limitations

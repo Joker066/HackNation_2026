@@ -54,7 +54,7 @@ def format_response(data: dict) -> str:
         v = claim["verdict"]
         score = claim.get("score")
         # For "misleading" the score is ~0 by definition (sources neither confirm nor refute): hide it.
-        hide = score is None or v == "wprowadzające_w_błąd"
+        hide = score is None or score == 0 or v == "wprowadzające_w_błąd"  # 0 = nothing decisive found
         score_text = "" if hide else f"  ·  wynik dowodów {score:+.2f} (od −1 do +1)".replace(".", ",")
         lines.append(f"**{i}. {EMOJI[v]} {LABEL[v]}**{score_text}")
         lines.append(f"> {claim['text']}")
