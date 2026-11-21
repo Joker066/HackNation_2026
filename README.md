@@ -37,8 +37,7 @@ cd backend
 ../.venv/bin/python -m scripts.build_index --rebuild
 ```
 
-The web page is `web/index.html` (design by a teammate, wired to the API). The older React
-UI in `frontend/` is no longer needed.
+The web page is `web/index.html` (design by a teammate, wired to the API).
 
 Run the tests (no API key needed):
 

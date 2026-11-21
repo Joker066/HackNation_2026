@@ -44,7 +44,7 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.public_base_url, "http://localhost:5173"],  # page itself + old Vite dev UI
+    allow_origins=[settings.public_base_url],
     allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )

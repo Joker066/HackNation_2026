@@ -113,13 +113,13 @@ Rules from the task that are enforced in code:
 | Part | Choice | Why |
 |---|---|---|
 | Backend | Python 3.12 + **FastAPI** | Simple, async, auto OpenAPI spec (a bonus point) |
-| Frontend | Existing **Vite + React** in `frontend/` | Already set up |
+| Frontend | **Single page** `web/index.html` (Tailwind + Lucide via CDN), served by FastAPI | No build step: the jury runs one command |
 | Second channel | **Discord bot** (`discord.py`) | Allowed by the task, free, no business account; reliable for the jury demo |
 | Channel mock-up | **SMS demo page** in the web UI (bonus, step 9) | Shows the 70-character SMS reply + link that real citizens would get; real SMS is just another adapter later |
 | Search | **SQLite FTS5 / BM25** first, embeddings later if time allows | No extra infrastructure |
 | LLM | **Claude (`claude-opus-5-5`, effort `low`)** behind a provider interface; `fake` provider for offline dev/tests | Task requires a swappable model; an EU provider (e.g. Mistral) can be added as one more file |
 | Storage | **SQLite** (audit log, cases, corpus) | One file, easy for the jury to run |
-| Packaging | `docker-compose` (api + bot + frontend) | Jury can start it with one command |
+| Packaging | `docker-compose` (api + bot) | Jury can start it with one command |
 
 Torch/CUDA are **not needed** — `requirements.txt` will be replaced with a lean list.
 
@@ -165,7 +165,7 @@ HackNation_2026/
 │   ├── cases.jsonl              # our own ~30 cases covering scenarios A–J
 │   ├── run_eval.py              # computes macro-F1, citation coverage, abstention, latency, cost
 │   └── results/                 # saved reports (for the submission)
-├── frontend/                    # Vite + React web UI
+├── web/index.html               # web page (served by the API at /)
 ├── docs/
 │   ├── architecture.md
 │   ├── sources.md               # sources, licences, qualification rules
