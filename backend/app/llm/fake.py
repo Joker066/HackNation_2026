@@ -39,7 +39,7 @@ def _default(schema: type[BaseModel], user: str) -> BaseModel:
         return ClaimExtraction(
             status="ok" if sentences else "needs_clarification",
             claims=[
-                ExtractedClaim(text=s, kind="factual", search_queries=[s], english_query="", implied_time_or_place="", time_sensitive=False)
+                ExtractedClaim(text=s, kind="factual", search_queries=[s], english_query="", implied_time_or_place="", time_sensitive=False, verifying_source="")
                 for s in sentences[:5]
             ],
         )

@@ -40,3 +40,9 @@ def test_errors_are_not_verdicts():
 def test_session_id_is_pseudonymous_and_stable():
     a, b = session_id_for(123456789), session_id_for(123456789)
     assert a == b and a.startswith("dc-") and "123456789" not in a
+
+
+def test_misleading_verdict_has_no_score():
+    c = claim(1) | {"verdict": "wprowadzające_w_błąd", "score": 0.0}
+    text = format_response({"status": "ok", "claims": [c], "security_events": [], "result_url": None})
+    assert "WPROWADZA W BŁĄD" in text and "wynik dowodów" not in text

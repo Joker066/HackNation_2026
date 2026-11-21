@@ -1018,7 +1018,7 @@
                         ${c.strength ? `<span class="text-xs font-semibold text-slate-600 hc-text-muted">siła podstaw: ${esc(c.strength)}</span>` : ''}
                     </div>
                     <p class="font-display font-bold text-lg text-gov-navy hc-text">${i + 1}. „${esc(c.text)}”</p>
-                    ${c.score !== null && c.score !== undefined ? scoreBar(c.score) : ''}
+                    ${c.score !== null && c.score !== undefined && c.verdict !== 'wprowadzające_w_błąd' ? scoreBar(c.score) : ''}
                     <p class="mt-4 text-sm sm:text-base text-slate-800 leading-relaxed hc-text">${esc(c.explanation)}</p>
                     ${list('Na czym opiera się ocena', c.reasons)}
                     ${c.evidence.length ? `<h4 class="font-display font-bold text-sm text-gov-navy mt-5 hc-text">Źródła (cytaty dosłowne)</h4>${c.evidence.map(evidenceCard).join('')}` : ''}

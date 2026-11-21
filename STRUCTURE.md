@@ -113,89 +113,49 @@ Rules from the task that are enforced in code:
 | Part | Choice | Why |
 |---|---|---|
 | Backend | Python 3.12 + **FastAPI** | Simple, async, auto OpenAPI spec (a bonus point) |
-| Frontend | **Single page** `web/index.html` (Tailwind + Lucide via CDN), served by FastAPI | No build step: the jury runs one command |
+| Frontend | **Single page** `web/index.html` (Tailwind + Lucide via CDN), served by FastAPI | No build step |
 | Second channel | **Discord bot** (`discord.py`) | Allowed by the task, free, no business account; reliable for the jury demo |
-| Channel mock-up | **SMS demo page** in the web UI (bonus, step 9) | Shows the 70-character SMS reply + link that real citizens would get; real SMS is just another adapter later |
-| Search | **SQLite FTS5 / BM25** first, embeddings later if time allows | No extra infrastructure |
-| LLM | **Claude (`claude-opus-5-5`, effort `low`)** behind a provider interface; `fake` provider for offline dev/tests | Task requires a swappable model; an EU provider (e.g. Mistral) can be added as one more file |
-| Storage | **SQLite** (audit log, cases, corpus) | One file, easy for the jury to run |
-| Packaging | `docker-compose` (api + bot) | Jury can start it with one command |
-
-Torch/CUDA are **not needed** — `requirements.txt` will be replaced with a lean list.
+| Search | **SQLite FTS5 / BM25** (crude Polish stemming) | No extra infrastructure; embeddings would be the next step |
+| Live sources | **Google Fact Check API** (ClaimReview) + **EUvsDisinfo MCP** (`search` tool) | Fact-checks per claim; known disinformation narratives as context only |
+| LLM | **Claude Haiku 5.5** (`claude-haiku-5-5`, effort `low`) behind a provider interface; `fake` provider for offline tests | ~$0.001 per check; `medium` effort measured: no quality gain, slower. Swappable (`LLM_PROVIDER`, `LLM_MODEL`) |
+| Storage | **SQLite** (audit log, corpus index) + `corpus/text_sources/*.json` | One file per document: rebuildable offline, auditable |
+| Packaging | **`start.sh`** (API + web + bot, first-run setup) | One command for the jury; Docker not done yet |
 
 ## 6. Directory layout
 
 ```
 HackNation_2026/
+├── start.sh                     # one command: API + web page + Discord bot
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI routes: /api/check, /api/check/{id}, /api/session/{id},
-│   │   │                        #   /api/health, /api/logs, /api/metrics
+│   │   ├── main.py              # FastAPI: /, /r/{id}, /api/check, /api/check/{id}, /api/warnings,
+│   │   │                        #   /api/session/{id}, /api/health, /api/logs, /api/metrics
 │   │   ├── config.py            # settings from env (.env, never committed)
 │   │   ├── schemas.py           # response contract (Pydantic)
-│   │   ├── pipeline/
-│   │   │   ├── ingest.py        # validation, safe URL fetch (SSRF guard), HTML→text
-│   │   │   ├── claims.py        # claim extraction (LLM)
-│   │   │   ├── assess.py        # stance per passage (LLM) + verbatim quote check (code)
-│   │   │   ├── verdict.py       # deterministic rule engine
-│   │   │   ├── compose.py       # Polish answer from templates + verified evidence
-│   │   │   └── run.py           # orchestrator used by every channel
-│   │   ├── llm/
-│   │   │   ├── base.py          # LLMProvider interface + LLMError
-│   │   │   ├── anthropic_provider.py
-│   │   │   └── fake.py          # offline provider: always abstains
-│   │   ├── security/
-│   │   │   ├── pii.py           # mask emails, phones, PESEL, IBAN
-│   │   │   ├── injection.py     # detect + log injection attempts
-│   │   │   └── ratelimit.py
-│   │   └── store/
-│   │       ├── db.py            # SQLite connection helper
-│   │       ├── corpus.py        # documents + FTS5 passages, catalogue check
-│   │       └── audit.py         # check log, metrics, retention, session delete
-│   ├── channels/
-│   │   └── discord_bot.py       # thin adapter → calls the API, formats the reply
-│   ├── scripts/
-│   │   └── build_index.py       # corpus/records/*.jsonl → SQLite FTS index
+│   │   ├── net.py               # HTTP clients (forced IPv4: broken IPv6 on WSL2)
+│   │   ├── pipeline/            # ingest → claims (LLM) → assess (LLM) → scoring → verdict → compose; run.py orchestrates
+│   │   ├── llm/                 # provider interface, Claude provider, fake provider
+│   │   ├── sources/             # google_factcheck.py, euvsdisinfo.py (live sources)
+│   │   ├── security/            # pii.py, injection.py, ratelimit.py
+│   │   └── store/               # corpus.py (FTS index, catalogue), text_sources.py, audit.py, db.py
+│   ├── channels/discord_bot.py  # thin adapter → calls the API, formats the reply
+│   ├── crawlers/                # framework + adapters: rcb, policja, cert, kgsok, umgdy; _template.py
+│   ├── scripts/                 # build_index.py, seed_factchecks.py
 │   └── tests/
 ├── corpus/
 │   ├── sources.csv              # audited catalogue: claim types, credibility 1-5, role, update frequency
-│   └── records/                 # collected documents as JSONL (one document per line)
-├── var/                         # local SQLite databases (gitignored)
-├── eval/
-│   ├── cases.jsonl              # our own ~30 cases covering scenarios A–J
-│   ├── run_eval.py              # computes macro-F1, citation coverage, abstention, latency, cost
-│   └── results/                 # saved reports (for the submission)
+│   ├── factcheckers.csv         # fact-checker names and credibility, by website
+│   └── text_sources/            # one JSON file per fetched document
+├── eval/                        # cases.jsonl (30 cases), run_eval.py, results/
 ├── web/index.html               # web page (served by the API at /)
-├── docs/
-│   ├── architecture.md
-│   ├── sources.md               # sources, licences, qualification rules
-│   └── risks.md                 # hallucination, bias, privacy, injection, availability, abuse
-├── docker-compose.yml
-├── .env.example
-├── instruction.md
-├── STRUCTURE.md
-└── README.md                    # run instructions + submission summary
+├── var/                         # local SQLite databases (gitignored)
+├── TODO.md
+└── README.md
 ```
 
-## 7. Build order
+## 7. Status
 
-1. **Skeleton:** FastAPI `/check` returning the response contract with a fake pipeline; the web UI renders it.
-2. **Corpus:** `sources.csv` + 100+ documents from 10+ domains, 2+ source types (official + fact-check); FTS index.
-3. **Pipeline:** claims → retrieve → assess → verdict → compose, end to end on text input.
-4. **Eval set:** write ~30 cases for A–J and run `run_eval.py`; tune the rules.
-5. **Discord bot** using the same API; check that results match across channels.
-6. **Safety and privacy:** PII masking, injection logging, rate limiting, session delete, error statuses.
-7. **URL input** + archival warnings + incident-database matching (data arrives during the event).
-8. **Submission:** README, docs, risks, cost estimate for 1,000 queries, slides, 3-minute video.
-9. **Bonus, only if 1–8 are solid:** OCR for screenshots, moderator case queue, CSV/JSON export.
-
-## 8. Decisions and open questions
-
-Decided:
-- **LLM:** Claude (`claude-opus-5-5`), swappable via `LLM_PROVIDER`.
-- **Second channel:** Discord bot; SMS shown as a demo page (bonus).
-
-Open:
-- **Discord:** which server to test the bot on?
-- **Corpus:** organisers published their source list (`lista_źródeł.txt` → `corpus/sources.csv`); next: crawler, Google Fact Check connector, EUvsDisinfo token.
-- **Moderator cases** (scenario H) and **incident matching** (scenario I) are not built yet.
+Done: skeleton, corpus (490+ documents, 10 domains, 2 source types), full pipeline, scoring, web page,
+Discord bot (scenarios G and J tested live), safety and privacy basics, URL input, EUvsDisinfo
+matching (scenario I), 30-case evaluation (latest: macro-F1 0.91, abstention 100%, injection 100%,
+median 5.2 s, $0.001 per check). Open items and priorities: see `TODO.md`.

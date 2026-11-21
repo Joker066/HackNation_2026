@@ -16,6 +16,7 @@ class PassageJudgement(BaseModel):
     passage_id: int
     stance: Literal["supports", "refutes", "context", "irrelevant"]
     directness: Literal["explicit", "implicit"]
+    same_claim: bool
     quote: str
 
 
@@ -43,14 +44,11 @@ For every passage return:
   (character for character). Empty string for "irrelevant".
 
 Some passages are fact-check records ("Sprawdzane twierdzenie: … Ocena <fact-checker>: <rating>").
-For those, first judge whether the checked statement is the same claim (same subject and
-substance; wording may differ). If it is, map the rating:
-  "Prawda" / "True" → supports;  "Fałsz" / "False" → refutes;
-  "Częściowa prawda", "Manipulacja", "Wprowadza w błąd", "Bez kontekstu", "Half true",
-  "Misleading" → context, and set misleading_context = true;
-  "Nieweryfikowalne" / "Unverifiable" → context.
-If the checked statement is a different claim on a related topic, use "context" or "irrelevant".
-Quote the rating sentence ("Ocena …: …"), because the rating is what supports or refutes it.
+For those, the key question is same_claim: true if the checked statement makes the same claim
+as CLAIM (same subject and substance; wording, tense or question form may differ), false if it
+is a different statement on a related topic. The rating itself is translated into a stance by
+code, so for same_claim records give the stance the rating implies and quote the rating
+sentence ("Ocena …: …"). For other passages set same_claim to false.
 
 Judge only from the passage text, never from your own knowledge. Consider dates: a passage
 about a different year or place than the claim does not support it.
@@ -86,6 +84,36 @@ def assess(
         f"{_format_passages(passages)}"
     )
     return llm.generate(system=SYSTEM.format(today=date.today().isoformat()), user=user, schema=AssessmentOutput)
+
+
+# Fact-check ratings, translated by code (not by the model) into a stance. Lower case.
+RATING_SUPPORTS = {"prawda", "blisko prawdy", "true", "mostly true"}
+RATING_REFUTES = {
+    "fałsz", "raczej fałsz", "częściowy fałsz", "przerobione zdjęcie", "przerobione wideo",
+    "obraz ai", "false", "mostly false", "altered",
+}
+RATING_MISLEADING = {
+    "częściowa prawda", "półprawda", "manipulacja", "wprowadza w błąd", "mylące", "brakujący kontekst",
+    "brak kontekstu", "half true", "misleading", "missing context",
+}
+_RATING = re.compile(r"Ocena [^:\n]{1,60}: ([^.\n]{1,40})\.")
+
+
+def fact_check_rating(passage_text: str) -> str | None:
+    """The fact-checker's rating in a fact-check record, lower case; None for other passages."""
+    m = _RATING.search(passage_text)
+    return m.group(1).strip().lower() if m and passage_text.startswith("Sprawdzane twierdzenie") else None
+
+
+def stance_from_rating(rating: str) -> tuple[str, bool] | None:
+    """(stance, misleading) for a known rating; None if the rating is not recognised."""
+    if rating in RATING_SUPPORTS:
+        return "supports", False
+    if rating in RATING_REFUTES:
+        return "refutes", False
+    if rating in RATING_MISLEADING:
+        return "context", True
+    return None
 
 
 def _normalise(text: str) -> str:

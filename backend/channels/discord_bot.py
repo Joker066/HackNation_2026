@@ -52,7 +52,9 @@ def format_response(data: dict) -> str:
     for i, claim in enumerate(data["claims"], 1):
         v = claim["verdict"]
         score = claim.get("score")
-        score_text = "" if score is None else f"  ·  wynik dowodów {score:+.2f} (od −1 do +1)".replace(".", ",")
+        # For "misleading" the score is ~0 by definition (sources neither confirm nor refute): hide it.
+        hide = score is None or v == "wprowadzające_w_błąd"
+        score_text = "" if hide else f"  ·  wynik dowodów {score:+.2f} (od −1 do +1)".replace(".", ",")
         lines.append(f"**{i}. {EMOJI[v]} {LABEL[v]}**{score_text}")
         lines.append(f"> {claim['text']}")
         lines.append(claim["explanation"])

@@ -63,6 +63,7 @@ def claims(user):
                 english_query="",
                 implied_time_or_place="1996, Polska",
                 time_sensitive=False,
+            verifying_source="",
             )
         ],
     )
@@ -71,7 +72,7 @@ def claims(user):
 def assess_refutes(user):
     pid = int(user.split('<passage id="')[1].split('"')[0])
     return AssessmentOutput(
-        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", quote="Ocena Demagog: Fałsz")],
+        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", same_claim=True, quote="Ocena Demagog: Fałsz")],
         misleading_context=False,
         misleading_reason="",
         findings_summary="Demagog ocenił tę wypowiedź jako fałszywą.",
@@ -126,3 +127,53 @@ def test_fact_check_outage_is_a_limitation_not_a_verdict(tmp_path):
     claim = r.claims[0]
     assert claim.verdict == Verdict.insufficient
     assert "Google Fact Check" in claim.limitations
+
+
+# --- rating translated by code, not by the model -------------------------------------
+
+import pytest  # noqa: E402
+
+from app.pipeline.assess import fact_check_rating, stance_from_rating  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    ("rating", "expected"),
+    [("Fałsz", ("refutes", False)), ("Raczej fałsz", ("refutes", False)), ("Prawda", ("supports", False)),
+     ("Manipulacja", ("context", True)), ("brakujący kontekst", ("context", True)), ("Nieweryfikowalne", None)],
+)
+def test_stance_from_rating(rating, expected):
+    text = f"Sprawdzane twierdzenie: „x”. Autor twierdzenia: y (2024-01-01). Ocena Demagog: {rating}. Tytuł weryfikacji: z"
+    assert stance_from_rating(fact_check_rating(text)) == expected
+
+
+def test_rating_only_read_from_fact_check_records():
+    assert fact_check_rating("Komunikat policji. Ocena Demagog: Fałsz. coś") is None
+
+
+def judged(same_claim: bool, stance: str):
+    def handler(user):
+        pid = int(user.split('<passage id="')[1].split('"')[0])
+        return AssessmentOutput(
+            passages=[PassageJudgement(passage_id=pid, stance=stance, directness="explicit", same_claim=same_claim,
+                                       quote="Ocena Demagog: Fałsz")],
+            misleading_context=False, misleading_reason="", findings_summary="",
+        )
+    return handler
+
+
+def make_with(tmp_path, handler):
+    settings = Settings(llm_provider="fake")
+    return Services(settings=settings, llm=FakeProvider({ClaimExtraction: claims, AssessmentOutput: handler}),
+                    corpus=Corpus(tmp_path / "corpus.db"), audit=AuditLog(tmp_path / "audit.db"),
+                    catalog=load_catalog(settings.sources_catalog_path), factcheck=StubFactCheck(credibility=load_factcheckers(settings.factcheckers_path)))
+
+
+def test_same_claim_rating_overrides_a_wrong_model_stance(tmp_path):
+    # the model said "context" although the record rates this very claim "Fałsz"
+    claim = run_check(make_with(tmp_path, judged(True, "context")), CheckRequest(text="Putin 1996 NATO")).claims[0]
+    assert claim.evidence[0].stance.value == "refutes" and claim.verdict == Verdict.false
+
+
+def test_different_claim_with_false_rating_is_only_context(tmp_path):
+    claim = run_check(make_with(tmp_path, judged(False, "refutes")), CheckRequest(text="Putin 1996 NATO")).claims[0]
+    assert claim.evidence[0].stance.value == "context" and claim.verdict == Verdict.insufficient

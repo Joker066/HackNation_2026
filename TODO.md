@@ -7,12 +7,24 @@
 - [ ] Set `DISCORD_INVITE_URL` (non-expiring invite for the jury) so the web page shows the join button.
 - [x] **EUvsDisinfo connector** (scenario I): search known disinformation cases per claim; show
       matches as `source_warnings` / `context_only` evidence (weight 0, never decides a verdict).
-- [ ] **Answer quality**: too many "can't verify" answers and low |score|. Diagnose and fix
-      retrieval, claim extraction and scoring.
-- [ ] **30-case test set** (`eval/`): scenarios A–J + script for the required metrics
-      (macro-F1, citation coverage/correctness, abstention, injection resistance, latency, cost).
+- [x] **Answer quality, round 1**: questions → statements; recency only for time-sensitive claims;
+      announced decisions are factual (not predictions); fact-check ratings translated by code;
+      abstentions name the source that would be needed; score hidden for "misleading"; at most
+      2 EUvsDisinfo notes per claim.
+- [x] **30-case test set** (`eval/cases.jsonl`, `eval/run_eval.py`). Latest (Haiku, effort low):
+      macro-F1 0.91, accuracy 90%, citation coverage 100%, abstention 100%, injection 100%,
+      median 5.2 s, $0.001/check. Effort `medium` measured: F1 0.90, 8.1 s, +34% cost → keep `low`.
+- [ ] **Answer quality, round 2** (remaining failures):
+  - "Czy CERT ostrzega…?" sometimes still marked time-sensitive → 4-week-old advisory weighs 0.51;
+  - Google Fact Check queries vary between runs → a known Demagog check is sometimes not found;
+  - fact-checks of related variants of a claim count only as context (e.g. "biolabs").
+- [ ] Eval: scenarios F (screenshot), H (repeat question) and J (forced outage, live) are not in the set;
+      manually spot-check that quotes really support the claims (task metric "poprawność cytowania").
 
 ## Later
+- [ ] **Licences** (compliance risk): add a licence column/basis to `corpus/sources.csv`; decide
+      full texts vs excerpts in `corpus/text_sources/`; document retention and deletion.
+- [ ] Docker (`docker compose up`) and deployment to an EU-hosted server for the judging period.
 - [ ] **Scam message detection** (e.g. "mam Twojego wnuka, przelej 10 tys."):
   - corpus: police/CERT prevention pages on "metoda na wnuczka", "na policjanta", fake
     kidnapping, BLIK scams (fixed-URL crawler);

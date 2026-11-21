@@ -52,6 +52,7 @@ def claims(user):
                 english_query="Poland annex western Ukraine",
                 implied_time_or_place="",
                 time_sensitive=False,
+            verifying_source="",
             )
         ],
     )
@@ -60,7 +61,7 @@ def claims(user):
 def assess_context(user):
     pid = int(user.split('<passage id="')[1].split('"')[0])
     return AssessmentOutput(
-        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit",
+        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", same_claim=True,
                                    quote="Poland is preparing to annex western Ukraine")],
         misleading_context=False,
         misleading_reason="",

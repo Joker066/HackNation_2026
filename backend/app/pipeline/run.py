@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 
 from app.config import Settings
 from app.llm import LLMError, LLMProvider, LLMUsage
-from app.schemas import CheckRequest, CheckResponse, ClaimResult, Evidence, Stance, Status
+from app.schemas import CheckRequest, CheckResponse, ClaimResult, Evidence, Stance, Status, Verdict
 from app.security.injection import looks_like_injection
 from app.security.pii import mask_pii
 from app.store.audit import AuditLog
@@ -18,7 +18,7 @@ from app.sources.google_factcheck import FactCheckError, GoogleFactCheck
 from app.store import text_sources
 from app.store.corpus import CatalogEntry, Corpus
 
-from .assess import assess, quote_is_verbatim
+from .assess import assess, fact_check_rating, quote_is_verbatim, stance_from_rating
 from .claims import ExtractedClaim, extract_claims
 from .compose import compose
 from .ingest import IngestError, ingest
@@ -99,6 +99,9 @@ def _fetch_live_sources(svc: Services, claim: ExtractedClaim) -> list[str]:
     ]
 
 
+MAX_SOURCE_WARNINGS = 2  # more than two context notes per claim only adds noise
+
+
 def _source_warnings(evidence: list[Evidence]) -> list[str]:
     """Neutral notes for context-only matches (never part of the verdict)."""
     notes = []
@@ -108,7 +111,7 @@ def _source_warnings(evidence: list[Evidence]) -> list[str]:
                 f"Podobny wątek opisuje baza EUvsDisinfo (przypadki prokremlowskiej dezinformacji): "
                 f"„{e.title}”. To informacja o kontekście, a nie ocena tego twierdzenia."
             )
-    return list(dict.fromkeys(notes))
+    return list(dict.fromkeys(notes))[:MAX_SOURCE_WARNINGS]
 
 
 def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
@@ -142,10 +145,22 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         usage.add(u)
         by_id = {p.passage_id: p for p in clean}
         seen_quotes: set[tuple[str, str]] = set()
+        rating_says_misleading = False
         for j in assessment.passages:
             p = by_id.get(j.passage_id)
             if p is None or j.stance == "irrelevant":
                 continue
+            stance = j.stance
+            rating = fact_check_rating(p.text)
+            if rating is not None:
+                # Fact-check record: the model only judged whether it is about the same claim;
+                # the rating is translated into a stance here, deterministically.
+                mapped = stance_from_rating(rating)
+                if j.same_claim and mapped is not None:
+                    stance, rating_misleading = mapped
+                    rating_says_misleading = rating_says_misleading or rating_misleading
+                else:
+                    stance = "context"
             if not quote_is_verbatim(j.quote, p.text):
                 log.info("dropped unverifiable quote for passage %s", p.passage_id)
                 continue
@@ -154,7 +169,7 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
             seen_quotes.add((p.url, j.quote.strip()))
             evidence.append(
                 Evidence(
-                    stance=Stance(j.stance),
+                    stance=Stance(stance),
                     title=p.title,
                     publisher=p.publisher,
                     url=p.url,
@@ -171,8 +186,9 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
             )
         findings, misleading, misleading_reason = (
             assessment.findings_summary,
-            assessment.misleading_context,
-            assessment.misleading_reason,
+            assessment.misleading_context or rating_says_misleading,
+            assessment.misleading_reason
+            or ("Fact-checker ocenił to twierdzenie jako częściowo prawdziwe lub pozbawione kontekstu." if rating_says_misleading else ""),
         )
 
     decision = decide(
@@ -182,6 +198,10 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         misleading_reason=misleading_reason,
         time_sensitive=claim.time_sensitive,
     )
+    if decision.verdict == Verdict.insufficient and claim.verifying_source.strip():
+        decision.limitations = (
+            f"{decision.limitations} Do rozstrzygnięcia potrzebny byłby np.: {claim.verifying_source.strip().rstrip('.')}."
+        ).strip()
     if retrieval_error:
         decision.limitations = (decision.limitations + " Wyszukiwanie w źródłach nie powiodło się.").strip()
     if live_notes:

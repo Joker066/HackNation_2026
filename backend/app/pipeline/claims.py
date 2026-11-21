@@ -15,6 +15,7 @@ class ExtractedClaim(BaseModel):
     english_query: str
     implied_time_or_place: str
     time_sensitive: bool
+    verifying_source: str
 
 
 class ClaimExtraction(BaseModel):
@@ -43,7 +44,12 @@ Task:
 - kind: "factual" if it states something checkable about the world, including statements
   about people that sources could confirm or refute (e.g. a conviction, an arrest warrant, an
   official charge); "opinion" only for pure value judgements with no checkable core
-  ("X jest dobrym człowiekiem"); "prediction" for statements about the future.
+  ("X jest dobrym człowiekiem"); "prediction" only for speculative forecasts that nobody can
+  know yet ("W 2030 roku Polska przyjmie euro", "ceny spadną").
+  Announced or scheduled things are "factual", even in the future tense: decisions, closures,
+  new rules or bans taking effect, planned strikes or events ("Od stycznia wzrosną opłaty za
+  wodę", "W sobotę pociągi nie pojadą z powodu strajku") — whether they were officially
+  announced can be checked.
 - search_queries: 4-6 SHORT keyword queries (2-4 words each) in Polish for fact-check and
   official-source search engines that match words literally. Use the distinctive nouns, names,
   places and numbers from the claim, in the forms a news headline or fact-check title would
@@ -55,7 +61,12 @@ Task:
 - time_sensitive: true ONLY if the claim's truth can change within days or weeks: alerts and
   warnings, closures, ongoing operations, "now/today/since yesterday" situations, current
   prices or schedules. false for past events, statements by people, characteristics of
-  people or institutions, laws, history and other stable facts.
+  people or institutions, laws, history and other stable facts. Whether an institution issued
+  a warning, appeal or announcement ("Sanepid ostrzega przed…", "Rzecznik rządu zapowiedział…")
+  is about the act of issuing it, so it is false too.
+- verifying_source: in Polish, the kind of official source that could confirm or refute the
+  claim, e.g. "rozporządzenie ministra", "komunikat urzędu wojewódzkiego", "komunikat IMGW".
+  Empty string for opinions and predictions.
 - status: "needs_clarification" if the message is too vague to contain any claim (e.g. a
   single word or number); "out_of_scope" if it is not about facts in the world at all
   (greetings, requests for code, personal questions); otherwise "ok".

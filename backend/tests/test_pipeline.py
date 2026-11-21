@@ -35,6 +35,7 @@ def claim_handler(user: str) -> ClaimExtraction:
                 english_query="",
                 implied_time_or_place="",
                 time_sensitive=False,
+            verifying_source="",
             )
         ],
     )
@@ -43,7 +44,7 @@ def claim_handler(user: str) -> ClaimExtraction:
 def refuting_assessment(user: str) -> AssessmentOutput:
     pid = int(user.split('<passage id="')[1].split('"')[0])
     return AssessmentOutput(
-        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", quote="most na rzece Testowej został otwarty w maju 2025 roku")],
+        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", same_claim=True, quote="most na rzece Testowej został otwarty w maju 2025 roku")],
         misleading_context=False,
         misleading_reason="",
         findings_summary="Urząd informuje o otwarciu mostu w maju 2025 roku.",
@@ -53,7 +54,7 @@ def refuting_assessment(user: str) -> AssessmentOutput:
 def hallucinated_quote(user: str) -> AssessmentOutput:
     pid = int(user.split('<passage id="')[1].split('"')[0])
     return AssessmentOutput(
-        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", quote="Cytat, którego nie ma w źródle wcale.")],
+        passages=[PassageJudgement(passage_id=pid, stance="refutes", directness="explicit", same_claim=True, quote="Cytat, którego nie ma w źródle wcale.")],
         misleading_context=False,
         misleading_reason="",
         findings_summary="x",
