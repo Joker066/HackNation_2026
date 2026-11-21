@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/209/doplata-do-przesylki-zachowaj-ostroznosc/",
+ "title": "Dopłata do przesyłki? Zachowaj ostrożność!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-03T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:34.339856+00:00",
+ "text": "Dopłata do przesyłki? Zachowaj ostrożność!\nObserwujemy kampanię phishingową, w której cyberprzestępcy podszywają się pod Pocztę Polską.\nOszuści rozsyłają wiadomości SMS informujące o rzekomej konieczności uiszczenia niewielkiej opłaty celnej za przesyłkę.\nLink znajdujący się w wiadomości prowadzi do fałszywej strony internetowej, której celem jest wyłudzenie danych osobowych i adresowych, a także numeru, daty ważności i CVV (trzech cyfr z tyłu) karty płatniczej.\nNie daj się oszukać! Jeśli oczekujesz przesyłki, sprawdzaj jej status bezpośrednio na oficjalnej stronie przewoźnika lub w jego aplikacji.\nZawsze zwracaj uwagę na adres strony internetowej zanim podasz swoje dane! Fałszywe domeny często nawiązują do znanych firm, dlatego samodzielnie wyszukaj oficjalną witrynę i porównaj adresy. Jeśli masz wątpliwości, nie podawaj danych i przekaż podejrzaną wiadomość SMS na darmowy numer 8080 - pomożesz w ten sposób chronić siebie i innych.\nTreść fałszywej wiadomości SMS\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "209/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

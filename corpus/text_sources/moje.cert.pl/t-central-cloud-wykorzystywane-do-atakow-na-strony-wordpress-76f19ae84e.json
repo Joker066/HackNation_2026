@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/204/przejete-klucze-updraft-central-cloud-wykorzystywane-do-atakow-na-strony-wordpress/",
+ "title": "Przejęte klucze Updraft Central Cloud wykorzystywane do ataków na strony WordPress",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-27T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:39.355315+00:00",
+ "text": "Przejęte klucze Updraft Central Cloud wykorzystywane do ataków na strony WordPress\nZespół CERT Polska informuje o incydencie bezpieczeństwa w usłudze UpdraftCentral.\nWyciekły klucze dostępu wykorzystywane do zdalnego zarządzania stronami WordPress z zainstalowaną wtyczką UpdraftPlus. Przejęte klucze są\nwykorzystywane do przeprowadzania ataków\n, które polegają na nieautoryzowanej instalacji szkodliwych pluginów oraz tworzeniu kont użytkowników.\nRekomendujemy niezwłoczną aktualizację wtyczki do wersji 1.26.13 (wersja bezpłatna) lub 2.26.13 (Premium), która unieważnia ujawnione klucze. Samo usunięcie strony z panelu UpdraftCentral nie jest wystarczające.\nZalecamy weryfikację systemów pod kątem śladów ataku:\nnieznane konta użytkowników (np. nazwa\nSite Tools\n, loginy typu\nmedia.ops12\n,\npage_ops41\n,\ncontent.desk38\n, adresy e-mail w domenie\nexample.com\nlub konta edytora z uprawnieniem\nmanage_options\n),\nzainstalowane nieznane wtyczki - zalecamy weryfikację z poziomu systemu plików, ponieważ część wtyczek może nie być widoczna w panelu administratora (mu-plugins). Można do tego celu wykorzystać poniższą komendę:\ngrep -rl \"Small maintenance toolkit: keeps option storage tidy\\.\" /var/www/*/wp-content/plugins/\nzapytania z adresów\n43.250.53.42\nlub\n2a09:bac5:4e21:2e3c::49b:9\n,\nwpisy w logach UpdraftPlus zawierające frazę\nCommand received: plugin.upload_plugin\noraz zapytania w logach serwera WWW, w których User-Agent zawiera frazę\nclass-udrpc.php\n,\nniespodziewane awarie strony (kod 500) w ostatnim czasie.\nBrak powyższych śladów nie gwarantuje, że strona nie była celem ataku. W przypadku stwierdzenia przejęcia strony zalecamy przywrócenie jej z kopii zapasowej sprzed 17 października, zmianę haseł oraz dokładną weryfikację plików i uprawnień.\nWięcej informacji znajduje się w komunikacie producenta:\nhttps://teamupdraft.com/blog/security-incident-october-2026/\noraz w analizie firmy Patchstack:\nhttps://patchstack.com/articles/updraftcentral-key-compromise-wordpress-backdoors/",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "204/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

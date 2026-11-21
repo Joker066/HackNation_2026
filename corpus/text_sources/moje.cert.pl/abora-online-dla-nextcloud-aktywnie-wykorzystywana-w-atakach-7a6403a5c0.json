@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/194/krytyczna-podatnosc-w-collabora-online-dla-nextcloud-aktywnie-wykorzystywana-w-atakach/",
+ "title": "Krytyczna podatność w Collabora Online dla Nextcloud aktywnie wykorzystywana w atakach",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-20T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:49.324228+00:00",
+ "text": "Krytyczna podatność w Collabora Online dla Nextcloud aktywnie wykorzystywana w atakach\nZespół CERT Polska informuje o krytycznej podatności w aplikacji Collabora Online - Built-in CODE Server (richdocumentscode) dla Nextcloud.\nPodatność, oznaczona jako CVE-2026-110447, umożliwia nieuwierzytelnionemu atakującemu zdalne wykonanie dowolnych poleceń systemowych z uprawnieniami konta serwera WWW. Do wykorzystania podatności dochodzi wyłącznie w sytuacji, gdy lokalny serwer dokumentów CODE tymczasowo nie działa - między innymi po restarcie, aktualizacji lub awarii.\nPodatność jest aktywnie wykorzystywana do przeprowadzania ataków ransomware i przejmowania kontroli nad serwerami.\nPodatność dotyczy wyłącznie aplikacji Collabora Online - Built-in CODE Server w wersjach przed 26.4.303. Problem nie dotyczy samodzielnych serwerów Collabora Online bądź instancji korzystających wyłącznie z aplikacji Nextcloud Office (richdocuments) z zewnętrznym serwerem Collabora.\nRekomendujemy aktualizację aplikacji do wersji 26.4.303 lub nowszej. Należy pamiętać, że wyłączenie aplikacji w Nextcloud nie usuwa podatności. W przypadku Nextcloud 29 i starszych, dla których nie można zainstalować wersji 26.4.303 richdocuments, sugerujemy aktualizację Nextcloud lub usunięcie aplikacji, jeżeli nie jest aktywnie wykorzystywana.\nZalecamy także weryfikację:\nobecności plików\nshx*.php\nw katalogu\napps/richdocumentscode\n,\nlogów dostępowych pod kątem żądań\nproxy.php?status\nzawierających w ścieżce\n%2e%2e\n,\n$(\nlub\n${IFS}\n,\nprób wykonania poleceń sudo przez konto serwera WWW.\nW przypadku wykrycia oznak wykorzystania podatności prosimy o niezwłoczny kontakt z naszym zespołem przez formularz na stronie\nincydent.cert.pl\n.",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "194/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

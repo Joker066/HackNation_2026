@@ -15,6 +15,7 @@ See crawlers/_template.py for a commented example to copy.
 """
 
 import logging
+import unicodedata
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -50,6 +51,8 @@ class Document:
     title: str
     text: str
     published_at: datetime | None
+    #: optional extra fields saved with the document (e.g. {"unit": "Policja Podlaska"})
+    extra: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -86,6 +89,17 @@ class Crawler(ABC):
         return BeautifulSoup(html, "html.parser")
 
     @staticmethod
+    def strip_emoji(text: str) -> str:
+        """Remove emoji and pictographs (⚠️ 📩 💰).
+
+        Not cosmetic: if the model quotes a sentence without its emoji, the quote no longer
+        matches the source verbatim and the evidence is discarded.
+        """
+        kept = "".join(ch for ch in text if unicodedata.category(ch) != "So" and ch not in "\ufe0f\u200d")
+        lines = (" ".join(line.split()) for line in kept.splitlines())
+        return "\n".join(line for line in lines if line)
+
+    @staticmethod
     def clean_text(node) -> str:
         """Visible text of a node, without scripts, styles and navigation."""
         for tag in node(["script", "style", "noscript", "nav", "form", "button", "iframe"]):
@@ -108,6 +122,7 @@ class Crawler(ABC):
             "license": self.license,
             "catalog_id": self.catalog_id,
             "crawler": self.name,
+            **doc.extra,
             **extra,
         }
 

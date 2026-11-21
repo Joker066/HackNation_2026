@@ -198,3 +198,20 @@ def test_catalog_matching(catalog, url, expected_id):
 @pytest.mark.parametrize("url", ["https://www.gov.pl/web/zdrowie/cos", "https://example.com/news"])
 def test_unlisted_sources_are_rejected(catalog, url):
     assert match_catalog(url, catalog) is None
+
+
+@pytest.mark.parametrize(
+    ("host", "site"),
+    [
+        ("podlaska.policja.gov.pl", "policja.gov.pl"),
+        ("www.gov.pl", "gov.pl"),
+        ("policja.pl", "policja.pl"),
+        ("sprawdzam.afp.com", "afp.com"),
+        ("ulc.gov.pl", "ulc.gov.pl"),
+        ("hydro.imgw.pl", "imgw.pl"),
+    ],
+)
+def test_site_domain(host, site):
+    from app.store.corpus import site_domain
+
+    assert site_domain(host) == site

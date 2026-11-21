@@ -18,8 +18,8 @@ _TIME = r"(?:\D{0,12}?(\d{1,2})[:.](\d{2}))?"
 _PATTERNS = [
     # 21 listopada 2026 r. [, godz. 12:30]
     re.compile(r"\b(\d{1,2})\s+(" + "|".join(MONTHS) + r")\s+(\d{4})" + _TIME, re.IGNORECASE),
-    # 21.11.2026 [12:30]
-    re.compile(r"\b(\d{1,2})\.(\d{1,2})\.(\d{4})" + _TIME),
+    # 21.11.2026 [12:30]  or  21-11-2026 (cert.pl)  or  21/11/2026
+    re.compile(r"\b(\d{1,2})[./-](\d{1,2})[./-](\d{4})" + _TIME),
     # 2026-11-21[T12:30]
     re.compile(r"\b(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2}))?"),
 ]

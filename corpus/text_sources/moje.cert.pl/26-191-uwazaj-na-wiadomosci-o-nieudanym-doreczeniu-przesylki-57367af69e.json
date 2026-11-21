@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/191/uwazaj-na-wiadomosci-o-nieudanym-doreczeniu-przesylki/",
+ "title": "Uważaj na wiadomości o nieudanym doręczeniu przesyłki!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-16T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:52.370648+00:00",
+ "text": "Uważaj na wiadomości o nieudanym doręczeniu przesyłki!\nObserwujemy kolejną odsłonę kampanii phishingowej podszywającej się pod firmy kurierskie.\nOszuści rozsyłają wiadomości informujące o rzekomo nieudanej próbie doręczenia paczki. W treści znajduje się link, który ma umożliwić umówienie nowego terminu dostawy.\nProwadzi on do złośliwej strony internetowej przygotowanej przez cyberprzestępców. Oszuści proszą o wybranie nowego terminu dostawy i dopłatę za ponowne doręczenie.\nCelem ataku jest wyłudzenie danych karty płatniczej, które mogą zostać wykorzystane do nieautoryzowanych transakcji lub kolejnych prób oszustwa.\nJak uniknąć zagrożenia?\n• Zwracaj uwagę na adres strony internetowej przed podaniem jakichkolwiek danych.\n• Status przesyłki sprawdzaj bezpośrednio na samodzielnie wyszukanej stronie firmy kurierskiej lub w oficjalnej aplikacji przewoźnika.\nPodejrzane wiadomości i strony internetowe zgłoś do CERT Polska. Możesz to zrobić za pomocą formularza na stronie\nincydent.cert.pl\nlub w usłudze „Bezpiecznie w sieci” w aplikacji mObywatel. Dzięki temu pomagasz chronić także innych użytkowników sieci.\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej\nWygląd złośliwej strony internetowej\nWygląd złośliwej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "191/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

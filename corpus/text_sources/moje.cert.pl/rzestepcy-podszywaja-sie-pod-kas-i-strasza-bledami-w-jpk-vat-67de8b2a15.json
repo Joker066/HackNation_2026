@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/190/cyberprzestepcy-podszywaja-sie-pod-kas-i-strasza-bledami-w-jpk_vat/",
+ "title": "Cyberprzestępcy podszywają się pod KAS i straszą błędami w JPK_VAT!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-15T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:53.342663+00:00",
+ "text": "Cyberprzestępcy podszywają się pod KAS i straszą błędami w JPK_VAT!\nObserwujemy kolejną kampanię phishingową, w której cyberprzestępcy podszywają się pod Krajową Administrację Skarbową.\nOszuści informują o rzekomych rozbieżnościach wykrytych podczas automatycznej weryfikacji pliku JPK_VAT.\nW treści e-maila znajduje się odnośnik, który prowadzi na stronę podszywającą się pod panel logowania do poczty elektronicznej.\nZachowaj ostrożność wobec wiadomości dotyczących spraw podatkowych wymagających natychmiastowej reakcji. Sprawdź poprawność adresu nadawcy i zwróć uwagę na adres strony, do której kieruje link zawarty w treści. W razie wątpliwości zweryfikuj informację bezpośrednio w swoim urzędzie skarbowym.\nJeśli otrzymasz podobną wiadomość zgłoś ją do CERT Polska za pośrednictwem formularza na stronie\nincydent.cert.pl\n. Możesz również skorzystać z usługi „Bezpiecznie w sieci” w aplikacji mObywatel\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "190/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

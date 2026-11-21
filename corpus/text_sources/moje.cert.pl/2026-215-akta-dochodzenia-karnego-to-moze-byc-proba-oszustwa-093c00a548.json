@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/215/akta-dochodzenia-karnego-to-moze-byc-proba-oszustwa/",
+ "title": "„Akta dochodzenia karnego”? To może być próba oszustwa!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-17T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:28.356927+00:00",
+ "text": "„Akta dochodzenia karnego”? To może być próba oszustwa!\nCyberprzestępcy rozsyłają e-maile podszywające się pod Policję i Europol.\nW wiadomościach informują o rzekomym postępowaniu karnym prowadzonym przeciwko odbiorcy, dołączają sfabrykowane dokumenty oraz stosują specjalistyczne słownictwo mające uwiarygodnić przekaz.\nCelem oszustów jest wywołanie poczucia zagrożenia oraz skłonienie odbiorcy do nawiązania kontaktu. W kolejnych etapach mogą próbować wyłudzić dane osobowe, pieniądze lub nakłonić do instalacji złośliwego oprogramowania umożliwiającego zdalny dostęp do komputera ofiary.\nJak ograniczyć ryzyko?\nNie działaj pod wpływem presji. Zachowaj ostrożność wobec wiadomości zawierających informacje o zarzutach karnych, nakazach aresztowania lub rzekomym udziale w postępowaniach.\nSprawdź adres nadawcy. Wiadomości wysyłane z domen, które nie są powiązane z daną instytucją, powinny wzbudzić Twoją czujność.\nNie otwieraj załączników ani nie stosuj się do instrukcji zawartych w wiadomościach, których autentyczność budzi wątpliwości.\nZanim zareagujesz, skontaktuj się bezpośrednio z instytucją, która rzekomo wysłała wiadomość, korzystając z oficjalnych danych kontaktowych.\nPodejrzane wiadomości e-mail zgłaszaj do CERT Polska. Dzięki temu możemy szybciej identyfikować i blokować nowe kampanie oszustw.\nTreść wiadomości e-mail wysłanej przez oszustów\nTreść dokumentu w załączniku\nTreść dokumentu w załączniku\nTreść dokumentu w załączniku\nTreść dokumentu w załączniku\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "215/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

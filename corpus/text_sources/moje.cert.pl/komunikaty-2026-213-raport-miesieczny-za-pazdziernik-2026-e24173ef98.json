@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/213/raport-miesieczny-za-pazdziernik-2026/",
+ "title": "Raport miesięczny za październik 2026",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-13T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:30.407170+00:00",
+ "text": "Raport miesięczny za październik 2026\nPublikujemy wydanie raportu miesięcznego o stanie cyberbezpieczeństwa w Polsce w październiku 2026 roku.\nRaport za październik 2026 jest dostępny pod tym linkiem\nhttps://cert.pl/uploads/docs/Podsumowanie_CERT_Polska_2026_10.pdf\nW każdym wydaniu raportu miesięcznego znajdziesz:\nnajnowsze statystyki incydentów,\nopisy aktualnych kampanii i technik ataków,\ndziałania zespołu na rzecz edukacji i współpracy,\nrekomendacje, jak chronić siebie i swoje systemy.",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "213/2026",
+ "categories": [
+  "Raporty miesięczne CERT Polska"
+ ]
+}

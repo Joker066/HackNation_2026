@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/214/falszywe-alerty-od-dostawcow-hostingu/",
+ "title": "Fałszywe alerty od dostawców hostingu",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-17T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:29.398853+00:00",
+ "text": "Fałszywe alerty od dostawców hostingu\nCyberprzestępcy prowadzą kolejną kampanię phishingową, podszywając się pod dostawców usług hostingowych.\nW rozsyłanych wiadomościach e-mail informują o rzekomym problemie z usługą i zapowiadają zawieszenie działania stron internetowych.\nLink zamieszczony w wiadomości przekierowuje do fałszywej strony logowania, która służy do przechwytywania danych uwierzytelniających. Następnie użytkownik proszony jest o podanie danych karty płatniczej. W ten sposób przestępcy mogą uzyskać dostęp zarówno do konta użytkownika, jak i jego pieniędzy. Zgromadzone dane mogą zostać wykorzystane również w kolejnych oszustwach.\nJak rozpoznać próbę oszustwa?\nZweryfikuj uważnie adres nadawcy oraz adres docelowy odnośnika. Zwróć uwagę na nietypowe domeny i różnice w adresie URL.\nZachowaj ostrożność wobec wiadomości, które wywierają presję czasu i natychmiastowego działania.\nWszelkie informacje o zawieszeniu lub ograniczeniu usług weryfikuj bezpośrednio w oficjalnym panelu klienta, wpisując adres serwisu samodzielnie w przeglądarce.\nPodejrzane wiadomości i strony internetowe zgłaszaj do CERT Polska za pośrednictwem\nincydent.cert.pl\nlub aplikacji mObywatel, korzystając z usługi „Bezpiecznie w sieci”.\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "214/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

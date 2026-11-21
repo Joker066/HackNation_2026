@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/192/uwaga-na-e-maile-z-nagraniem-uszkodzonego-produktu/",
+ "title": "Uwaga na e-maile z „nagraniem” uszkodzonego produktu!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-19T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:51.348794+00:00",
+ "text": "Uwaga na e-maile z „nagraniem” uszkodzonego produktu!\nObserwujemy kampanię dystrybucji złośliwego oprogramowania, w której cyberprzestępcy podszywają się pod klientów zgłaszających problemy z zamówionym towarem.\nWiadomość e-mail wygląda jak zgłoszenie reklamacyjne od klienta. Nadawca twierdzi, że rzekomo otrzymany towar jest uszkodzony, a link umieszczony w treści ma prowadzić do zdjęć i nagrań dokumentujących problem.\nZ analizy wykonanej przez CERT Polska wynika, że przekazywane w załączniku oprogramowanie należy do rodziny malware \"Purerat\".\nPodobne ataki obserwowano wcześniej np. w Japonii, gdzie wykorzystywano wiadomości phishingowe i fałszywe strony do rozpowszechniania złośliwego oprogramowania służącego m. in. do pozyskiwania zdalnego dostępu do systemów i kradzieży danych. Więcej\nhttps://blog-en.itochuci.co.jp/entry/2026/09/25/090000\nNie daj się oszukać! Zwracaj uwagę na rozszerzenia załączników – formaty takie jak .rar, .zip, .exe czy .js mogą sugerować, że zawartość załącznika jest inna niż zapewnia treść maila.\nPrzed pobraniem załączników zweryfikuj autentyczność zgłoszenia, np. sprawdź czy numer zamówienia jest poprawny, albo czy adres e-mail nadawcy występuje w bazie klientów.\nJeśli otrzymasz podobną wiadomość, nie otwieraj załącznika i zgłoś tę sytuację do CERT Polska za pośrednictwem formularza na stronie\nincydent.cert.pl\n. Możesz również skorzystać z usługi „Bezpiecznie w sieci” w aplikacji mObywatel.\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej w innym niż Windows systemie operacyjnym\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "192/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

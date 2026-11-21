@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/197/krytyczne-podatnosci-w-oprogramowaniu-gitlab-umozliwiajace-zdalne-wykonanie-kodu/",
+ "title": "Krytyczne podatności w oprogramowaniu GitLab umożliwiające zdalne wykonanie kodu",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-22T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:46.478181+00:00",
+ "text": "Krytyczne podatności w oprogramowaniu GitLab umożliwiające zdalne wykonanie kodu\nZespół CERT Polska informuje o krytycznych podatnościach w oprogramowaniu GitLab, które umożliwiają m.in. zdalne wykonanie kodu na serwerze przez nieuwierzytelnionego atakującego.\nPodatne wersje GitLab CE oraz GitLab EE:\n19.5.X przed 19.5.1,\n19.4.X przed 19.4.3,\n19.3.X przed 19.3.6,\n19.2.X przed 19.2.9,\n19.1.X przed 19.1.9,\n19.0.X przed 19.0.10,\n18.11.X przed 18.11.13\nRekomendujemy niezwłoczną instalację zaktualizowanych wersji oprogramowania.\nSzczegółowe informacje oraz lista poprawek znajdują się w komunikacie producenta:\nhttps://docs.gitlab.com/releases/patches/patch-release-gitlab-19-5-1-released/",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "197/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

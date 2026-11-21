@@ -1,0 +1,18 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/207/wystartowal-program-bug-bounty-nask/",
+ "title": "Wystartował program bug bounty NASK!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-03T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:36.325108+00:00",
+ "text": "Wystartował program bug bounty NASK!\nZapraszamy do wzięcia udziału w szukaniu podatności w publicznych systemach.\nOd dziś na platformie\nhack.cert.pl\ndostępne jest pięć konkursów obejmujących portal\nGOV.PL\n, komunikator mSzyfr oraz serwisy gminy Władysławowo, CERT Polska i NASK. Znalezienie podatności wiąże się z nagrodą w wysokości do 20 tys. złotych, a łącznie w puli znajduje się aż milion.\nOdpowiedzi na najbardziej popularne pytania dostępne są pod adresem\nhttps://hack.cert.pl/faq\nPowodzenia!\nTytułowa grafika programu bug bounty\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "207/2026",
+ "categories": [
+  "Dla użytkowników",
+  "Dla administratorów",
+  "Wydarzenia"
+ ]
+}

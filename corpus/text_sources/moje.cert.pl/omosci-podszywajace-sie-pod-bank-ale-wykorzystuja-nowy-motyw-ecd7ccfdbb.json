@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/203/oszusci-wciaz-rozsylaja-wiadomosci-podszywajace-sie-pod-bank-ale-wykorzystuja-nowy-motyw/",
+ "title": "Oszuści wciąż rozsyłają wiadomości podszywające się pod bank, ale wykorzystują nowy motyw",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-26T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:40.494076+00:00",
+ "text": "Oszuści wciąż rozsyłają wiadomości podszywające się pod bank, ale wykorzystują nowy motyw\nOtrzymujemy kolejne, liczne zgłoszenia dotyczące cyberprzestępców podszywających się pod komunikację bankową skierowaną do klientów biznesowych.\nW najnowszym wariancie wiadomości oszuści piszą o rzekomej konieczności aktualizacji dokumentacji firmy. Nadawca powołuje się na obowiązki regulacyjne oraz zachęca do niezwłocznego zalogowania się do bankowości elektronicznej w celu potwierdzenia danych przedsiębiorstwa.\nW treści e-maila znajduje się odnośnik prowadzący do strony podszywającej się pod serwis bankowości internetowej. Celem przestępców jest przejęcie danych logowania użytkownika.\nTo kolejna odsłona obserwowanej kampanii. W ostatnich dniach oszuści wykorzystywali tematy związane z rachunkami walutowymi, nowymi zasadami autoryzacji przelewów czy aktualizacją danych klienta osobistego. Zmienia się treść wiadomości, ale cel pozostaje ten sam.\nPrzypominamy jak się chronić:\n• Korzystaj z bankowości elektronicznej samodzielnie wyszukując oficjalną stronę banku lub korzystając z aplikacji mobilnej.\n• Zachowaj ostrożność wobec wiadomości wywołujących presję czasu lub grożących ograniczeniem dostępu do konta.\nJeśli otrzymasz podobną wiadomość zgłoś ją do CERT Polska za pośrednictwem formularza na stronie\nincydent.cert.pl\n. Możesz również skorzystać z usługi „Bezpiecznie w sieci” w aplikacji mObywatel\nWygląd złośliwej strony internetowej\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "203/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

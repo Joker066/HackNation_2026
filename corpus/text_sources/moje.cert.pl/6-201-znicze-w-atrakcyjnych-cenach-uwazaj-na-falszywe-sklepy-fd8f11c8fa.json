@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/201/znicze-w-atrakcyjnych-cenach-uwazaj-na-falszywe-sklepy/",
+ "title": "Znicze w atrakcyjnych cenach? Uważaj na fałszywe sklepy!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-24T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:42.351883+00:00",
+ "text": "Znicze w atrakcyjnych cenach? Uważaj na fałszywe sklepy!\nJuż za tydzień Uroczystość Wszystkich Świętych i Zaduszki. Wzmożone zainteresowanie zakupem zniczy i kwiatów na groby bliskich to okazja, którą chętnie wykorzystują cyberprzestępcy.\nDo CERT Polska trafiają zgłoszenia dotyczące fałszywych sklepów internetowych oferujących znicze, wkłady i dekoracje nagrobne w wyjątkowo atrakcyjnych cenach.\nWitryny mogą prezentować szeroki asortyment, profesjonalnie przygotowane zdjęcia i kuszące promocje. Wiarygodności mogą dodawać im również fałszywe opinie.\nPo skompletowaniu koszyka i przejściu do podsumowania użytkownicy proszeni są o wypełnienie pól z danymi odbiorcy - służą one przestępcom do wyłudzenia danych osobowych, kart płatniczych, a także danych logowania do bankowości elektronicznej.\nPo zatwierdzeniu płatności środki przepadają, a pozyskane informacje mogą zostać wykorzystane do dalszych nieuprawnionych transakcji, przejęcia dostępu do konta lub prób kolejnych wyłudzeń.\nNa co zwrócić uwagę przed zakupem?\nZachowaj ostrożność wobec ofert, których ceny znacząco odbiegają od rynkowych.\nSprawdź dane sprzedawcy, regulamin oraz dostępne formy kontaktu.\nPoszukaj opinii o sklepie w niezależnych źródłach, nie tylko na jego stronie.\nJeśli trafisz na reklamę znanego sklepu, samodzielnie wyszukaj jego adres i sprawdź czy oferta rzeczywiście obowiązuje.\nPodejrzane strony i wiadomości zgłaszaj do CERT Polska przez formularz na stronie incydent.cert.pl lub w aplikacji mObywatel (usługa „Bezpiecznie w sieci”).\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "201/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

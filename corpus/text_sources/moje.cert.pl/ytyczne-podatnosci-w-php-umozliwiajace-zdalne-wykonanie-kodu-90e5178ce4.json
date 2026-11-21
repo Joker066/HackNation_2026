@@ -1,0 +1,17 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/195/krytyczne-podatnosci-w-php-umozliwiajace-zdalne-wykonanie-kodu/",
+ "title": "Krytyczne podatności w PHP umożliwiające zdalne wykonanie kodu",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-21T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:48.324242+00:00",
+ "text": "Krytyczne podatności w PHP umożliwiające zdalne wykonanie kodu\nZespół CERT Polska ostrzega przed dwiema krytycznymi podatnościami w oprogramowaniu PHP, które pozwalają na zdalne wykonanie kodu.\nSą one oznaczone identyfikatorami\nCVE-2026-109618\noraz\nCVE-2026-109619\n. Podatne są wszystkie wersje PHP\nod 5.0 w górę.\nPrzypominamy, że język programowania PHP jest wykorzystywany również przez popularne oprogramowanie, np. WordPress, Joomla czy PHPMyAdmin. Oznacza to, że systemy wykorzystujące to oprogramowanie również są podatne i bezwzględnie muszą zostać zaktualizowane po publikacji nowej wersji PHP.\nRekomendowanym działaniem jest aktualizacja oprogramowania –\npoprawiona wersja PHP ma zostać wydana dzisiaj (tj. 21 października 2026) około godz. 16:00 czasu polskiego\n. Do tego czasu zalecamy:\nzinwentaryzowanie wszystkich usług korzystających z PHP oraz przygotowanie do natychmiastowego wdrożenia poprawki zaraz po jej udostępnieniu,\ntymczasowe wyłączenie usług wykorzystujących PHP dostępnych z Internetu, o ile nie zakłóci to działalności organizacji.\nW przypadku wykrycia śladów wykorzystania podatności prosimy o niezwłoczny kontakt z zespołem CERT Polska za pomocą formularza dostępnego na stronie\nincydent.cert.pl\n.\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "195/2026",
+ "categories": [
+  "Dla użytkowników",
+  "Dla administratorów"
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/218/falszywe-informacje-o-zwrocie-za-energie-elektryczna/",
+ "title": "Fałszywe informacje o zwrocie za energię elektryczną",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-19T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:25.353887+00:00",
+ "text": "Fałszywe informacje o zwrocie za energię elektryczną\nPonownie obserwujemy kampanię phishingową, w której cyberprzestępcy podszywają się pod Polską Grupę Energetyczną.\nW rozsyłanych mailach informują o rzekomej nadpłacie na rachunku za energię elektryczną i możliwości odzyskania pieniędzy.\nWiadomości zawierają link do fałszywej strony, która imituje panel logowania. Dane wprowadzone przez użytkownika na tej stronie trafiają do oszustów.\nW kampanii wykorzystywane są typowe socjotechniki,\nm.in\n. obietnica zwrotu pieniędzy i podszycie pod autorytet rozpoznawalnej marki. Jeśli otrzymasz informację o nadpłacie lub należnym zwrocie, nie działaj pochopnie. Zweryfikuj ją, korzystając z oficjalnej strony dostawcy lub kontaktując się z nim za pośrednictwem innego, niezależnego kanału, np. infolinii.\nPodejrzane wiadomości e-mail i strony internetowe zgłaszaj do CERT Polska za pośrednictwem serwisu incydent.cert.pl lub aplikacji mObywatel (w usłudze „Bezpiecznie w sieci”).\nTreść fałszywej wiadomości e-mail\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "218/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

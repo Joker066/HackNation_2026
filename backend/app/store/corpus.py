@@ -130,6 +130,17 @@ def match_catalog(url: str, catalog: list[CatalogEntry], catalog_id: int | None 
     return best
 
 
+def site_domain(host: str) -> str:
+    """Group subdomains under one site: podlaska.policja.gov.pl -> policja.gov.pl, sprawdzam.afp.com -> afp.com.
+
+    Used for the "at least 10 domains" count, so regional subdomains are not counted separately.
+    """
+    labels = host.lower().removeprefix("www.").split(".")
+    # Polish functional second-level domains (gov.pl, edu.pl, com.pl, ...) need one more label.
+    keep = 3 if len(labels) >= 3 and labels[-1] == "pl" and labels[-2] in {"gov", "edu", "com", "org", "net"} else 2
+    return ".".join(labels[-keep:])
+
+
 def chunk_text(text: str, size: int = 700, overlap: int = 120) -> list[str]:
     text = re.sub(r"\s+", " ", text).strip()
     if len(text) <= size:
@@ -261,7 +272,8 @@ class Corpus:
     def stats(self) -> dict:
         with connect(self.db_path) as conn:
             docs = conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-            domains = conn.execute("SELECT COUNT(DISTINCT domain) FROM documents").fetchone()[0]
+            hosts = [r[0] for r in conn.execute("SELECT DISTINCT domain FROM documents")]
             types = [r[0] for r in conn.execute("SELECT DISTINCT source_type FROM documents")]
             passages = conn.execute("SELECT COUNT(*) FROM passages").fetchone()[0]
-        return {"documents": docs, "domains": domains, "source_types": types, "passages": passages}
+        sites = sorted({site_domain(h) for h in hosts})
+        return {"documents": docs, "domains": len(sites), "domain_list": sites, "source_types": types, "passages": passages}

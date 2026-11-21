@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/193/uwaga-na-falszywe-wiadomosci-sms-podszywajace-sie-pod-glowny-inspektorat-transportu-drogowe-caueqk9d/",
+ "title": "Uwaga na fałszywe wiadomości SMS podszywające się pod Główny Inspektorat Transportu Drogowego!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-19T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:50.343285+00:00",
+ "text": "Uwaga na fałszywe wiadomości SMS podszywające się pod Główny Inspektorat Transportu Drogowego!\nCyberprzestępcy w fałszywych wiadomościach SMS informują o aktualizacji sprawy dotyczącej przekroczenia prędkości i zachęcają do sprawdzenia szczegółów.\nOszuści nadpisują identyfikator nadawcy w taki sposób, że SMS może trafić do wcześniejszej korespondencji przez co wiadomość nabiera wiarygodności.\nZamieszczone w wiadomościach linki prowadzą do fałszywych stron internetowych, na których oszuści nakłaniają do jak najszybszego opłacenia rzekomego mandatu.\nW rzeczywistości celem przestępców jest wyłudzenie numeru prawa jazdy oraz danych kart płatniczych!\nJak się chronić?\nZachowaj ostrożność wobec wiadomości z linkami i załącznikami.\nNie ulegaj presji czasu – oszuści często wykorzystują ponaglenia, aby skłonić do pochopnego działania.\nZachowaj ostrożność przy podawaniu numeru prawa jazdy oraz danych karty płatniczej na stronach internetowych.\nZachowaj czujność! Wiadomość o konieczności pilnego opłacenia mandatu może być próbą oszustwa.\nWięcej informacji w mediach społecznościowych CSIRT KNF:\nhttps://x.com/CSIRT_KNF/status/2112137482238111785\nhttps://www.facebook.com/share/p/1UhwDTW9z9/?mibextid=wwXIfr\nKomunikat został wysłany przez\nCSIRT KNF.\nFałszywe wiadomości SMS 1\nFałszywe wiadomości SMS 2\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "193/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/206/wiadomosc-o-zwrocie-podatku-uwazaj-na-kradziez-danych/",
+ "title": "Wiadomość o zwrocie podatku? Uważaj na kradzież danych!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-02T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:37.356802+00:00",
+ "text": "Wiadomość o zwrocie podatku? Uważaj na kradzież danych!\nObserwujemy powrót kampanii phishingowej wykorzystującej wizerunek serwisu podatki.gov.pl. Oszuści piszą o rzekomym zwrocie podatku i zachęcają do kliknięcia w link prowadzący do fałszywej strony.\nCelem cyberprzestępców jest wyłudzenie danych osobowyych, w tym imienia, nazwiska i numeru PESEL, a także numerów telefonu i rachunku bankowego.\nNastępnie ofiara jest kierowana do kolejnego formularza, który służy do kradzieży danych uwierzytelniających do bankowości elektronicznej.\nNie daj się oszukać! Zachowaj ostrożność wobec niespodziewanych wiadomości informujących o zwrocie podatku lub konieczności potwierdzenia danych w celu otrzymania środków.\nW przypadku najmniejszych wątpliwości samodzielnie wejdź na stronę\npodatki.gov.pl\nlub skontaktuj się ze swoim urzędem skarbowym.\nWzbudzanie emocji i poczucia pilności to ulubiona metoda cyberprzestępców, żeby uśpić naszą czujność. Zachowaj spokój i zweryfikuj prawdziwość wiadomości, zanim podasz swoje dane!\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "206/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/205/falszywy-sms-o-zwrocie-paczki-to-moze-byc-proba-wyludzenia-danych/",
+ "title": "Fałszywy SMS o zwrocie paczki – to może być próba wyłudzenia danych",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-28T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:38.344996+00:00",
+ "text": "Fałszywy SMS o zwrocie paczki – to może być próba wyłudzenia danych\nObserwujemy kolejną kampanię wymierzoną w wizerunek firmy InPost. Oszuści wysyłają fałszywe SMS-y z informacją, że rzekoma paczka zbyt długo czekała w paczkomacie, a jej zwrot został uruchomiony.\nWiadomość sugeruje, że można jeszcze zatrzymać zwrot. W tym celu odbiorca powinien niezwłocznie przejść na stronę wskazaną w wiadomości i uzupełnić dane potrzebne do ponownego doręczenia, w tym informacje dotyczące karty płatniczej. Dane trafiają do oszustów.\nJak chronić swoje dane?\nStatus przesyłki sprawdzaj w oficjalnej aplikacji lub serwisie\nWeryfikuj adres strony i zwracaj uwagę na prośby o dane karty płatniczej\nZamiast korzystać z linku w SMS-ie, samodzielnie wyszukaj stronę przewoźnika\nPodejrzane SMS-y przesyłaj na numer 8080. Twoje zgłoszenie pomaga chronić Ciebie i innych!\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "205/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

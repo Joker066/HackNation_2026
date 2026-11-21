@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/200/aktualizacja-danych-klienta-to-moze-byc-proba-wyludzenia/",
+ "title": "Aktualizacja danych klienta? To może być próba wyłudzenia",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-22T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:43.376352+00:00",
+ "text": "Aktualizacja danych klienta? To może być próba wyłudzenia\nOtrzymujemy liczne zgłoszenia dotyczące kampanii, w której cyberprzestępcy podszywają się pod PKO Bank Polski.\nW wiadomościach e-mail oszuści informują o rzekomej konieczności aktualizacji danych klienta oraz potwierdzenia tożsamości. Odbiorca jest ostrzegany, że brak działania może skutkować ograniczeniem dostępu do wybranych funkcji konta.\nWiadomość zawiera odnośnik prowadzący do strony podszywającej się pod serwis iPKO. Wprowadzone tam informacje mogą zostać wykorzystane do przejęcia dostępu do konta bankowego lub kolejnych prób wyłudzenia danych.\nJak się chronić?\n• Korzystaj z bankowości internetowej samodzielnie wyszukując oficjalną stronę banku lub korzystając z aplikacji mobilnej.\n• Zachowaj ostrożność wobec wiadomości wywołujących presję czasu lub grożących ograniczeniem dostępu do konta.\nJeśli otrzymasz podobną wiadomość zgłoś ją do CERT Polska za pośrednictwem formularza na stronie\nincydent.cert.pl\n. Możesz również skorzystać z usługi „Bezpiecznie w sieci” w aplikacji mObywatel\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "200/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

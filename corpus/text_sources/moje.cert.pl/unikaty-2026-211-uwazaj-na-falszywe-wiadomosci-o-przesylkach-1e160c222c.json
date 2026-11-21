@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/211/uwazaj-na-falszywe-wiadomosci-o-przesylkach/",
+ "title": "Uważaj na fałszywe wiadomości o przesyłkach!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-09T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:32.323558+00:00",
+ "text": "Uważaj na fałszywe wiadomości o przesyłkach!\nCERT Polska obserwuje kampanię SMS wykorzystującą wizerunek firmy InPost. Oszuści rozsyłają wiadomości informujące o rzekomych problemach z doręczeniem paczki.\nW komunikatach pojawiają się informacje o brakujących danych adresowych, konieczności potwierdzenia szczegółów przesyłki lub ustalenia nowego terminu dostawy. Wiadomości zawierają odnośniki do stron podszywających się pod serwis przewoźnika. Oszuści próbują w ten sposób wyłudzić dane osobowe oraz informacje o kartach płatniczych.\nWeryfikuj informacje dotyczące przesyłek. Status paczki sprawdzaj w oficjalnej aplikacji przewoźnika lub samodzielnie wyszukaj jego stronę internetową w przeglądarce.\nPodejrzane wiadomości SMS zgłaszaj do CERT Polska na darmowy numer 8080.\nTreść fałszywej wiadomości SMS\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "211/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/208/podatnosci-w-systemie-synology-dsm-wykorzystywane-w-atakach-ransomware/",
+ "title": "Podatności w systemie Synology DSM wykorzystywane w atakach ransomware",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-03T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:35.712706+00:00",
+ "text": "Podatności w systemie Synology DSM wykorzystywane w atakach ransomware\nZespół CERT Polska informuje o podatnościach w systemie Synology DiskStation Manager (DSM), które są wykorzystywane w atakach ransomware na urządzenia NAS Synology.\nSynology ostrzega przed atakami wymierzonymi w urządzenia działające pod kontrolą nieaktualnych wersji DSM. Według komunikatu producenta atakujący wykorzystują podatność CVE-2024-10441 (naprawioną w grudniu 2024 roku), która wynika z niewłaściwego kodowania w wybranych wtyczkach systemowych i umożliwia nieuwierzytelnionemu atakującemu zdalne wykonanie kodu. Celem ataków jest zaszyfrowanie danych oraz wymuszenie okupu za ich przywrócenie.\nW ostatnim czasie ujawnione zostały także dwie nowe krytyczne podatności systemu DSM:\nCVE-2026-13639 - wynikająca z błędów w logice logowania,\nCVE-2026-13684 - wynikająca z niewłaściwego kodowania w komponencie Simple Common Gateway Interface (SCGI).\nObie podatności pozwalają nieuwierzytelnionym atakującym na zdalny odczyt lub zapis dowolnych plików oraz przeprowadzenie ataków typu denial-of-service.\nRekomendujemy niezwłoczną aktualizację systemu DSM do jednej z poniższych wersji lub nowszej:\n7.1.1-42962-7\n7.2-64570-4\n7.2.1-69057-12\n7.2.2-72806-9\n7.3.2-86009-4\n7.4-90075\nUżytkownicy BSM powinni zaktualizować system do wersji 1.1-65374 lub nowszej. Synology zaleca ponadto włączenie automatycznych aktualizacji, aby system był na bieżąco uaktualniany.\nSzczegółowe informacje na temat opisanych podatności oraz zalecenia producenta znajdą Państwo w komunikatach:\nhttps://www.synology.com/en-br/security/advisory/Synology_SA_26_13\nhttps://www.synology.com/en-br/security/advisory/Synology_SA_24_20",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "208/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

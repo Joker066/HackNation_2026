@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/202/komunikat-dla-klientow-biznesowych-zachowaj-ostroznosc/",
+ "title": "Komunikat dla klientów biznesowych? Zachowaj ostrożność",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-25T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:41.371999+00:00",
+ "text": "Komunikat dla klientów biznesowych? Zachowaj ostrożność\nObserwujemy nowe schematy próby wyłudzenia danych logowania do bankowości elektronicznej.\nCyberprzestępcy rozsyłają wiadomości podszywające się pod komunikację kierowaną do klientów biznesowych. W zależności od wariantu kampanii, e-mail może dotyczyć np. nowych zasad autoryzacji przelewów lub zmian w obsłudze rachunków walutowych.\nWiadomości zawierają odnośniki prowadzące do strony, której celem jest pozyskanie danych logowania do bankowości internetowej.\nWprowadzone informacje mogą zostać przejęte przez cyberprzestępców i wykorzystane do uzyskania dostępu do konta bankowego.\nPrzypominamy:\n• Korzystaj z bankowości elektroniczej samodzielnie wyszukując oficjalną stronę banku lub korzystając z aplikacji mobilnej.\n• Zachowaj ostrożność wobec wiadomości wywołujących presję czasu lub grożących ograniczeniem dostępu do konta.\nCyberprzestępcy modyfikują treści rozsyłanych wiadomości. Niezależnie od pretekstu, celem pozostaje przejęcie danych logowania do bankowości elektronicznej.\nJeśli otrzymasz podobną wiadomość zgłoś ją do CERT Polska za pośrednictwem formularza na stronie\nincydent.cert.pl\n. Możesz również skorzystać z usługi „Bezpiecznie w sieci” w aplikacji mObywatel\nTreść wiadomości e-mail wysłanej przez oszustów\nTreść wiadomości e-mail wysłanej przez oszustów\nWygląd złośliwej strony internetowej\nWygląd złośliwej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "202/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

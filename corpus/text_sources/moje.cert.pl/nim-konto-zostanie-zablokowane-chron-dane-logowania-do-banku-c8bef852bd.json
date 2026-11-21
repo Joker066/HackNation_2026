@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/189/ostatnie-przypomnienie-zanim-konto-zostanie-zablokowane-chron-dane-logowania-do-banku/",
+ "title": "„Ostatnie przypomnienie” zanim konto zostanie zablokowane. Chroń dane logowania do banku!",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-13T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:54.364645+00:00",
+ "text": "„Ostatnie przypomnienie” zanim konto zostanie zablokowane. Chroń dane logowania do banku!\nObserwujemy kampanię phishingową wymierzoną w klientów Alior Banku.\nW przesłanej wiadomości oszuści powołując się na regulacje prawne informują o konieczności pilnego potwierdzenia danych. Sugerują, że brak reakcji może skutkować koniecznością wizyty w placówce.\nPrzycisk prowadzi do strony phishingowej, której celem jest pozyskanie danych logowania do bankowości internetowej.\nJak rozpoznać próbę wyłudzenia?\nSprawdź adres nadawcy i domenę strony, a informacje o ewentualnej blokadzie zweryfikuj bezpośrednio w banku. Skorzystaj z oficjalnej aplikacji lub danych kontaktowych podanych na samodzielnie wyszukanej stronie internetowej.\nPodejrzane strony i e-maile można zgłosić do CERT Polska na stronie\nincydent.cert.pl\nlub przez usługę „Bezpiecznie w sieci” w aplikacji mObywatel. Podejrzane SMS-y można przesłać na numer 8080.\nWygląd złośliwej strony internetowej\nTreść wysłanej przez oszustów wiadomości e-mail\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "189/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

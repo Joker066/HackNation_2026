@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/199/utrata-poufnosci-kluczy-urzedu-certyfikacji-emudhra-emsign/",
+ "title": "Utrata poufności kluczy urzędu certyfikacji eMudhra (emSign)",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-22T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:44.335237+00:00",
+ "text": "Utrata poufności kluczy urzędu certyfikacji eMudhra (emSign)\nZespół CERT Polska informuje o utracie poufności kluczy prywatnych urzędu certyfikacji eMudhra (emSign).\nKlucze te służyły do wystawiania certyfikatów TLS oraz certyfikatów do podpisywania oprogramowania. Błąd w procesie generowania kluczy umożliwił ich odtworzenie na podstawie publicznie dostępnych certyfikatów.\nAtakujący mogą wykorzystać te klucze do wystawiania fałszywych certyfikatów dla dowolnych domen. W połączeniu z przechwyceniem lub przekierowaniem ruchu sieciowego pozwala to na kradzież i modyfikację danych, jeśli aplikacja zaakceptuje taki certyfikat. Atakujący mogą również podpisywać złośliwe oprogramowanie, co może pozwolić na obejście reguł blokujących programy bez zaufanego podpisu. Zagrożenie dotyczy także organizacji, które nie korzystają z usług eMudhra, ale których oprogramowanie ufa tym urzędom.\nCertyfikaty zostały unieważnione, a dostawcy głównych przeglądarek wdrożyli w swoich produktach blokady certyfikatów objętych incydentem. Bezpieczeństwo pozostałego oprogramowania zależy natomiast od sposobu przechowywania i aktualizacji magazynów zaufanych certyfikatów oraz weryfikacji statusu unieważnienia. Nadal zagrożone mogą być m.in. kontenery Docker, środowiska aplikacyjne, systemy wbudowane oraz komputery działające offline z nieaktualnymi magazynami zaufanych certyfikatów. Ryzyko dotyczy również oprogramowania, które nie weryfikuje aktualnego statusu unieważnienia certyfikatów za pomocą CRL lub OCSP.\nRekomendujemy:\naktualizację aplikacji, bibliotek, oprogramowania urządzeń oraz magazynów zaufanych certyfikatów, również w środowiskach offline - w przypadku kontenerów Docker może być konieczna przebudowa obrazu i jego ponowne wdrożenie;\nweryfikację, czy aplikacje odrzucają certyfikaty TLS i podpisy oprogramowania powiązane z urzędami objętymi incydentem, również w łańcuchach prowadzących do certyfikatu Sectigo\nAAA Certificate Services\n- usunięcie samego certyfikatu głównego eMudhra może nie wystarczyć;\nwymianę wykorzystywanych w organizacji certyfikatów, które w wyniku incydentu zostały unieważnione lub przestały być uznawane za zaufane.\nListę oprogramowania, dla którego opublikowano już poprawki, oraz adresy testowe służące do weryfikacji poszczególnych aplikacji znajdą Państwo na stronie:\nhttps://emudhra.we-have-a-problem.com\n. Lista poprawek jest tworzona przez społeczność i może być niepełna. Pozytywny wynik testu w przeglądarce nie potwierdza bezpieczeństwa pozostałego oprogramowania.",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "199/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

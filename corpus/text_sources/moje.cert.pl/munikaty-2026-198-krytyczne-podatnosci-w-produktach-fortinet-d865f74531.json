@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/198/krytyczne-podatnosci-w-produktach-fortinet/",
+ "title": "Krytyczne podatności w produktach Fortinet",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-22T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:45.327035+00:00",
+ "text": "Krytyczne podatności w produktach Fortinet\nZespół CERT Polska informuje o opublikowaniu przez firmę Fortinet pakietu aktualizacji bezpieczeństwa, usuwającego m.in. krytyczne podatności.\nPoprawki dotyczą następujących produktów:\nFortiOS,\nFortiManager,\nFortiAnalyzer,\nFortiMail,\nFortiAuthenticator.\nZalecamy niezwłoczną instalację aktualizacji, w pierwszej kolejności na urządzeniach dostępnych z Internetu. Instancje FortiSASE są aktualizowane automatycznie, natomiast w przypadku FortiManager Cloud może być wymagana ręczna aktualizacja.\nJeśli natychmiastowa aktualizacja nie jest możliwa, do czasu instalacji poprawek zalecamy ograniczenie ryzyka poprzez:\nograniczenie dostępu do interfejsów administracyjnych (HTTPS, SSH) wyłącznie do zaufanych adresów IP, a najlepiej zupełne ich wyłączenie na interfejsach zewnętrznych,\nupewnienie się, że panel administracyjny FortiManager nie jest dostępny z Internetu,\nwymuszenie MFA dla wszystkich kont administracyjnych.\nStosowanie powyższych dobrych praktyk ogranicza ryzyko i podnosi ogólny poziom bezpieczeństwa systemów, jednak nie zastępuje ono konieczności niezwłocznej aktualizacji oprogramowania.\nListy wersji produktów dotkniętych podatnościami oraz łatek je naprawiających znajdują się na stronie producenta:\nhttps://www.fortinet.com/blog/ciso-collective/fortinet-releases-security-hardening-release-for-multiple-products\n. Szczegółowe komunikaty bezpieczeństwa dotyczące poszczególnych podatności zostaną opublikowane 10 listopada na stronie\nhttps://fortiguard.com/psirt\n- zalecamy ich bieżące śledzenie.",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "198/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}

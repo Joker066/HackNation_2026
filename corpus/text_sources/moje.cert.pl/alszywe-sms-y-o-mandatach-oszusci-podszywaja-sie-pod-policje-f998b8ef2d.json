@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/212/uwaga-na-falszywe-sms-y-o-mandatach-oszusci-podszywaja-sie-pod-policje/",
+ "title": "Uwaga na fałszywe SMS-y o mandatach! Oszuści podszywają się pod Policję",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-11-12T00:00:00+01:00",
+ "retrieved_at": "2026-11-21T14:09:31.353261+00:00",
+ "text": "Uwaga na fałszywe SMS-y o mandatach! Oszuści podszywają się pod Policję\nCERT Polska ostrzega przed kolejną kampanią SMS-ową, w której oszuści podszywają się pod jednostki Policji, m.in. Wydziały Ruchu Drogowego i Komendy Wojewódzkie Policji.\nOdbiorcy są informowani o rzekomym wykroczeniu drogowym i konieczności pilnego uregulowania mandatu.\nLink zamieszczony w wiadomości przekierowuje na fałszywą stronę internetową, imitującą rządowy serwis w domenie\ngov.pl\n. Znajdujące się na stronie formularze wymagają podania danych prawa jazdy i karty płatniczej, które trafiają bezpośrednio do oszustów.\nJak nie dać się oszukać?\nZwracaj uwagę na adres strony internetowej – nawet jeśli wygląda wiarygodnie, może prowadzić do fałszywego serwisu.\nNie działaj pod presją czasu. Pilne wezwania do zapłaty i groźby dodatkowych konsekwencji to częsty sposób wywierania presji na odbiorcach.\nW razie wątpliwości weryfikuj otrzymane informacje bezpośrednio w oficjalnych kanałach komunikacji Policji lub innej właściwej instytucji.\nPodejrzane wiadomości zgłaszaj do CERT Polska. Przekaż SMS na darmowy numer 8080.\nTreść fałszywej wiadomości SMS\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nWygląd fałszywej strony internetowej\nPamiętaj!\nWidzisz phishing? Zgłoś to.\nsupervisor_account\nZa pomocą formularza na stronie CERT Polska\nZgłoś incydent\n(otwiera się w nowej karcie)\ncaptive_portal\nZa pomocą aplikacji mObywatel, w usłudze \"Bezpiecznie w sieci\"",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "212/2026",
+ "categories": [
+  "Dla użytkowników"
+ ]
+}

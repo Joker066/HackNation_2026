@@ -1,0 +1,16 @@
+{
+ "url": "https://moje.cert.pl/komunikaty/2026/196/krytyczne-podatnosci-w-php-umozliwiajace-zdalne-wykonanie-kodu-php2shell/",
+ "title": "Krytyczne podatności w PHP umożliwiające zdalne wykonanie kodu - php2shell",
+ "publisher": "CERT Polska (NASK)",
+ "published_at": "2026-10-21T00:00:00+02:00",
+ "retrieved_at": "2026-11-21T14:09:47.332258+00:00",
+ "text": "Krytyczne podatności w PHP umożliwiające zdalne wykonanie kodu - php2shell\nZespół CERT Polska ostrzega przed dwiema krytycznymi podatnościami w oprogramowaniu PHP, oznaczonymi identyfikatorami CVE-2026-109618 oraz CVE-2026-109619.\nLuki pozwalają atakującemu na zdalne wykonanie dowolnych poleceń systemowych poprzez błędy w mechanizmie zarządzania pamięcią.\nPodatne są wszystkie wersje PHP od 5.4 w górę. Przypominamy, że język programowania PHP jest wykorzystywany również przez wiele rodzajów popularnego oprogramowania, np. WordPress, Joomla czy WooCommerce. Oznacza to, że systemy wykorzystujące to oprogramowanie również są podatne.\nJedyną skuteczną metodą ochrony przed wykorzystaniem podatności jest instalacja poprawnionej wersji PHP. Do tego czasu, aby zminimalizować ryzyko padnięcia ofiarą skutecznego ataku w pierwszej fali masowych prób wykorzystania podatności należy ustawić następujące wartości parametrów PHP w php.ini:\nmemory_limit\nna -1, jeżeli pozwalają na to zasoby, a w przeciwnym wypadku 128M lub więcej,\npost_max_size\n: 8M lub mniej,\nmax_input_vars\n: 1000 lub mniej,\nsession.upload_progress.enabled\nna Off.\nPodkreślamy, że ustawienie tych opcji nie wyklucza możliwości wykorzystania podatności. W pełni zabezpiecza jedynie aktualizacja PHP do bezpiecznej wersji.\nOficjalne rekomendacje autorów PHP można znaleźć na stronie:\nhttps://www.php.net/archive/2026.php#2026-10-21-5\n.\nDodatkowe informacje o podatnościach od ich znalazców można znaleźć na stronie:\nhttps://www.php2shell.com/\n.\nNależy regularnie sprawdzać dostępność poprawionych wersji PHP od naszego dostawcy:\nw przypadku systemów operacyjnych Linux będą to dostawcy naszych dystrybucji,\nw przypadku gotowych urządzeń, appliance oraz aplikacji dystrybuowanych jako obrazy (np. Dockera), należy oczekiwać jej nowej wersji od producenta.\nBezpieczne wersje PHP to:\ndla linii PHP 8.5: 8.5.12,\ndla linii PHP 8.4: 8.4.27,\ndla linii PHP 8.3: 8.3.36,\ndla linii PHP 8.2: 8.2.35.\nw przypadku pozostałych linii PHP, w tym popularnych 5.6, 7.0, 8.0 i 8.1, poprawki będą pochodzić od dostawcy dystrybucji lub oprogramowania używającego PHP.\nW przypadku wykrycia śladów wykorzystania podatności prosimy o niezwłoczny kontakt z zespołem CERT Polska za pomocą formularza dostępnego na stronie\nincydent.cert.pl\n.\nInformujemy również, że niniejszy komunikat będzie na bieżąco aktualizowany o kolejne rekomendacje, gdyby zastosowanie dostępnej aktualizacji okazało się niewystarczające, oraz o informacje dotyczące kolejnych poprawek w popularnych dystrybucjach.",
+ "lang": "pl",
+ "license": "CERT Polska advisories, moje.cert.pl (terms: to_verify)",
+ "catalog_id": 13,
+ "crawler": "cert",
+ "advisory_number": "196/2026",
+ "categories": [
+  "Dla administratorów"
+ ]
+}
