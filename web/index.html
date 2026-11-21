@@ -2,7 +2,17 @@
 <html lang="pl" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#091B33">
+    <script>
+        // Dark mode before first paint: saved choice, otherwise the phone/computer setting
+        (function () {
+            var saved = null;
+            try { saved = localStorage.getItem('tapcheck-theme'); } catch (e) {}
+            var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (dark) document.documentElement.classList.add('dark');
+        })();
+    </script>
     <title>Tap &amp; Check – sprawdź, zanim uwierzysz</title>
     <meta name="description" content="Prototyp narzędzia do weryfikacji doniesień na podstawie jawnych, wiarygodnych źródeł. HackNation 2026, zadanie MSZ „Prawdowid”.">
 
@@ -63,43 +73,47 @@
             font-size: 20px;
         }
 
-        /* Tryb wysokiego kontrastu (WCAG AAA) */
-        html.high-contrast body {
-            background-color: #000000 !important;
-            color: #FFFF00 !important;
+        /* Tryb ciemny: czarne tło, biały tekst (wybór zapamiętany; domyślnie jak w systemie telefonu) */
+        html.dark { color-scheme: dark; }
+        html.dark body { background-color: #0A0A0B; color: #F4F4F5; }
+        html.dark .ocean-bg-layer { display: none; }
+        html.dark .hc-text { color: #F4F4F5; }
+        html.dark .hc-text-muted { color: #B4B4BB; }
+        html.dark .ocean-glass, html.dark .ocean-glass-strong {
+            background: rgba(22, 22, 25, 0.94); border-color: #2C2C31;
+            box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
         }
-        html.high-contrast .ocean-bg-layer {
-            display: none !important;
-        }
-        html.high-contrast .hc-bg {
-            background-color: #000000 !important;
-            border-color: #FFFF00 !important;
-            color: #FFFF00 !important;
-        }
-        html.high-contrast .hc-card,
-        html.high-contrast .ocean-glass,
-        html.high-contrast .ocean-glass-strong {
-            background-color: #111111 !important;
-            border: 2px solid #FFFF00 !important;
-            color: #FFFF00 !important;
-            box-shadow: none !important;
-        }
-        html.high-contrast .hc-text {
-            color: #FFFF00 !important;
-        }
-        html.high-contrast .hc-text-muted {
-            color: #FFFFFF !important;
-        }
-        html.high-contrast .hc-btn {
-            background-color: #FFFF00 !important;
-            color: #000000 !important;
-            border: 2px solid #FFFF00 !important;
-        }
-        html.high-contrast .hc-input {
-            background-color: #000000 !important;
-            color: #FFFF00 !important;
-            border: 2px solid #FFFF00 !important;
-        }
+        html.dark .glass-half { background: rgba(28, 28, 32, 0.5); border-color: rgba(255, 255, 255, 0.08); }
+        html.dark .bg-\[\#091B33\]\/95 { background-color: #000; }
+        html.dark .text-gov-navy, html.dark .text-slate-800, html.dark .text-slate-700 { color: #F4F4F5; }
+        html.dark .text-slate-600, html.dark .text-slate-500, html.dark .text-slate-400 { color: #B4B4BB; }
+        html.dark .text-gov-oceanDark, html.dark .text-gov-ocean, html.dark .text-gov-tealDark { color: #7DD3FC; }
+        html.dark .bg-white, html.dark .bg-white\/95, html.dark .bg-white\/90, html.dark .bg-white\/85, html.dark .bg-white\/70,
+        html.dark .bg-sky-50, html.dark .bg-sky-50\/80, html.dark .bg-sky-50\/90, html.dark .bg-sky-100, html.dark .bg-teal-50, html.dark .bg-slate-50 { background-color: #1C1C20; }
+        html.dark .border-white, html.dark .border-sky-200\/80, html.dark .border-sky-200, html.dark .border-sky-100, html.dark .border-sky-100\/80,
+        html.dark .border-slate-200, html.dark .border-teal-200\/80 { border-color: #2C2C31; }
+        html.dark .hover\:bg-sky-50\/90:hover, html.dark .hover\:bg-sky-100:hover, html.dark .hover\:bg-white:hover { background-color: #26262B; }
+        /* aktywna zakładka i dymki użytkownika: biały na czarnym tle */
+        html.dark .bg-gov-navy, html.dark .bg-gov-navy.text-white { background-color: #F4F4F5; color: #0A0A0B; }
+        html.dark #verifyInput { background-color: #0A0A0B; color: #F4F4F5; border-color: #3F3F46; }
+        html.dark #verifyInput::placeholder { color: #8A8A93; }
+        /* przyciski czatu: wysyłanie biało-czarne, obraz z wyraźnym obrysem */
+        html.dark #checkBtn { background-image: none; background-color: #F4F4F5; color: #0A0A0B; }
+        html.dark #checkBtn:hover { background-color: #FFFFFF; }
+        html.dark #imageBtn { border-color: #71717A; color: #F4F4F5; }
+        /* kolory werdyktów: te same znaczenia, przygaszone */
+        html.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.13); }
+        html.dark .text-emerald-800 { color: #6EE7B7; }
+        html.dark .border-emerald-200 { border-color: rgba(16, 185, 129, 0.45); }
+        html.dark .bg-rose-50 { background-color: rgba(244, 63, 94, 0.13); }
+        html.dark .text-rose-700, html.dark .text-rose-600 { color: #FDA4AF; }
+        html.dark .border-rose-200, html.dark .border-rose-200\/80 { border-color: rgba(244, 63, 94, 0.45); }
+        html.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.13); }
+        html.dark .text-amber-800, html.dark .text-amber-700 { color: #FCD34D; }
+        html.dark .border-amber-200, html.dark .border-amber-200\/80 { border-color: rgba(245, 158, 11, 0.45); }
+        html.dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.16); }
+        html.dark .text-indigo-800 { color: #C7D2FE; }
+        html.dark .border-indigo-200 { border-color: rgba(99, 102, 241, 0.45); }
 
         /* Trzy spokojne, płynące fale oceaniczne w tle (bez bąbelków) */
         @keyframes oceanWave1 {
@@ -146,6 +160,12 @@
                 0 20px 45px -12px rgba(12, 36, 66, 0.09),
                 0 8px 24px -6px rgba(2, 132, 199, 0.08),
                 inset 0 2px 4px rgba(255, 255, 255, 0.95);
+        }
+        .glass-half {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px) saturate(140%);
+            -webkit-backdrop-filter: blur(10px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
         .ocean-glass-strong {
             background: rgba(255, 255, 255, 0.95);
@@ -240,9 +260,43 @@
         .animate-scan-sweep {
             animation: scanSweep 1.3s var(--ease-fluid) infinite;
         }
+
+        /* Przejścia między zakładkami: cała strona przesuwa się w stronę klikniętej zakładki */
+        @keyframes pageInFromRight { from { opacity: 0; transform: translateX(14%); } to { opacity: 1; transform: none; } }
+        @keyframes pageInFromLeft  { from { opacity: 0; transform: translateX(-14%); } to { opacity: 1; transform: none; } }
+        @keyframes pageOutToLeft   { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-14%); } }
+        @keyframes pageOutToRight  { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(14%); } }
+        .page-in-right  { animation: pageInFromRight 0.32s var(--ease-fluid) both; }
+        .page-in-left   { animation: pageInFromLeft 0.32s var(--ease-fluid) both; }
+        .page-out-left  { animation: pageOutToLeft 0.16s ease-in both; }
+        .page-out-right { animation: pageOutToRight 0.16s ease-in both; }
+
+        /* Czat: na początku pole wiadomości na środku, po pierwszym pytaniu – na dole */
+        .chat-shell { min-height: calc(100vh - 12rem); min-height: calc(100dvh - 12rem); }
+        .chat-shell.chat-empty { justify-content: center; }
+        .chat-shell.chat-empty #chatLog { flex: none; }
+        #composer { bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem); }
+
+        /* Pasek zakładek na telefonie: przewijany w poziomie, bez paska przewijania */
+        .no-scrollbar { scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Telefony: lżejsze szkło (płynniejsze przewijanie) */
+        @media (max-width: 640px) {
+            .ocean-glass, .ocean-glass-strong {
+                backdrop-filter: blur(12px) saturate(150%);
+                -webkit-backdrop-filter: blur(12px) saturate(150%);
+            }
+            .ocean-spring:hover { transform: none; }
+        }
+
+        /* Osoby, które wyłączyły animacje w systemie */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-gov-ocean selection:text-white relative overflow-x-hidden">
+<body class="antialiased selection:bg-gov-ocean selection:text-white relative overflow-x-hidden" style="overflow-x: clip;">
 
     <div class="ocean-bg-layer fixed inset-0 -z-20 pointer-events-none overflow-hidden select-none" aria-hidden="true">
         <!-- Jasne, kojące niebo oceaniczne na górze -->
@@ -294,56 +348,26 @@
     <!-- ===================================================================== -->
     <!-- 1. GÓRNY PASEK: INFORMACJA O PROTOTYPIE + DOSTĘPNOŚĆ (WCAG)            -->
     <!-- ===================================================================== -->
-    <div class="bg-[#091B33]/95 backdrop-blur-md text-white text-xs sm:text-sm border-b border-white/10 hc-bg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2">
+    <div class="bg-[#091B33]/95 backdrop-blur-md text-white text-xs sm:text-sm border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-1.5 sm:py-2.5 flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center space-x-2.5">
-                <span class="w-6 h-6 rounded-full bg-amber-500 border border-white/50 flex items-center justify-center shrink-0" aria-hidden="true">
+                <span class="hidden sm:flex w-6 h-6 rounded-full bg-amber-500 border border-white/50 items-center justify-center shrink-0" aria-hidden="true">
                     <i data-lucide="flask-conical" class="w-3.5 h-3.5 text-white"></i>
                 </span>
-                <span class="font-medium text-slate-100">Prototyp – HackNation 2026, zadanie MSZ „Prawdowid”. To nie jest serwis rządowy.</span>
-                <button onclick="toggleInfoPanel()" class="inline-flex items-center space-x-1 text-teal-300 hover:text-teal-200 font-semibold underline decoration-teal-400/50 underline-offset-4 ml-1 cursor-pointer">
-                    <span>Jak oceniamy?</span>
-                    <i id="infoChevron" data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300"></i>
-                </button>
+                <span class="font-medium text-slate-100"><span class="sm:hidden">Prototyp · nie serwis rządowy.</span><span class="hidden sm:inline">Prototyp – HackNation 2026, zadanie MSZ „Prawdowid”. To nie jest serwis rządowy.</span></span>
             </div>
 
-            <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="flex items-center space-x-1.5 sm:space-x-3">
                 <div class="flex items-center bg-white/10 rounded-full p-0.5 border border-white/15" role="group" aria-label="Wielkość tekstu">
-                    <button onclick="setFontSize('normal')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Domyślny rozmiar tekstu">A</button>
-                    <button onclick="setFontSize('large')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Powiększony tekst">A+</button>
-                    <button onclick="setFontSize('xlarge')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Bardzo duży tekst">A++</button>
+                    <button onclick="setFontSize('normal')" class="min-w-[2rem] sm:min-w-[2.25rem] min-h-[2rem] px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Domyślny rozmiar tekstu">A</button>
+                    <button onclick="setFontSize('large')" class="min-w-[2rem] sm:min-w-[2.25rem] min-h-[2rem] px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Powiększony tekst">A+</button>
+                    <button onclick="setFontSize('xlarge')" class="min-w-[2rem] sm:min-w-[2.25rem] min-h-[2rem] px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Bardzo duży tekst">A++</button>
                 </div>
-                <button onclick="toggleHighContrast()" class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-semibold transition cursor-pointer" title="Tryb wysokiego kontrastu">
-                    <i data-lucide="contrast" class="w-3.5 h-3.5 text-amber-300"></i>
-                    <span class="hidden sm:inline">Kontrast</span>
+                <button onclick="toggleDarkMode()" id="themeBtn" aria-label="Tryb ciemny" aria-pressed="false" class="inline-flex items-center space-x-1.5 min-h-[2rem] min-w-[2rem] justify-center px-2.5 sm:px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-semibold transition cursor-pointer" title="Tryb ciemny / jasny">
+                    <span class="theme-icon-dark"><i data-lucide="moon" class="w-3.5 h-3.5 text-amber-300"></i></span>
+                    <span class="theme-icon-light hidden"><i data-lucide="sun" class="w-3.5 h-3.5 text-amber-300"></i></span>
+                    <span class="theme-label hidden sm:inline">Tryb ciemny</span>
                 </button>
-            </div>
-        </div>
-
-        <!-- Rozwijany panel: jak działa ocena -->
-        <div id="infoPanel" class="overflow-hidden transition-all duration-500 ease-out max-h-0 opacity-0 bg-[#102A4C] border-t border-white/10 px-4 hc-bg">
-            <div class="max-w-7xl mx-auto py-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-200">
-                <div class="flex items-start space-x-3">
-                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="library" class="w-5 h-5"></i></div>
-                    <div>
-                        <p class="font-semibold text-white mb-0.5">Tylko jawne źródła</p>
-                        <p class="text-slate-300">Odpowiadamy wyłącznie na podstawie zbioru komunikatów urzędowych (np. RCB, Policja, CERT Polska) i weryfikacji fact-checkerów. Każdy cytat prowadzi do źródła.</p>
-                    </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="scale" class="w-5 h-5"></i></div>
-                    <div>
-                        <p class="font-semibold text-white mb-0.5">Werdykt liczą jawne reguły</p>
-                        <p class="text-slate-300">Wynik od −1 do +1 zależy od wiarygodności i aktualności źródeł oraz liczby niezależnych potwierdzeń. Gdy dowodów brakuje – wstrzymujemy się od oceny.</p>
-                    </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="bot" class="w-5 h-5"></i></div>
-                    <div>
-                        <p class="font-semibold text-white mb-0.5">Korzystamy ze sztucznej inteligencji</p>
-                        <p class="text-slate-300">Model językowy pomaga zrozumieć pytanie i porównać fragmenty źródeł. Nie jest „sędzią prawdy” – zawsze sprawdź źródła samodzielnie.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -351,17 +375,17 @@
     <!-- ===================================================================== -->
     <!-- 2. NAWIGACJA: ZAKŁADKI STRON                                           -->
     <!-- ===================================================================== -->
-    <header class="sticky top-3 z-40 px-3 sm:px-6 lg:px-8 transition-all duration-300">
-        <div class="max-w-7xl mx-auto ocean-glass rounded-full px-4 sm:px-7 hc-bg">
-            <div class="flex items-center justify-between h-16 sm:h-20">
-                <a href="#" onclick="event.preventDefault(); showPage('sprawdz')" class="flex items-center space-x-3.5 group focus:outline-none">
-                    <div class="relative w-11 h-11 rounded-full bg-gradient-to-br from-gov-oceanDark via-gov-ocean to-gov-teal flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
-                        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+    <header class="sticky top-2 sm:top-3 z-40 px-2 sm:px-6 lg:px-8 transition-all duration-300">
+        <div class="max-w-7xl mx-auto ocean-glass rounded-[1.75rem] lg:rounded-full px-3 sm:px-7">
+            <div class="flex items-center justify-between h-14 sm:h-20">
+                <a href="#" onclick="event.preventDefault(); showPage('sprawdz')" class="flex items-center space-x-3 group focus:outline-none">
+                    <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-gov-oceanDark via-gov-ocean to-gov-teal flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
+                        <i data-lucide="shield-check" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
                     </div>
                     <div>
                         <div class="flex items-center space-x-2">
-                            <span class="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-gov-navy hc-text">TAP<span class="text-gov-ocean">&amp;</span>CHECK</span>
-                            <span class="hidden sm:inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 hc-card">prototyp</span>
+                            <span class="font-display font-extrabold text-lg sm:text-2xl tracking-tight text-gov-navy hc-text">TAP<span class="text-gov-ocean">&amp;</span>CHECK</span>
+                            <span class="hidden sm:inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80">prototyp</span>
                         </div>
                         <p class="text-[11px] text-slate-500 font-medium hidden sm:block hc-text-muted">Sprawdź, zanim klikniesz lub uwierzysz</p>
                     </div>
@@ -374,19 +398,16 @@
                     <button data-tab="discord" onclick="showPage('discord')" class="tab-btn px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer hc-text">Discord i zgłaszanie</button>
                     <button data-tab="o-projekcie" onclick="showPage('o-projekcie')" class="tab-btn px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer hc-text">O projekcie</button>
                 </nav>
-
-                <button onclick="toggleMobileMenu()" aria-label="Otwórz menu" class="lg:hidden p-2.5 rounded-full text-gov-navy bg-white/85 hover:bg-white border border-sky-200/80 transition cursor-pointer hc-card">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
             </div>
-        </div>
 
-        <div id="mobileMenu" class="hidden lg:hidden max-w-7xl mx-auto mt-2 ocean-glass-strong rounded-[2rem] px-4 pt-3 pb-5 space-y-1.5 hc-bg">
-            <button data-tab="sprawdz" onclick="toggleMobileMenu(); showPage('sprawdz')" class="tab-btn w-full text-left block px-4 py-3 rounded-full text-base font-semibold hc-text">Sprawdź</button>
-            <button data-tab="ostrzezenia" onclick="toggleMobileMenu(); showPage('ostrzezenia')" class="tab-btn w-full text-left block px-4 py-3 rounded-full text-base font-semibold hc-text">Ostrzeżenia</button>
-            <button data-tab="jak-to-dziala" onclick="toggleMobileMenu(); showPage('jak-to-dziala')" class="tab-btn w-full text-left block px-4 py-3 rounded-full text-base font-semibold hc-text">Jak to działa</button>
-            <button data-tab="discord" onclick="toggleMobileMenu(); showPage('discord')" class="tab-btn w-full text-left block px-4 py-3 rounded-full text-base font-semibold hc-text">Discord i zgłaszanie</button>
-            <button data-tab="o-projekcie" onclick="toggleMobileMenu(); showPage('o-projekcie')" class="tab-btn w-full text-left block px-4 py-3 rounded-full text-base font-semibold hc-text">O projekcie</button>
+            <!-- Telefony i tablety: wszystkie zakładki widoczne, przewijane palcem -->
+            <nav id="mobileTabs" class="lg:hidden flex gap-1.5 overflow-x-auto no-scrollbar -mx-1 px-1 pb-2.5" aria-label="Strony">
+                <button data-tab="sprawdz" onclick="showPage('sprawdz')" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer hc-text"><i data-lucide="search-check" class="w-4 h-4"></i>Sprawdź</button>
+                <button data-tab="ostrzezenia" onclick="showPage('ostrzezenia')" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer hc-text"><i data-lucide="triangle-alert" class="w-4 h-4"></i>Ostrzeżenia</button>
+                <button data-tab="jak-to-dziala" onclick="showPage('jak-to-dziala')" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer hc-text"><i data-lucide="lightbulb" class="w-4 h-4"></i>Jak to działa</button>
+                <button data-tab="discord" onclick="showPage('discord')" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer hc-text"><i data-lucide="message-circle" class="w-4 h-4"></i>Discord i zgłaszanie</button>
+                <button data-tab="o-projekcie" onclick="showPage('o-projekcie')" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer hc-text"><i data-lucide="info" class="w-4 h-4"></i>O projekcie</button>
+            </nav>
         </div>
     </header>
 
@@ -394,57 +415,57 @@
         <!-- ================================================================= -->
         <!-- STRONA GŁÓWNA: CZAT                                                 -->
         <!-- ================================================================= -->
-        <section data-page="sprawdz" id="page-sprawdz" class="pt-6 pb-6">
-            <div class="max-w-3xl mx-auto px-3 sm:px-6 flex flex-col" style="min-height: calc(100vh - 11rem);">
+        <section data-page="sprawdz" id="page-sprawdz" class="pt-4 sm:pt-6 pb-4 sm:pb-6">
+            <div id="chatShell" class="chat-shell chat-empty max-w-3xl mx-auto px-2.5 sm:px-6 flex flex-col">
 
                 <!-- Historia rozmowy -->
-                <div id="chatLog" class="flex-1 space-y-5 pb-4" aria-live="polite">
-                    <div class="chat-welcome ocean-glass rounded-[2rem] p-6 sm:p-7 hc-card">
+                <div id="chatLog" class="flex-1 space-y-4 sm:space-y-5 pb-4" aria-live="polite">
+                    <div class="chat-welcome glass-half rounded-[1.75rem] sm:rounded-[2rem] p-5 sm:p-7 text-center">
                         <p class="font-display font-extrabold text-xl sm:text-2xl text-gov-navy mb-1.5 hc-text">Co chcesz sprawdzić?</p>
                         <p class="text-sm sm:text-base text-slate-600 hc-text-muted">Odpowiadamy tylko na podstawie jawnych, wiarygodnych źródeł – z cytatami i linkami.</p>
                     </div>
                 </div>
 
                 <!-- Pole wiadomości -->
-                <div id="composer" class="sticky bottom-3 ocean-glass-strong rounded-[2rem] p-3 sm:p-4 transition-all hc-card">
-                    <div id="imagePreview" class="hidden items-center space-x-3 mb-3 bg-white/90 border border-sky-200/80 rounded-2xl p-2 pr-3 w-fit hc-card">
+                <div id="composer" class="sticky ocean-glass-strong rounded-[1.75rem] sm:rounded-[2rem] p-2.5 sm:p-4">
+                    <div id="imagePreview" class="hidden items-center space-x-3 mb-3 bg-white/90 border border-sky-200/80 rounded-2xl p-2 pr-3 w-fit">
                         <img id="imageThumb" alt="Podgląd dodanego obrazu" class="h-14 w-auto max-w-[8rem] rounded-xl object-cover">
                         <span id="imageName" class="text-xs text-slate-600 max-w-[12rem] truncate hc-text-muted"></span>
                         <button type="button" onclick="clearImage()" title="Usuń obraz" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
                     <div class="flex items-end gap-2">
                         <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" onchange="onImageChosen(this.files[0])">
-                        <button type="button" onclick="$('imageInput').click()" title="Dodaj zrzut ekranu lub zdjęcie" aria-label="Dodaj zrzut ekranu lub zdjęcie"
-                                class="ocean-btn shrink-0 p-3 rounded-full bg-sky-50 hover:bg-sky-100 text-gov-oceanDark border border-sky-200/80 cursor-pointer hc-card">
+                        <button type="button" id="imageBtn" onclick="$('imageInput').click()" title="Dodaj zrzut ekranu lub zdjęcie" aria-label="Dodaj zrzut ekranu lub zdjęcie"
+                                class="ocean-btn shrink-0 p-[11px] rounded-full bg-sky-50 hover:bg-sky-100 text-gov-oceanDark border-2 border-gov-ocean cursor-pointer">
                             <i data-lucide="image-plus" class="w-5 h-5"></i>
                         </button>
                         <label for="verifyInput" class="sr-only">Wiadomość do sprawdzenia</label>
-                        <textarea id="verifyInput" rows="1" maxlength="5000" placeholder="Wpisz pytanie, wklej wiadomość, link albo zrzut ekranu…"
-                                  class="flex-1 resize-none max-h-48 rounded-[1.5rem] border-2 border-sky-200/80 bg-white/95 focus:bg-white focus:border-gov-ocean focus:ring-4 focus:ring-gov-ocean/15 px-4 py-3 text-base text-gov-navy placeholder-slate-400 transition-all hc-input"></textarea>
+                        <textarea id="verifyInput" rows="1" maxlength="5000" enterkeyhint="send" autocomplete="off" placeholder="Wpisz pytanie, wklej wiadomość lub link…"
+                                  class="flex-1 resize-none max-h-48 rounded-[1.5rem] border-2 border-sky-200/80 bg-white/95 focus:bg-white focus:border-gov-ocean focus:ring-4 focus:ring-gov-ocean/15 px-4 py-3 text-base text-gov-navy placeholder-slate-500 transition-all"></textarea>
                         <button id="checkBtn" type="button" onclick="sendMessage()" aria-label="Sprawdź"
-                                class="ocean-btn shrink-0 inline-flex items-center space-x-2 bg-gradient-to-r from-gov-oceanDark via-gov-ocean to-gov-teal text-white font-display font-extrabold px-5 py-3 rounded-full shadow-md cursor-pointer disabled:opacity-60 disabled:cursor-wait hc-btn">
+                                class="ocean-btn shrink-0 inline-flex items-center space-x-2 bg-gradient-to-r from-gov-oceanDark via-gov-ocean to-gov-teal text-white font-display font-extrabold px-5 py-3 rounded-full shadow-md cursor-pointer disabled:opacity-60 disabled:cursor-wait">
                             <i data-lucide="send" class="w-5 h-5"></i><span class="hidden sm:inline">Sprawdź</span>
                         </button>
                     </div>
                 </div>
 
-                <p class="text-center text-xs text-slate-500 mt-3 px-2 hc-text-muted">
-                    Wpisz pytanie, wklej treść wiadomości lub link, albo dodaj zrzut ekranu – sami rozpoznamy, co to jest. Enter wysyła, Shift+Enter to nowa linia. Nie podawaj danych osobowych.
+                <p id="chatHelp" class="mx-auto mt-3 max-w-xl text-center text-[13px] sm:text-sm leading-snug text-gov-navy glass-half rounded-2xl px-3.5 py-2">
+                    Wpisz pytanie, wklej wiadomość lub link, albo dodaj zrzut ekranu <i data-lucide="image-plus" class="inline w-3.5 h-3.5 -mt-0.5"></i> – sami rozpoznamy, co to jest. Nie podawaj danych osobowych.
                 </p>
             </div>
         </section>
 
         <section data-page="ostrzezenia" class="hidden py-10 sm:py-14">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="ocean-glass rounded-[2.25rem] p-6 sm:p-8 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 hc-card">
+                <div class="ocean-glass rounded-[2.25rem] p-6 sm:p-8 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <div class="inline-flex items-center space-x-2 bg-sky-50 text-gov-oceanDark font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full mb-2.5 border border-sky-200/80 hc-card">
+                        <div class="inline-flex items-center space-x-2 bg-sky-50 text-gov-oceanDark font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full mb-2.5 border border-sky-200/80">
                             <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i><span>Komunikaty CERT Polska (moje.cert.pl)</span>
                         </div>
                         <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy hc-text">Najnowsze ostrzeżenia przed oszustwami</h2>
                         <p class="text-slate-600 text-sm sm:text-base mt-1 hc-text-muted">Ostatnie komunikaty z naszego zbioru źródeł. Pełna treść – po kliknięciu w link.</p>
                     </div>
-                    <a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 text-sm font-bold text-white bg-gov-navy hover:bg-gov-oceanDark shadow-md px-6 py-3.5 rounded-full self-start md:self-auto hc-btn">
+                    <a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 text-sm font-bold text-white bg-gov-navy hover:bg-gov-oceanDark shadow-md px-6 py-3.5 rounded-full self-start md:self-auto">
                         <span>Wszystkie komunikaty CERT</span><i data-lucide="external-link" class="w-4 h-4"></i>
                     </a>
                 </div>
@@ -455,24 +476,24 @@
         </section>
         <section data-page="jak-to-dziala" class="hidden py-10 sm:py-14">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-12 ocean-glass rounded-[2.25rem] p-7 hc-card">
+                <div class="text-center max-w-2xl mx-auto mb-12 ocean-glass rounded-[2.25rem] p-7">
                     <span class="inline-block text-xs font-extrabold uppercase tracking-wider text-gov-tealDark bg-teal-50 px-3.5 py-1 rounded-full mb-2 hc-text">Prosto i przejrzyście</span>
                     <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy mt-1 mb-2.5 hc-text">Jak działa TAP&amp;CHECK?</h2>
                     <p class="text-slate-600 text-sm sm:text-base hc-text-muted">Nie musisz być ekspertem. Pokazujemy, na czym opiera się każda odpowiedź – i uczciwie mówimy, gdy czegoś nie wiemy.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">1</div>
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">1</div>
                         <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Wklej cokolwiek</h3>
                         <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Pytanie, treść SMS-a lub e-maila, post, link albo zrzut ekranu – nie musisz wybierać rodzaju. System sam rozpoznaje, co to jest, pobiera podane strony i wyszukuje twierdzenia, które da się sprawdzić, oddzielając je od opinii.</p>
                     </div>
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">2</div>
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">2</div>
                         <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Szukamy w jawnych źródłach</h3>
                         <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Komunikaty RCB, Policji, CERT Polska, urzędów morskich i Straży Ochrony Kolei oraz weryfikacje fact-checkerów (m.in. Demagog, AFP). Lista źródeł jest jawna.</p>
                     </div>
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-teal to-gov-tealDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">3</div>
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-teal to-gov-tealDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">3</div>
                         <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Werdykt z cytatami</h3>
                         <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Jedna z pięciu ocen: potwierdzone, fałsz, wprowadza w błąd, brak wystarczających dowodów albo nie podlega weryfikacji – z dosłownymi cytatami i siłą dowodów.</p>
                     </div>
@@ -482,7 +503,7 @@
         <section data-page="discord" class="hidden py-10 sm:py-14">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                    <div class="bg-gradient-to-br from-gov-navy via-[#0E3159] to-gov-oceanDark text-white border border-white/20 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl ocean-spring flex flex-col justify-between hc-card">
+                    <div class="bg-gradient-to-br from-gov-navy via-[#0E3159] to-gov-oceanDark text-white border border-white/20 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl ocean-spring flex flex-col justify-between">
                         <div>
                             <div class="inline-flex items-center space-x-2 bg-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-teal-300 mb-5">
                                 <i data-lucide="message-circle" class="w-4 h-4"></i><span>Drugi kanał: Discord</span>
@@ -499,7 +520,7 @@
                         </div>
                     </div>
 
-                    <div class="ocean-glass-strong rounded-[2.5rem] p-8 sm:p-10 ocean-spring flex flex-col justify-between hc-card">
+                    <div class="ocean-glass-strong rounded-[2.5rem] p-8 sm:p-10 ocean-spring flex flex-col justify-between">
                         <div>
                             <div class="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200/80 px-4 py-1.5 rounded-full text-xs font-bold text-gov-tealDark mb-5">
                                 <i data-lucide="heart-handshake" class="w-4 h-4"></i><span>Gdzie zgłosić oszustwo</span>
@@ -510,7 +531,7 @@
                             </p>
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-gov-teal to-gov-oceanDark text-white font-display font-extrabold text-base px-7 py-4 rounded-full shadow-lg hc-btn">
+                            <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-gov-teal to-gov-oceanDark text-white font-display font-extrabold text-base px-7 py-4 rounded-full shadow-lg">
                                 <i data-lucide="flag" class="w-5 h-5"></i><span>incydent.cert.pl</span>
                             </a>
                             <div class="text-xs text-slate-600 hc-text-muted">
@@ -523,7 +544,7 @@
             </div>
         </section>
         <section data-page="o-projekcie" class="hidden py-10 sm:py-14 px-3 sm:px-6 lg:px-8 text-slate-600">
-        <div class="max-w-7xl mx-auto ocean-glass-strong rounded-[2.5rem] p-8 sm:p-12 hc-bg">
+        <div class="max-w-7xl mx-auto ocean-glass-strong rounded-[2.5rem] p-8 sm:p-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-sky-100">
                 <div>
                     <div class="flex items-center space-x-2.5 mb-4">
@@ -537,21 +558,12 @@
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Na skróty</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><button onclick="showPage('sprawdz')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Sprawdź wiadomość, pytanie lub link</button></li>
-                        <li><button onclick="showPage('ostrzezenia')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Ostrzeżenia CERT Polska</button></li>
-                        <li><button onclick="showPage('jak-to-dziala')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Jak to działa</button></li>
-                        <li><button onclick="showPage('discord')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Discord i zgłaszanie oszustw</button></li>
-                    </ul>
-                </div>
-                <div>
                     <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Wybrane źródła</h4>
                     <ul class="space-y-2.5 text-sm">
-                        <li><a href="https://www.gov.pl/web/rcb/raport-dobowy3" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Raport dobowy RCB</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
-                        <li><a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Komunikaty CERT Polska</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
-                        <li><a href="https://policja.pl/pol/aktualnosci" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Aktualności Policji</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
-                        <li><a href="https://demagog.org.pl" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Demagog (fact-checking)</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://www.gov.pl/web/rcb/raport-dobowy3" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 py-1.5 hc-text-muted"><span>Raport dobowy RCB</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 py-1.5 hc-text-muted"><span>Komunikaty CERT Polska</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://policja.pl/pol/aktualnosci" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 py-1.5 hc-text-muted"><span>Aktualności Policji</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://demagog.org.pl" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 py-1.5 hc-text-muted"><span>Demagog (fact-checking)</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
                     </ul>
                 </div>
                 <div>
@@ -573,7 +585,7 @@
     </main>
 
     <!-- Powiadomienie -->
-    <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 bg-gov-navy/95 backdrop-blur-md text-white px-6 py-4 rounded-full shadow-2xl text-sm font-semibold max-w-sm hc-bg" role="status">
+    <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 bg-gov-navy/95 backdrop-blur-md text-white px-6 py-4 rounded-full shadow-2xl text-sm font-semibold max-w-sm" role="status">
         <p id="toastMessage"></p>
     </div>
 
@@ -629,17 +641,6 @@
         // ------------------------------------------------------------------
         // Navigation and accessibility (from the original design)
         // ------------------------------------------------------------------
-        function toggleMobileMenu() { $('mobileMenu').classList.toggle('hidden'); }
-
-        function toggleInfoPanel() {
-            const panel = $('infoPanel');
-            const open = panel.classList.contains('max-h-[30rem]');
-            panel.classList.toggle('max-h-[30rem]', !open);
-            panel.classList.toggle('opacity-100', !open);
-            panel.classList.toggle('max-h-0', open);
-            panel.classList.toggle('opacity-0', open);
-            $('infoChevron').classList.toggle('rotate-180', !open);
-        }
 
         function setFontSize(size) {
             const html = document.documentElement;
@@ -649,9 +650,20 @@
             showToast(size === 'normal' ? 'Przywrócono domyślny rozmiar tekstu.' : 'Powiększono tekst.');
         }
 
-        function toggleHighContrast() {
-            document.documentElement.classList.toggle('high-contrast');
-            showToast(document.documentElement.classList.contains('high-contrast') ? 'Włączono tryb wysokiego kontrastu.' : 'Wyłączono tryb wysokiego kontrastu.');
+        function syncThemeButton() {
+            const dark = document.documentElement.classList.contains('dark');
+            document.querySelector('.theme-icon-dark').classList.toggle('hidden', dark);
+            document.querySelector('.theme-icon-light').classList.toggle('hidden', !dark);
+            document.querySelector('.theme-label').textContent = dark ? 'Tryb jasny' : 'Tryb ciemny';
+            $('themeBtn').setAttribute('aria-pressed', String(dark));
+            document.querySelector('meta[name="theme-color"]').content = dark ? '#000000' : '#091B33';
+        }
+
+        function toggleDarkMode() {
+            const dark = document.documentElement.classList.toggle('dark');
+            try { localStorage.setItem('tapcheck-theme', dark ? 'dark' : 'light'); } catch (e) {}
+            syncThemeButton();
+            showToast(dark ? 'Włączono tryb ciemny.' : 'Włączono tryb jasny.');
         }
 
         // ------------------------------------------------------------------
@@ -716,29 +728,77 @@
         const TAB_IDLE = ['text-slate-700', 'hover:text-gov-oceanDark', 'hover:bg-sky-50/90'];
         let warningsLoaded = false;
 
+        let currentPage = null;
+        const isTouch = matchMedia('(pointer: coarse)').matches;
+        const motionOK = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         function showPage(name, push = true) {
             if (!PAGES.includes(name)) name = 'sprawdz';
-            document.querySelectorAll('[data-page]').forEach((el) => el.classList.toggle('hidden', el.dataset.page !== name));
+            const from = currentPage;
+            currentPage = name;
+            const forward = from !== null && PAGES.indexOf(name) > PAGES.indexOf(from);
+            const pages = document.querySelectorAll('[data-page]');
+            const incoming = document.querySelector(`[data-page="${name}"]`);
+            const outgoing = from && from !== name ? document.querySelector(`[data-page="${from}"]`) : null;
+            const clean = (el) => el.classList.remove('page-in-right', 'page-in-left', 'page-out-left', 'page-out-right');
+
+            const reveal = () => {
+                pages.forEach((el) => { clean(el); el.classList.toggle('hidden', el !== incoming); });
+                if (outgoing && motionOK) incoming.classList.add(forward ? 'page-in-right' : 'page-in-left');
+                window.scrollTo({ top: 0 });
+            };
+            if (outgoing && motionOK) {
+                // the clicked tab is to the right → the whole scene slides left (and vice versa)
+                clean(outgoing);
+                outgoing.classList.add(forward ? 'page-out-left' : 'page-out-right');
+                setTimeout(reveal, 150);
+            } else {
+                reveal();
+            }
+
             document.querySelectorAll('.tab-btn').forEach((btn) => {
                 const active = btn.dataset.tab === name;
                 btn.classList.remove(...(active ? TAB_IDLE : TAB_ACTIVE));
                 btn.classList.add(...(active ? TAB_ACTIVE : TAB_IDLE));
                 btn.setAttribute('aria-current', active ? 'page' : 'false');
+                const strip = btn.closest('#mobileTabs');  // centre the active tab inside the strip only (scrollIntoView would also shift the page)
+                if (active && strip) strip.scrollTo({ left: btn.offsetLeft - (strip.clientWidth - btn.offsetWidth) / 2, behavior: motionOK ? 'smooth' : 'auto' });
             });
             if (push) {
                 const hash = name === 'sprawdz' ? '' : '#' + name;
                 if (location.hash !== hash) history.pushState(null, '', location.pathname + hash);
             }
             if (name === 'ostrzezenia' && !warningsLoaded) { warningsLoaded = true; loadWarnings(); }
-            if (name === 'sprawdz') setTimeout(() => verifyInput.focus({ preventScroll: true }), 50);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (name === 'sprawdz' && !isTouch) setTimeout(() => verifyInput.focus({ preventScroll: true }), 200);
         }
+
+        // Phones: swipe left/right on a page to go to the next/previous tab
+        (() => {
+            let x0 = null, y0 = null;
+            const main = document.querySelector('main');
+            main.addEventListener('touchstart', (e) => {
+                const t = e.target;
+                if (e.touches.length !== 1 || t.closest('#composer, textarea, input, pre, details, a, button')) { x0 = null; return; }
+                x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+            }, { passive: true });
+            main.addEventListener('touchend', (e) => {
+                if (x0 === null) return;
+                const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+                x0 = null;
+                if (Math.abs(dx) < 80 || Math.abs(dx) < 2 * Math.abs(dy)) return;
+                const i = PAGES.indexOf(currentPage) + (dx < 0 ? 1 : -1);
+                if (i >= 0 && i < PAGES.length) showPage(PAGES[i]);
+            }, { passive: true });
+        })();
+
         window.addEventListener('popstate', () => showPage(location.hash.slice(1) || 'sprawdz', false));
 
         // ------------------------------------------------------------------
         // Chat
         // ------------------------------------------------------------------
         const chatLog = $('chatLog');
+
+        if (innerWidth < 640) verifyInput.placeholder = 'Wpisz lub wklej…';
 
         function autoGrow() {
             verifyInput.style.height = 'auto';
@@ -749,9 +809,22 @@
             if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); sendMessage(); }
         });
 
+        // Empty chat: input in the middle. First message: it glides to the bottom (FLIP animation).
+        function leaveEmptyState() {
+            const shell = $('chatShell');
+            if (!shell.classList.contains('chat-empty')) return;
+            const composer = $('composer');
+            const before = composer.getBoundingClientRect().top;
+            shell.classList.remove('chat-empty');
+            const after = composer.getBoundingClientRect().top;
+            composer.animate([{ transform: `translateY(${before - after}px)` }, { transform: 'none' }],
+                             { duration: 450, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+        }
+
         function addBubble(html, side) {
             const wrap = document.createElement('div');
             wrap.className = side === 'user' ? 'flex justify-end' : 'flex justify-start';
+            wrap.style.scrollMarginTop = (document.querySelector('header').getBoundingClientRect().height + 20) + 'px';
             wrap.innerHTML = html;
             chatLog.appendChild(wrap);
             refreshIcons();
@@ -760,14 +833,14 @@
         }
 
         function userBubble(text, imageUrl) {
-            return `<div class="max-w-[85%] rounded-[1.5rem] rounded-br-md bg-gov-navy text-white px-4 py-3 shadow-md hc-btn">
+            return `<div class="max-w-[85%] rounded-[1.5rem] rounded-br-md bg-gov-navy text-white px-4 py-3 shadow-md">
                 ${imageUrl ? `<img src="${esc(imageUrl)}" alt="Dodany obraz" class="max-h-48 rounded-xl mb-2">` : ''}
                 ${text ? `<p class="whitespace-pre-wrap break-words text-sm sm:text-base">${esc(text)}</p>` : ''}
             </div>`;
         }
 
         function botCard(inner) {
-            return `<div class="w-full ocean-glass-strong rounded-[1.75rem] rounded-bl-md p-4 sm:p-6 hc-card">${inner}</div>`;
+            return `<div class="w-full ocean-glass-strong rounded-[1.5rem] sm:rounded-[1.75rem] rounded-bl-md p-3 sm:p-6">${inner}</div>`;
         }
 
         function thinkingHtml() {
@@ -784,6 +857,8 @@
             if (!value && !imageDataUrl) { showToast('Wpisz pytanie, wklej wiadomość lub link albo dodaj zrzut ekranu.'); verifyInput.focus(); return; }
             const image = imageDataUrl;
             document.querySelectorAll('.chat-welcome').forEach((el) => el.remove());
+            leaveEmptyState();
+            if (isTouch) verifyInput.blur();  // close the phone keyboard so the answer is visible
             addBubble(userBubble(value, image), 'user');
             verifyInput.value = ''; autoGrow(); clearImage();
 
@@ -807,7 +882,7 @@
                 $('checkBtn').disabled = false;
                 refreshIcons();
                 pending.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                verifyInput.focus({ preventScroll: true });
+                if (!isTouch) verifyInput.focus({ preventScroll: true });
             }
         }
 
@@ -849,11 +924,11 @@
         function scoreBar(score) {
             const pos = ((score + 1) / 2) * 100;
             return `
-                <div class="mt-4 max-w-md" aria-label="Wynik dowodów ${fmt(score, true)} w skali od minus 1 do plus 1">
+                <div class="mt-4 max-w-md" role="img" aria-label="Wynik dowodów ${fmt(score, true)} w skali od minus 1 do plus 1">
                     <div class="relative h-2.5 rounded-full" style="background: linear-gradient(to right, #E11D48 0 15%, #E2E8F0 15% 85%, #059669 85% 100%);">
                         <span class="absolute -top-1 w-1.5 h-[18px] -ml-[3px] rounded bg-gov-navy" style="left:${pos}%"></span>
                     </div>
-                    <div class="flex justify-between text-[11px] text-slate-500 mt-1 hc-text-muted">
+                    <div class="flex justify-between gap-2 text-[11px] sm:text-xs text-slate-600 mt-1 hc-text-muted">
                         <span>−1 źródła zaprzeczają</span><strong class="text-gov-navy hc-text">wynik ${fmt(score, true)}</strong><span>potwierdzają +1</span>
                     </div>
                 </div>`;
@@ -863,15 +938,15 @@
             const st = STANCES[e.stance] || STANCES.context;
             const weight = e.role === 'context_only' ? 'tylko kontekst' : `waga ${fmt(e.weight)}`;
             return `
-                <div class="mt-3 rounded-2xl bg-white/90 border-l-4 ${st.cls} p-4 shadow-xs hc-card">
-                    <div class="text-xs text-slate-500 hc-text-muted">
-                        <strong class="text-gov-navy hc-text">${esc(st.label)}</strong> · ${esc(e.publisher)} (${esc(SOURCE_TYPES[e.source_type] || e.source_type)}) ·
-                        ${esc(formatDate(e.published_at))} · wiarygodność ${esc(e.credibility)}/5 · ${esc(weight)}
+                <div class="mt-3 rounded-2xl bg-white/90 border-l-4 ${st.cls} p-3 sm:p-4 shadow-xs">
+                    <p class="text-sm text-gov-navy hc-text"><strong>${esc(st.label)}</strong> · ${esc(e.publisher)}</p>
+                    <p class="text-xs text-slate-600 mt-0.5 hc-text-muted">
+                        ${esc(SOURCE_TYPES[e.source_type] || e.source_type)} · ${esc(formatDate(e.published_at))} · wiarygodność ${esc(e.credibility)}/5 · ${esc(weight)}
                         ${e.archival_warning ? ' · <span class="text-amber-700 font-semibold">materiał archiwalny</span>' : ''}
-                    </div>
-                    <blockquote class="my-2 text-sm text-gov-navy italic hc-text">„${esc(e.quote)}”</blockquote>
-                    <a href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-gov-oceanDark hover:underline inline-flex items-center space-x-1 hc-text">
-                        <span>${esc(e.title)}</span><i data-lucide="external-link" class="w-3 h-3"></i>
+                    </p>
+                    <blockquote class="my-2 text-sm sm:text-[15px] leading-relaxed text-gov-navy italic break-words hc-text">„${esc(e.quote)}”</blockquote>
+                    <a href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-gov-oceanDark underline decoration-sky-300 underline-offset-2 inline-flex items-start gap-1 py-1 break-words hc-text">
+                        <span>${esc(e.title)}</span><i data-lucide="external-link" class="w-3.5 h-3.5 shrink-0 mt-1"></i>
                     </a>
                 </div>`;
         }
@@ -887,19 +962,31 @@
             const list = (title, items) => items && items.length ? `
                 <h4 class="font-display font-bold text-sm text-gov-navy mt-5 mb-1.5 hc-text">${title}</h4>
                 <ul class="list-disc pl-5 space-y-1 text-sm text-slate-700 hc-text-muted">${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+            // How the score was computed: important for transparency, but technical → one tap away
+            const reasons = c.reasons && c.reasons.length ? `
+                <details class="mt-4 rounded-2xl bg-white/70 border border-white px-3.5 py-2.5">
+                    <summary class="cursor-pointer text-sm font-bold text-gov-navy py-1 hc-text">Jak policzyliśmy wynik</summary>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-slate-700 break-words hc-text-muted">${c.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+                </details>` : '';
+            const ranked = [...c.evidence].sort((a, b) => (b.weight || 0) - (a.weight || 0));
+            const shown = ranked.slice(0, 2), more = ranked.slice(2);
+            const sources = c.evidence.length ? `
+                <h4 class="font-display font-bold text-sm text-gov-navy mt-5 hc-text">Źródła (cytaty dosłowne)</h4>
+                ${shown.map(evidenceCard).join('')}
+                ${more.length ? `<details class="mt-3"><summary class="cursor-pointer text-sm font-bold text-gov-oceanDark py-2 hc-text">Pokaż pozostałe źródła (${more.length})</summary>${more.map(evidenceCard).join('')}</details>` : ''}` : '';
             return `
-                <article class="rounded-[2rem] border-2 ${v.box} p-6 sm:p-7 mb-5 hc-card">
+                <article class="rounded-[1.5rem] sm:rounded-[2rem] border-2 ${v.box} p-4 sm:p-7 mb-4 sm:mb-5">
                     <div class="flex flex-wrap items-center gap-2 mb-3">
                         <span class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-extrabold bg-white/90 border ${v.box}">
                             <i data-lucide="${v.icon}" class="w-4 h-4"></i><span>${v.label}</span>
                         </span>
                         ${c.strength ? `<span class="text-xs font-semibold text-slate-600 hc-text-muted">siła podstaw: ${esc(c.strength)}</span>` : ''}
                     </div>
-                    <p class="font-display font-bold text-lg text-gov-navy hc-text">${i + 1}. „${esc(c.text)}”</p>
+                    <p class="font-display font-bold text-base sm:text-lg text-gov-navy break-words hc-text">${i + 1}. „${esc(c.text)}”</p>
                     ${hasDecisiveScore(c) ? scoreBar(c.score) : ''}
                     <p class="mt-4 text-sm sm:text-base text-slate-800 leading-relaxed hc-text">${esc(c.explanation)}</p>
-                    ${list('Na czym opiera się ocena', c.reasons)}
-                    ${c.evidence.length ? `<h4 class="font-display font-bold text-sm text-gov-navy mt-5 hc-text">Źródła (cytaty dosłowne)</h4>${c.evidence.map(evidenceCard).join('')}` : ''}
+                    ${sources}
+                    ${reasons}
                     ${list('Informacje o źródle doniesienia', c.source_warnings)}
                     ${c.limitations ? `<h4 class="font-display font-bold text-sm text-gov-navy mt-5 mb-1 hc-text">Ograniczenia</h4><p class="text-sm text-slate-700 hc-text-muted">${esc(c.limitations)}</p>` : ''}
                 </article>`;
@@ -908,29 +995,37 @@
         function resultHtml(data) {
             if (data.status !== 'ok') return noticeHtml(data.status, data.status_detail || 'Nie udało się wykonać sprawdzenia.');
             const security = data.security_events && data.security_events.length ? `
-                <div class="rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm p-4 mb-5 flex items-start space-x-3 hc-card">
+                <div class="rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm p-4 mb-5 flex items-start space-x-3">
                     <i data-lucide="shield-alert" class="w-5 h-5 shrink-0"></i>
                     <span>Wykryto i zignorowano polecenia ukryte w treści lub w źródłach. Zdarzenie zostało zapisane.</span>
                 </div>` : '';
             const link = data.result_url ? `
-                <button onclick="copyLink('${esc(data.result_url)}')" class="ocean-btn inline-flex items-center space-x-2 text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 border border-sky-200/80 px-4 py-2 rounded-full cursor-pointer hc-card">
-                    <i data-lucide="link" class="w-3.5 h-3.5"></i><span>Skopiuj link do wyniku</span>
+                <button onclick="shareResult('${esc(data.result_url)}')" class="ocean-btn inline-flex items-center space-x-2 text-sm font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 border border-sky-200/80 px-4 py-2.5 rounded-full cursor-pointer">
+                    <i data-lucide="${navigator.share ? 'share-2' : 'link'}" class="w-4 h-4"></i><span>${navigator.share ? 'Udostępnij wynik' : 'Skopiuj link do wyniku'}</span>
                 </button>` : '';
             return `
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-5">
                     <div class="flex flex-wrap items-center gap-2">
-                        <h3 class="font-display font-extrabold text-xl text-gov-navy hc-text">Wynik sprawdzenia</h3>
-                        ${KINDS[data.input_kind] ? `<span class="text-xs font-semibold text-gov-oceanDark bg-sky-50 border border-sky-200/80 px-3 py-1 rounded-full hc-card">Rozpoznano: ${KINDS[data.input_kind]}</span>` : ''}
+                        <h3 class="font-display font-extrabold text-lg sm:text-xl text-gov-navy hc-text">Wynik sprawdzenia</h3>
+                        ${KINDS[data.input_kind] ? `<span class="text-xs font-semibold text-gov-oceanDark bg-sky-50 border border-sky-200/80 px-3 py-1 rounded-full">Rozpoznano: ${KINDS[data.input_kind]}</span>` : ''}
                     </div>${link}
                 </div>
                 ${data.image_text ? `
-                <details class="rounded-2xl bg-sky-50/80 border border-sky-200 p-4 mb-5 hc-card">
+                <details class="rounded-2xl bg-sky-50/80 border border-sky-200 p-4 mb-5">
                     <summary class="cursor-pointer text-sm font-bold text-gov-navy hc-text">Co odczytaliśmy z obrazu</summary>
                     <pre class="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-700 hc-text-muted">${esc(data.image_text)}</pre>
                 </details>` : ''}
                 ${security}
                 ${data.claims.map(claimCard).join('')}
                 <p class="text-xs text-slate-500 hc-text-muted">Tap &amp; Check pomaga ocenić informacje, ale nie jest „sędzią prawdy”. Zawsze możesz samodzielnie przeczytać źródła.</p>`;
+        }
+
+        async function shareResult(url) {
+            if (navigator.share) {
+                try { await navigator.share({ title: 'Wynik sprawdzenia – Tap & Check', url }); return; }
+                catch (e) { if (e.name === 'AbortError') return; }  // closed the share sheet
+            }
+            copyLink(url);
         }
 
         async function copyLink(url) {
@@ -945,6 +1040,7 @@
                 const resp = await fetch(`/api/session/${encodeURIComponent(id)}`, { method: 'DELETE' });
                 const body = await resp.json();
                 chatLog.innerHTML = '';
+                $('chatShell').classList.add('chat-empty');
                 showToast(`Usunięto zapisane sprawdzenia: ${body.deleted}.`);
             } catch { showToast('Nie udało się usunąć danych. Spróbuj ponownie.'); }
         }
@@ -958,10 +1054,10 @@
                 const items = await (await fetch('/api/warnings?limit=6')).json();
                 if (!items.length) throw new Error('empty');
                 grid.innerHTML = items.map((w) => `
-                    <article class="ocean-glass-strong rounded-[2.25rem] p-7 sm:p-8 ocean-spring flex flex-col justify-between hc-card">
+                    <article class="ocean-glass-strong rounded-[2.25rem] p-7 sm:p-8 ocean-spring flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between gap-2 mb-4">
-                                <span class="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80 hc-card">
+                                <span class="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
                                     <span class="w-2 h-2 rounded-full bg-rose-600"></span><span>CERT Polska</span>
                                 </span>
                                 <span class="text-xs text-slate-400 font-semibold hc-text-muted">${esc(formatDate(w.published_at))}</span>
@@ -970,7 +1066,7 @@
                             <p class="text-sm text-slate-600 leading-relaxed mb-5 hc-text-muted">${esc(w.summary)}</p>
                         </div>
                         <div class="pt-4 border-t border-sky-100/80 flex items-center justify-end">
-                            <a href="${esc(safeUrl(w.url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 px-3.5 py-1.5 rounded-full flex items-center space-x-1 group hc-card">
+                            <a href="${esc(safeUrl(w.url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 px-3.5 py-1.5 rounded-full flex items-center space-x-1 group">
                                 <span>Pełny komunikat</span><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
@@ -988,7 +1084,7 @@
                 if (c.documents) $('corpusBadge').textContent = `Zbiór źródeł: ${c.documents} dokumentów z ${c.domains} serwisów, plus wyszukiwanie w zaufanych serwisach.`;
                 if (h.discord_invite_url) {
                     $('discordAction').innerHTML = `
-                        <a href="${esc(safeUrl(h.discord_invite_url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 bg-white text-gov-navy hover:bg-sky-50 font-extrabold text-sm px-6 py-3.5 rounded-full shadow-md hc-btn">
+                        <a href="${esc(safeUrl(h.discord_invite_url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 bg-white text-gov-navy hover:bg-sky-50 font-extrabold text-sm px-6 py-3.5 rounded-full shadow-md">
                             <span>Dołącz do serwera demonstracyjnego</span><i data-lucide="arrow-up-right" class="w-4 h-4"></i>
                         </a>`;
                     refreshIcons();
@@ -1003,6 +1099,7 @@
                 const resp = await fetch(`/api/check/${m[1]}`);
                 if (!resp.ok) throw new Error();
                 document.querySelectorAll('.chat-welcome').forEach((el) => el.remove());
+                leaveEmptyState();
                 addBubble(botCard(resultHtml(await resp.json())), 'bot');
             } catch {
                 addBubble(botCard(noticeHtml('error', 'Nie znaleziono wyniku – mógł zostać usunięty po upływie 30 dni.')), 'bot');
@@ -1013,6 +1110,7 @@
         // Start
         // ------------------------------------------------------------------
         refreshIcons();
+        syncThemeButton();
         loadHealth();
         showPage(location.hash.slice(1) || 'sprawdz', false);
         loadSharedResult();
