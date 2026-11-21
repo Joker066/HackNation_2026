@@ -7,9 +7,20 @@ Send a message or link through the web page or Discord. Tap & Check finds the ch
 - Task summary: [instruction.md](instruction.md)
 - Design and build plan: [STRUCTURE.md](STRUCTURE.md)
 
-## Running locally
+## Quick start
 
 Requirements: Python 3.12 (no Node needed: the API serves the web page).
+
+```bash
+./start.sh            # API + web page on http://localhost:8000, plus the Discord bot if DISCORD_TOKEN is set
+./start.sh --no-bot   # web page and API only
+```
+
+On the first run it creates `.venv`, installs the requirements, copies `.env.example` to `.env`
+and builds the search index. Put your keys in `.env` (at least `ANTHROPIC_API_KEY`, or
+`LLM_PROVIDER=fake` to run offline), then start it again. Stop everything with Ctrl+C.
+
+## Running the parts manually
 
 ```bash
 # 1. Install
