@@ -1,0 +1,26 @@
+# Environments
+.venv/
+venv/
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+
+# ML artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+data/
+checkpoints/
+runs/
+wandb/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
