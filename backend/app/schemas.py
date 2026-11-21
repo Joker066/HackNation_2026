@@ -82,7 +82,6 @@ class CheckResponse(BaseModel):
     created_at: datetime
     status: Status
     status_detail: str | None = None  # plain Polish message for non-ok statuses
-    input_summary: str = ""
     claims: list[ClaimResult] = Field(default_factory=list)
     security_events: list[str] = Field(default_factory=list)
     result_url: str | None = None

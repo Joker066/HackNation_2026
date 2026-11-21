@@ -65,7 +65,7 @@ def decide(
     evidence: list[Evidence],
     misleading_context: bool,
     misleading_reason: str = "",
-    refers_to_present: bool = False,
+    time_sensitive: bool = False,
     now: datetime | None = None,
 ) -> VerdictResult:
     if kind in ("opinion", "prediction"):
@@ -77,7 +77,7 @@ def decide(
             "Opinii i prognoz nie da się potwierdzić ani obalić na podstawie źródeł.",
         )
 
-    score_evidence(evidence, refers_to_present, now)
+    score_evidence(evidence, time_sensitive, now)
     score = claim_score(evidence)
     used = counted(evidence)
 

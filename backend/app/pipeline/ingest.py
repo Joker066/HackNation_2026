@@ -28,8 +28,6 @@ class IngestError(Exception):
 @dataclass
 class IngestResult:
     text: str
-    source_url: str | None = None
-    page_title: str | None = None
     notes: list[str] = field(default_factory=list)  # limitations to show the user
 
 
@@ -53,7 +51,7 @@ def ingest(req: CheckRequest, settings: Settings) -> IngestResult:
     if url is None:
         return IngestResult(text=text)
 
-    title, page_text = fetch_url(url)
+    _title, page_text = fetch_url(url)
     notes = []
     if len(page_text) > settings.max_fetched_chars:
         page_text = page_text[: settings.max_fetched_chars]
@@ -61,7 +59,7 @@ def ingest(req: CheckRequest, settings: Settings) -> IngestResult:
     combined = f"{text}\n\n{page_text}".strip() if text else page_text
     if not combined:
         raise IngestError(Status.needs_clarification, "Na podanej stronie nie znaleziono tekstu do sprawdzenia.")
-    return IngestResult(text=combined, source_url=url, page_title=title, notes=notes)
+    return IngestResult(text=combined, notes=notes)
 
 
 def _assert_public_host(url: str) -> None:

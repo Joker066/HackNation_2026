@@ -32,8 +32,9 @@ def claim_handler(user: str) -> ClaimExtraction:
                 text="Most na rzece Testowej nie został otwarty.",
                 kind="factual",
                 search_queries=["most rzeka Testowa otwarcie"],
+                english_query="",
                 implied_time_or_place="",
-                refers_to_present=False,
+                time_sensitive=False,
             )
         ],
     )

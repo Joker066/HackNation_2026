@@ -60,8 +60,9 @@ def claims(user):
                 text="Putin w 1996 roku zgodził się na wejście Polski do NATO.",
                 kind="factual",
                 search_queries=["Putin 1996 NATO", "Polska NATO Putin"],
+                english_query="",
                 implied_time_or_place="1996, Polska",
-                refers_to_present=False,
+                time_sensitive=False,
             )
         ],
     )

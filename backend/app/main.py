@@ -15,6 +15,7 @@ from app.pipeline.run import Services, run_check
 from app.schemas import CheckRequest, CheckResponse
 from app.security.ratelimit import RateLimiter
 from app.store.audit import AuditLog
+from app.sources.euvsdisinfo import EUvsDisinfo
 from app.sources.google_factcheck import GoogleFactCheck, load_factcheckers
 from app.store.corpus import Corpus, load_catalog
 
@@ -31,6 +32,9 @@ services = Services(
         GoogleFactCheck(settings.google_factcheck_api_key, load_factcheckers(settings.factcheckers_path))
         if settings.google_factcheck_api_key
         else None
+    ),
+    euvsdisinfo=(
+        EUvsDisinfo(settings.euvsdisinfo_api_key, settings.euvsdisinfo_url) if settings.euvsdisinfo_api_key else None
     ),
     save_fetched=True,
 )
@@ -104,7 +108,10 @@ def health() -> dict:
     return {
         "status": "ok",
         "llm_provider": services.llm.name,
-        "live_sources": {"google_factcheck": services.factcheck is not None},
+        "live_sources": {
+            "google_factcheck": services.factcheck is not None,
+            "euvsdisinfo": services.euvsdisinfo is not None,
+        },
         "discord_invite_url": settings.discord_invite_url,
         "corpus": services.corpus.stats(),
     }

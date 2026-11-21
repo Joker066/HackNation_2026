@@ -1,0 +1,12 @@
+{
+ "url": "https://euvsdisinfo.eu/twitter-as-a-fool-tool/",
+ "title": "Twitter as a fool tool",
+ "publisher": "EUvsDisinfo (EEAS)",
+ "published_at": null,
+ "retrieved_at": "2026-11-21T16:41:50.213694+00:00",
+ "text": "EUvsDisinfo – analiza: Twitter as a fool tool. The Russian Embassy to the UK has come up with an inventive new way of spreading its messages. According to the Guardian , it recruits volunteers to help amplify Twitter bots in spreading tweets the Embassy considers \"most important\". These volunteers are found by asking the people who sign up for news and information from the Russian Embassy to permit automatic retweets on their Twitter accounts in order to share 'positive news'. The programme is described as the Russian diplomatic online club, allegedly designed for everybody interested in international policy and in receiving insights from top diplomats. It also allows participation in regular competitions and prize draws. Technology magazine Motherboard first reported on the “club”. By creating a Twitter account and signing up for the club, they noticed that soon their account automatically retweeted the Russian Ambassador's tweets. According to Motherboard, not only is handing over control of your Twitter account to a third-party application highly suspect. Tweetsquad, the application used by the Russian Embassy to generate the automatic retweeting, does not have solid credentials. Motherboard was unable to contact its creator, Tweetsquad's account stopped tweeting years ago and there's little evidence online that the application is authentic. Motherboard has also published a guide on how to protect yourself from third party Twitter app hacks, as the one that occurred last week on Wednesday . So far, the reach of the Russian club remains small though, with about 500 members. The vast majority of the accounts that retweeted are \"simply nothing more than bots themselves\" according to Motherboard.",
+ "lang": "en",
+ "license": "EUvsDisinfo database (EEAS East StratCom Task Force), via MCP API",
+ "catalog_id": 42,
+ "euvsdisinfo_type": "article"
+}

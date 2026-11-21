@@ -23,7 +23,10 @@ class Settings(BaseSettings):
 
     # --- Live sources ------------------------------------------------------
     google_factcheck_api_key: str | None = None
-    factcheck_queries_per_claim: int = 3
+    factcheck_queries_per_claim: int = 5
+    euvsdisinfo_api_key: str | None = None
+    euvsdisinfo_url: str = "https://mcp.euvsd.info/mcp"
+    euvsdisinfo_queries_per_claim: int = 2
 
     # --- Storage ------------------------------------------------------------
     corpus_db_path: Path = REPO_ROOT / "var" / "corpus.db"

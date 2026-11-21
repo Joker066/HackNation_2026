@@ -43,8 +43,14 @@ For every passage return:
   (character for character). Empty string for "irrelevant".
 
 Some passages are fact-check records ("Sprawdzane twierdzenie: … Ocena <fact-checker>: <rating>").
-For those, judge whether the checked statement is the same claim, and quote the rating sentence
-("Ocena …: …"), because the rating is what supports or refutes the claim.
+For those, first judge whether the checked statement is the same claim (same subject and
+substance; wording may differ). If it is, map the rating:
+  "Prawda" / "True" → supports;  "Fałsz" / "False" → refutes;
+  "Częściowa prawda", "Manipulacja", "Wprowadza w błąd", "Bez kontekstu", "Half true",
+  "Misleading" → context, and set misleading_context = true;
+  "Nieweryfikowalne" / "Unverifiable" → context.
+If the checked statement is a different claim on a related topic, use "context" or "irrelevant".
+Quote the rating sentence ("Ocena …: …"), because the rating is what supports or refutes it.
 
 Judge only from the passage text, never from your own knowledge. Consider dates: a passage
 about a different year or place than the claim does not support it.

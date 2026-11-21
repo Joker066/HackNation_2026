@@ -38,7 +38,7 @@ def ev(
 
 def run(evidence, misleading=False, present=True):
     return decide(
-        kind="factual", evidence=evidence, misleading_context=misleading, refers_to_present=present, now=NOW
+        kind="factual", evidence=evidence, misleading_context=misleading, time_sensitive=present, now=NOW
     )
 
 

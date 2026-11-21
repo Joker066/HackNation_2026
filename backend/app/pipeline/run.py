@@ -13,6 +13,7 @@ from app.schemas import CheckRequest, CheckResponse, ClaimResult, Evidence, Stan
 from app.security.injection import looks_like_injection
 from app.security.pii import mask_pii
 from app.store.audit import AuditLog
+from app.sources.euvsdisinfo import EUvsDisinfo, EUvsDisinfoError
 from app.sources.google_factcheck import FactCheckError, GoogleFactCheck
 from app.store import text_sources
 from app.store.corpus import CatalogEntry, Corpus
@@ -44,6 +45,7 @@ class Services:
     audit: AuditLog
     catalog: list[CatalogEntry] = field(default_factory=list)
     factcheck: GoogleFactCheck | None = None
+    euvsdisinfo: EUvsDisinfo | None = None
     save_fetched: bool = False  # write live-fetched documents to corpus/text_sources/
 
 
@@ -55,32 +57,58 @@ class _ClaimOutcome:
     retrieval_error: bool = False
 
 
-def _fetch_live_factchecks(svc: Services, claim: ExtractedClaim) -> str:
-    """Query Google Fact Check for this claim and cache the reviews in the corpus.
+def _fetch_live_sources(svc: Services, claim: ExtractedClaim) -> list[str]:
+    """Query the live sources for this claim and cache their documents in the corpus.
 
-    Returns a limitation note for the user if the service failed, otherwise "".
+    Google Fact Check gets the claim's keyword queries; EUvsDisinfo (an English database)
+    gets the claim's English query first. Returns limitation notes for sources that failed.
     """
-    if svc.factcheck is None:
-        return ""
-    queries = list(dict.fromkeys(claim.search_queries))[: svc.settings.factcheck_queries_per_claim]
-    if not queries:
-        return ""
-    with ThreadPoolExecutor(max_workers=len(queries)) as pool:
-        futures = [pool.submit(svc.factcheck.search, q) for q in queries]
-    failed = 0
-    for future in futures:
+    queries = list(dict.fromkeys(claim.search_queries))
+    jobs: list[tuple[str, object, str]] = []  # (source label, search function, query)
+    if svc.factcheck is not None:
+        for q in queries[: svc.settings.factcheck_queries_per_claim]:
+            jobs.append(("Google Fact Check", svc.factcheck.search, q))
+    if svc.euvsdisinfo is not None:
+        eu_queries = [q for q in dict.fromkeys([claim.english_query, *queries]) if q][
+            : svc.settings.euvsdisinfo_queries_per_claim
+        ]
+        for q in eu_queries:
+            jobs.append(("EUvsDisinfo", svc.euvsdisinfo.search, q))
+    if not jobs:
+        return []
+
+    with ThreadPoolExecutor(max_workers=len(jobs)) as pool:
+        futures = [(label, pool.submit(fn, q)) for label, fn, q in jobs]
+    attempts: dict[str, int] = {}
+    failures: dict[str, int] = {}
+    for label, future in futures:
+        attempts[label] = attempts.get(label, 0) + 1
         try:
             for record in future.result():
                 if svc.corpus.add_document(record, svc.catalog) and svc.save_fetched:
                     text_sources.save(record)  # keep it for future index rebuilds
-        except FactCheckError as e:
-            log.warning("fact-check search failed: %s", e)
-            failed += 1
+        except (FactCheckError, EUvsDisinfoError) as e:
+            log.warning("%s search failed: %s", label, e)
+            failures[label] = failures.get(label, 0) + 1
         except ValueError:
-            log.exception("could not store a fact-check record")
-    if failed == len(queries):
-        return "Baza weryfikacji fact-checkerów (Google Fact Check) była niedostępna — wynik opiera się tylko na pozostałych źródłach."
-    return ""
+            log.exception("could not store a record from %s", label)
+    return [
+        f"Źródło {label} było niedostępne — wynik opiera się tylko na pozostałych źródłach."
+        for label, n in failures.items()
+        if n == attempts[label]
+    ]
+
+
+def _source_warnings(evidence: list[Evidence]) -> list[str]:
+    """Neutral notes for context-only matches (never part of the verdict)."""
+    notes = []
+    for e in evidence:
+        if e.role == "context_only":
+            notes.append(
+                f"Podobny wątek opisuje baza EUvsDisinfo (przypadki prokremlowskiej dezinformacji): "
+                f"„{e.title}”. To informacja o kontekście, a nie ocena tego twierdzenia."
+            )
+    return list(dict.fromkeys(notes))
 
 
 def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
@@ -92,9 +120,11 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         return _ClaimOutcome(compose(claim.text, decision, [], "", []), usage)
 
     retrieval_error = False
-    live_note = _fetch_live_factchecks(svc, claim)
+    live_notes = _fetch_live_sources(svc, claim)
     try:
-        passages = svc.corpus.search([claim.text, *claim.search_queries], k=svc.settings.passages_per_claim)
+        passages = svc.corpus.search(
+            [claim.text, *claim.search_queries, claim.english_query], k=svc.settings.passages_per_claim
+        )
     except Exception:  # a search failure must not turn into a verdict
         log.exception("corpus search failed")
         passages, retrieval_error = [], True
@@ -150,14 +180,15 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         evidence=evidence,
         misleading_context=misleading,
         misleading_reason=misleading_reason,
-        refers_to_present=claim.refers_to_present,
+        time_sensitive=claim.time_sensitive,
     )
     if retrieval_error:
         decision.limitations = (decision.limitations + " Wyszukiwanie w źródłach nie powiodło się.").strip()
-    if live_note:
-        decision.limitations = (decision.limitations + " " + live_note).strip()
+    if live_notes:
+        decision.limitations = " ".join([decision.limitations, *live_notes]).strip()
         retrieval_error = True
-    return _ClaimOutcome(compose(claim.text, decision, evidence, findings, []), usage, events, retrieval_error)
+    warnings = _source_warnings(evidence)
+    return _ClaimOutcome(compose(claim.text, decision, evidence, findings, warnings), usage, events, retrieval_error)
 
 
 def run_check(svc: Services, req: CheckRequest) -> CheckResponse:
@@ -176,7 +207,6 @@ def run_check(svc: Services, req: CheckRequest) -> CheckResponse:
     try:
         ingested = ingest(req, svc.settings)
         text = mask_pii(ingested.text)
-        response.input_summary = (ingested.page_title or text)[:200]
         if looks_like_injection(text):
             response.security_events.append("Wiadomość zawierała polecenia dla modelu — zostały zignorowane.")
 

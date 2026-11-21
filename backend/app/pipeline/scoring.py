@@ -59,9 +59,9 @@ def _aware(dt: datetime) -> datetime:
 
 
 def recency_factor(
-    published_at: datetime | None, update_frequency: str, refers_to_present: bool, now: datetime
+    published_at: datetime | None, update_frequency: str, time_sensitive: bool, now: datetime
 ) -> float:
-    if not refers_to_present:
+    if not time_sensitive:
         return 1.0
     half_life = HALF_LIFE_DAYS.get(update_frequency, DEFAULT_HALF_LIFE)
     if half_life is None:
@@ -79,11 +79,11 @@ def evidence_weight(*, credibility: int, recency: float, directness: float, role
     return round(min(credibility / 5 * recency * directness, MAX_WEIGHT), 3)
 
 
-def score_evidence(evidence: list[Evidence], refers_to_present: bool, now: datetime | None = None) -> None:
+def score_evidence(evidence: list[Evidence], time_sensitive: bool, now: datetime | None = None) -> None:
     """Fill in `recency` and `weight` on each evidence item (in place)."""
     now = now or datetime.now(UTC)
     for e in evidence:
-        e.recency = round(recency_factor(e.published_at, e.update_frequency, refers_to_present, now), 3)
+        e.recency = round(recency_factor(e.published_at, e.update_frequency, time_sensitive, now), 3)
         e.weight = evidence_weight(
             credibility=e.credibility, recency=e.recency, directness=e.directness, role=e.role
         )
