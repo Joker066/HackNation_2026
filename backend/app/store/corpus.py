@@ -269,6 +269,31 @@ class Corpus:
                 break
         return results
 
+    def latest(self, catalog_ids: list[int], limit: int = 3) -> list[dict]:
+        """Most recent documents from the given catalogue rows (e.g. CERT advisories for the home page)."""
+        marks = ",".join("?" * len(catalog_ids))
+        with connect(self.db_path) as conn:
+            rows = conn.execute(
+                f"""SELECT d.url, d.title, d.publisher, d.published_at,
+                           (SELECT text FROM passages WHERE doc_id = d.id ORDER BY rowid LIMIT 1) AS first_passage
+                    FROM documents d WHERE d.catalog_id IN ({marks})
+                    ORDER BY d.published_at DESC LIMIT ?""",
+                (*catalog_ids, limit),
+            ).fetchall()
+        result = []
+        for row in rows:
+            text = (row["first_passage"] or "").removeprefix(row["title"]).strip()
+            result.append(
+                {
+                    "url": row["url"],
+                    "title": row["title"],
+                    "publisher": row["publisher"],
+                    "published_at": row["published_at"],
+                    "summary": text[:240].rsplit(" ", 1)[0] + "…" if len(text) > 240 else text,
+                }
+            )
+        return result
+
     def stats(self) -> dict:
         with connect(self.db_path) as conn:
             docs = conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]

@@ -9,27 +9,36 @@ Send a message or link through the web page or Discord. Tap & Check finds the ch
 
 ## Running locally
 
-Requirements: Python 3.12, Node 20+.
+Requirements: Python 3.12 (no Node needed: the API serves the web page).
 
 ```bash
-# 1. Backend
+# 1. Install
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env            # then set ANTHROPIC_API_KEY (or LLM_PROVIDER=fake to run offline)
+cp .env.example .env            # set ANTHROPIC_API_KEY (or LLM_PROVIDER=fake to run offline)
 
-# 2. Build the corpus index from corpus/records/*.jsonl
+# 2. Build the search index from the saved documents in corpus/text_sources/
 cd backend
 ../.venv/bin/python -m scripts.build_index --rebuild
 
-# 3. Start the API (http://localhost:8000, OpenAPI docs at /docs)
+# 3. Start the API + web page: open http://localhost:8000 (API docs at /docs)
 ../.venv/bin/uvicorn app.main:app --port 8000
 
-# 4. Start the web UI (http://localhost:5173), in another terminal
-cd frontend && npm install && npm run dev
-
-# 5. Optional: start the Discord bot (needs DISCORD_TOKEN in .env), in another terminal
+# 4. Optional: Discord bot (needs DISCORD_TOKEN in .env), in another terminal
 cd backend && ../.venv/bin/python -m channels.discord_bot
 ```
+
+Refresh the corpus (optional; the saved documents are in the repository):
+
+```bash
+cd backend
+../.venv/bin/python -m crawlers.run --all          # official sources (RCB, Policja, CERT, SOK, UM Gdynia)
+../.venv/bin/python -m scripts.seed_factchecks     # fact-checks via Google Fact Check API (needs GOOGLE_FACTCHECK_API_KEY)
+../.venv/bin/python -m scripts.build_index --rebuild
+```
+
+The web page is `web/index.html` (design by a teammate, wired to the API). The older React
+UI in `frontend/` is no longer needed.
 
 Run the tests (no API key needed):
 
@@ -43,6 +52,8 @@ cd backend && ../.venv/bin/python -m pytest
 |---|---|
 | `POST /api/check` | Check text or a URL: `{"text": "...", "channel": "web", "session_id": "..."}` |
 | `GET /api/check/{id}` | Fetch a stored result (used by links shared from Discord) |
+| `GET /api/warnings` | Latest CERT Polska advisories from the corpus |
+| `GET /`, `GET /r/{id}` | Web page, and shared result links |
 | `DELETE /api/session/{id}` | Delete all stored checks for a session |
 | `GET /api/health` | Status, active model provider, corpus size |
 | `GET /api/logs`, `GET /api/metrics` | Audit log and metrics (header `X-Admin-Token`) |

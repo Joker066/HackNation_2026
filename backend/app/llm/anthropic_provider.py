@@ -12,6 +12,9 @@ from .base import LLMError, LLMUsage, T
 log = logging.getLogger(__name__)
 
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
+# Models that accept server-side refusal fallbacks. Claude Haiku 5.5 does not, so for it a
+# refusal is reported as an LLMError ("refused"), which the pipeline shows as a technical error.
+FALLBACK_MODELS = ("claude-opus-5", "claude-sonnet-5-5", "claude-fable-5")
 
 
 class AnthropicProvider:
@@ -32,6 +35,10 @@ class AnthropicProvider:
 
     def generate(self, *, system: str, user: str, schema: type[T]) -> tuple[T, LLMUsage]:
         try:
+            extra = {}
+            if self.model.startswith(FALLBACK_MODELS):
+                # If a safety classifier declines, the API retries on a fallback model in the same call.
+                extra = {"betas": [FALLBACK_BETA], "fallbacks": "default"}
             response = self.client.beta.messages.parse(
                 model=self.model,
                 max_tokens=8000,
@@ -39,9 +46,7 @@ class AnthropicProvider:
                 messages=[{"role": "user", "content": user}],
                 output_format=schema,
                 output_config={"effort": self.effort},
-                # If a safety classifier declines, the API retries on a fallback model in the same call.
-                betas=[FALLBACK_BETA],
-                fallbacks="default",
+                **extra,
             )
         except anthropic.AuthenticationError as e:
             raise LLMError("auth", "Invalid or missing Anthropic API key") from e

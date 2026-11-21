@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap &amp; Check – sprawdź, zanim uwierzysz</title>
+    <meta name="description" content="Prototyp narzędzia do weryfikacji doniesień na podstawie jawnych, wiarygodnych źródeł. HackNation 2026, zadanie MSZ „Prawdowid”.">
+
+    <!-- Design: TAP&CHECK web_v1 (teammate). Wired to the Tap & Check API; see backend/app/main.py. -->
+
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (Play CDN) and Lucide icons, pinned versions -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        gov: {
+                            navy: '#0C2442',
+                            navyLight: '#163A63',
+                            ocean: '#0284C7',
+                            oceanDark: '#0369A1',
+                            teal: '#0D9488',
+                            tealDark: '#0F766E',
+                            red: '#DC2626',
+                            bg: '#F0F9FF',
+                            border: '#BAE6FD',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-bubble: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            background-color: #F8FAFC;
+            color: #0C2442;
+            transition: font-size 0.3s var(--ease-fluid), background-color 0.3s var(--ease-fluid);
+        }
+
+        /* Tryby powiększonej czcionki dla seniorów (WCAG) */
+        html.font-large {
+            font-size: 18px;
+        }
+        html.font-xlarge {
+            font-size: 20px;
+        }
+
+        /* Tryb wysokiego kontrastu (WCAG AAA) */
+        html.high-contrast body {
+            background-color: #000000 !important;
+            color: #FFFF00 !important;
+        }
+        html.high-contrast .ocean-bg-layer {
+            display: none !important;
+        }
+        html.high-contrast .hc-bg {
+            background-color: #000000 !important;
+            border-color: #FFFF00 !important;
+            color: #FFFF00 !important;
+        }
+        html.high-contrast .hc-card,
+        html.high-contrast .ocean-glass,
+        html.high-contrast .ocean-glass-strong {
+            background-color: #111111 !important;
+            border: 2px solid #FFFF00 !important;
+            color: #FFFF00 !important;
+            box-shadow: none !important;
+        }
+        html.high-contrast .hc-text {
+            color: #FFFF00 !important;
+        }
+        html.high-contrast .hc-text-muted {
+            color: #FFFFFF !important;
+        }
+        html.high-contrast .hc-btn {
+            background-color: #FFFF00 !important;
+            color: #000000 !important;
+            border: 2px solid #FFFF00 !important;
+        }
+        html.high-contrast .hc-input {
+            background-color: #000000 !important;
+            color: #FFFF00 !important;
+            border: 2px solid #FFFF00 !important;
+        }
+
+        /* Trzy spokojne, płynące fale oceaniczne w tle (bez bąbelków) */
+        @keyframes oceanWave1 {
+            0%, 100% {
+                transform: translate3d(0, 0, 0) scaleY(1);
+            }
+            50% {
+                transform: translate3d(-2.2%, 14px, 0) scaleY(1.03);
+            }
+        }
+        @keyframes oceanWave2 {
+            0%, 100% {
+                transform: translate3d(0, 0, 0) scaleY(1);
+            }
+            50% {
+                transform: translate3d(2.2%, -12px, 0) scaleY(0.98);
+            }
+        }
+        @keyframes oceanWave3 {
+            0%, 100% {
+                transform: translate3d(0, 0, 0);
+            }
+            50% {
+                transform: translate3d(-1.5%, 10px, 0);
+            }
+        }
+        .animate-ocean-1 {
+            animation: oceanWave1 13s ease-in-out infinite;
+        }
+        .animate-ocean-2 {
+            animation: oceanWave2 16s ease-in-out infinite;
+        }
+        .animate-ocean-3 {
+            animation: oceanWave3 11s ease-in-out infinite;
+        }
+
+        /* Szklane, miękkie karty oceaniczne (Liquid Glass) */
+        .ocean-glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 20px 45px -12px rgba(12, 36, 66, 0.09),
+                0 8px 24px -6px rgba(2, 132, 199, 0.08),
+                inset 0 2px 4px rgba(255, 255, 255, 0.95);
+        }
+        .ocean-glass-strong {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(26px) saturate(170%);
+            -webkit-backdrop-filter: blur(26px) saturate(170%);
+            border: 2px solid rgba(255, 255, 255, 1);
+            box-shadow:
+                0 26px 55px -14px rgba(12, 36, 66, 0.13),
+                0 10px 28px -8px rgba(2, 132, 199, 0.12),
+                inset 0 3px 6px rgba(255, 255, 255, 1);
+        }
+
+        /* Sprężyste przejścia kart i przycisków */
+        .ocean-spring {
+            transition: transform 0.45s var(--ease-bubble), box-shadow 0.4s var(--ease-fluid), background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .ocean-spring:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow:
+                0 26px 50px -12px rgba(12, 36, 66, 0.14),
+                0 12px 28px -6px rgba(2, 132, 199, 0.16),
+                inset 0 2px 5px rgba(255, 255, 255, 1);
+        }
+        .ocean-btn {
+            transition: transform 0.38s var(--ease-bubble), box-shadow 0.35s var(--ease-fluid), background-color 0.25s ease;
+        }
+        .ocean-btn:hover {
+            transform: translateY(-2px) scale(1.025);
+        }
+        .ocean-btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Delikatne podświetlenie docelowej sekcji po kliknięciu w tabelkę nawigacyjną */
+        @keyframes sectionHighlightPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.65);
+            }
+            45% {
+                box-shadow: 0 0 0 14px rgba(2, 132, 199, 0.18);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(2, 132, 199, 0);
+            }
+        }
+        .section-highlight-active {
+            animation: sectionHighlightPulse 1.8s var(--ease-fluid);
+            border-color: #0284C7 !important;
+        }
+
+        /* Płynny suwak zakładek (Sliding Pill) */
+        #tabIndicator {
+            transition: transform 0.48s var(--ease-bubble), width 0.48s var(--ease-bubble);
+        }
+
+        /* Płynne pojawianie się karty wyniku i modali */
+        @keyframes slideFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .animate-result {
+            animation: slideFadeIn 0.55s var(--ease-bubble) forwards;
+        }
+
+        /* Animacja przy przewijaniu (Scroll Reveal) */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.65s var(--ease-fluid), transform 0.65s var(--ease-bubble);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Pulsujące punkty skanera */
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+        .animate-dot-pulse {
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        /* Pasek postępu skanowania */
+        @keyframes scanSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(220%); }
+        }
+        .animate-scan-sweep {
+            animation: scanSweep 1.3s var(--ease-fluid) infinite;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-gov-ocean selection:text-white relative overflow-x-hidden">
+
+    <div class="ocean-bg-layer fixed inset-0 -z-20 pointer-events-none overflow-hidden select-none" aria-hidden="true">
+        <!-- Jasne, kojące niebo oceaniczne na górze -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#FFFFFF] via-[#F0F9FF] to-[#E0F2FE]"></div>
+
+        <!-- Fala 1 (Tylna – jasny błękit lazurowy) -->
+        <svg class="absolute top-[26%] left-0 w-[110%] -ml-[5%] h-[78vh] animate-ocean-2" viewBox="0 0 1440 760" fill="none" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="azureWaveBack" x1="720" y1="0" x2="720" y2="760" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.22" />
+                    <stop offset="50%" stop-color="#0284C7" stop-opacity="0.38" />
+                    <stop offset="100%" stop-color="#0369A1" stop-opacity="0.62" />
+                </linearGradient>
+            </defs>
+            <path d="M-40,130 C280,250 560,20 920,145 C1190,235 1350,85 1480,120 L1480,780 L-40,780 Z" fill="url(#azureWaveBack)" />
+        </svg>
+
+        <!-- Fala 2 (Środkowa – głęboki błękit oceaniczny #0284C7 -> #0369A1) -->
+        <svg class="absolute top-[35%] left-0 w-[110%] -ml-[5%] h-[72vh] animate-ocean-1" viewBox="0 0 1440 720" fill="none" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="azureWaveMain" x1="720" y1="0" x2="720" y2="720" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#0284C7" stop-opacity="0.48" />
+                    <stop offset="45%" stop-color="#0369A1" stop-opacity="0.72" />
+                    <stop offset="100%" stop-color="#0C4A6E" stop-opacity="0.88" />
+                </linearGradient>
+                <linearGradient id="azureCrestHighlight" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35" />
+                    <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.35" />
+                </linearGradient>
+            </defs>
+            <path d="M-40,120 C340,10 640,220 1020,115 C1240,55 1380,145 1480,110 L1480,740 L-40,740 Z" fill="url(#azureWaveMain)" />
+            <path d="M-40,120 C340,10 640,220 1020,115 C1240,55 1380,145 1480,110" stroke="url(#azureCrestHighlight)" stroke-width="4" />
+        </svg>
+
+        <!-- Fala 3 (Przednia – morski turkus #0D9488 łączący się z głębokim kobaltem) -->
+        <svg class="absolute top-[48%] left-0 w-[110%] -ml-[5%] h-[56vh] animate-ocean-3" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="tealWaveFront" x1="720" y1="0" x2="720" y2="600" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#0D9488" stop-opacity="0.34" />
+                    <stop offset="55%" stop-color="#0F766E" stop-opacity="0.62" />
+                    <stop offset="100%" stop-color="#0C2442" stop-opacity="0.85" />
+                </linearGradient>
+            </defs>
+            <path d="M-40,145 C420,245 780,45 1160,155 C1320,200 1420,130 1480,115 L1480,620 L-40,620 Z" fill="url(#tealWaveFront)" />
+        </svg>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 1. GÓRNY PASEK: INFORMACJA O PROTOTYPIE + DOSTĘPNOŚĆ (WCAG)            -->
+    <!-- ===================================================================== -->
+    <div class="bg-[#091B33]/95 backdrop-blur-md text-white text-xs sm:text-sm border-b border-white/10 hc-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-2.5">
+                <span class="w-6 h-6 rounded-full bg-amber-500 border border-white/50 flex items-center justify-center shrink-0" aria-hidden="true">
+                    <i data-lucide="flask-conical" class="w-3.5 h-3.5 text-white"></i>
+                </span>
+                <span class="font-medium text-slate-100">Prototyp – HackNation 2026, zadanie MSZ „Prawdowid”. To nie jest serwis rządowy.</span>
+                <button onclick="toggleInfoPanel()" class="inline-flex items-center space-x-1 text-teal-300 hover:text-teal-200 font-semibold underline decoration-teal-400/50 underline-offset-4 ml-1 cursor-pointer">
+                    <span>Jak oceniamy?</span>
+                    <i id="infoChevron" data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-white/10 rounded-full p-0.5 border border-white/15" role="group" aria-label="Wielkość tekstu">
+                    <button onclick="setFontSize('normal')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Domyślny rozmiar tekstu">A</button>
+                    <button onclick="setFontSize('large')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Powiększony tekst">A+</button>
+                    <button onclick="setFontSize('xlarge')" class="px-2.5 py-0.5 rounded-full text-xs font-bold hover:bg-white/20 transition cursor-pointer" title="Bardzo duży tekst">A++</button>
+                </div>
+                <button onclick="toggleHighContrast()" class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-semibold transition cursor-pointer" title="Tryb wysokiego kontrastu">
+                    <i data-lucide="contrast" class="w-3.5 h-3.5 text-amber-300"></i>
+                    <span class="hidden sm:inline">Kontrast</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Rozwijany panel: jak działa ocena -->
+        <div id="infoPanel" class="overflow-hidden transition-all duration-500 ease-out max-h-0 opacity-0 bg-[#102A4C] border-t border-white/10 px-4 hc-bg">
+            <div class="max-w-7xl mx-auto py-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-200">
+                <div class="flex items-start space-x-3">
+                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="library" class="w-5 h-5"></i></div>
+                    <div>
+                        <p class="font-semibold text-white mb-0.5">Tylko jawne źródła</p>
+                        <p class="text-slate-300">Odpowiadamy wyłącznie na podstawie zbioru komunikatów urzędowych (np. RCB, Policja, CERT Polska) i weryfikacji fact-checkerów. Każdy cytat prowadzi do źródła.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="scale" class="w-5 h-5"></i></div>
+                    <div>
+                        <p class="font-semibold text-white mb-0.5">Werdykt liczą jawne reguły</p>
+                        <p class="text-slate-300">Wynik od −1 do +1 zależy od wiarygodności i aktualności źródeł oraz liczby niezależnych potwierdzeń. Gdy dowodów brakuje – wstrzymujemy się od oceny.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="p-2 bg-teal-500/20 rounded-full text-teal-300 shrink-0"><i data-lucide="bot" class="w-5 h-5"></i></div>
+                    <div>
+                        <p class="font-semibold text-white mb-0.5">Korzystamy ze sztucznej inteligencji</p>
+                        <p class="text-slate-300">Model językowy pomaga zrozumieć pytanie i porównać fragmenty źródeł. Nie jest „sędzią prawdy” – zawsze sprawdź źródła samodzielnie.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 2. GŁÓWNA NAWIGACJA                                                    -->
+    <!-- ===================================================================== -->
+    <header class="sticky top-3 z-40 px-3 sm:px-6 lg:px-8 transition-all duration-300">
+        <div class="max-w-7xl mx-auto ocean-glass rounded-full px-4 sm:px-7 hc-bg">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <a href="/" class="flex items-center space-x-3.5 group focus:outline-none">
+                    <div class="relative w-11 h-11 rounded-full bg-gradient-to-br from-gov-oceanDark via-gov-ocean to-gov-teal flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-gov-navy hc-text">TAP<span class="text-gov-ocean">&amp;</span>CHECK</span>
+                            <span class="hidden sm:inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 hc-card">prototyp</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 font-medium hidden sm:block hc-text-muted">Weryfikacja doniesień na podstawie wiarygodnych źródeł</p>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex items-center space-x-1.5" aria-label="Menu główne">
+                    <button onclick="scrollToSection('sekcja-przewodnik')" class="px-4 py-2 rounded-full text-sm font-semibold text-slate-700 hover:text-gov-oceanDark hover:bg-sky-50/90 transition-all duration-200 cursor-pointer hc-text">Spis treści</button>
+                    <button onclick="scrollToSection('sekcja-sprawdz')" class="px-4 py-2 rounded-full text-sm font-semibold text-slate-700 hover:text-gov-oceanDark hover:bg-sky-50/90 transition-all duration-200 cursor-pointer hc-text">Sprawdź</button>
+                    <button onclick="scrollToSection('sekcja-ostrzezenia')" class="px-4 py-2 rounded-full text-sm font-semibold text-slate-700 hover:text-gov-oceanDark hover:bg-sky-50/90 transition-all duration-200 flex items-center space-x-1.5 cursor-pointer hc-text">
+                        <span>Ostrzeżenia CERT</span>
+                        <span class="w-2 h-2 rounded-full bg-gov-teal animate-ping"></span>
+                    </button>
+                    <button onclick="scrollToSection('sekcja-jak-to-dziala')" class="px-4 py-2 rounded-full text-sm font-semibold text-slate-700 hover:text-gov-oceanDark hover:bg-sky-50/90 transition-all duration-200 cursor-pointer hc-text">Jak to działa</button>
+                </nav>
+
+                <div class="flex items-center space-x-2.5">
+                    <button onclick="scrollToSection('sekcja-pomoc')" class="ocean-btn inline-flex items-center space-x-2.5 bg-gradient-to-r from-gov-navy to-gov-oceanDark text-white font-semibold text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-md hover:shadow-lg cursor-pointer hc-btn">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Sprawdź <span class="hidden sm:inline">na Discordzie</span></span>
+                    </button>
+                    <button onclick="toggleMobileMenu()" aria-label="Otwórz menu" class="lg:hidden p-2.5 rounded-full text-gov-navy bg-white/85 hover:bg-white border border-sky-200/80 transition cursor-pointer hc-card">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden max-w-7xl mx-auto mt-2 ocean-glass-strong rounded-[2rem] px-4 pt-3 pb-5 space-y-1.5 hc-bg">
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-przewodnik')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Szybki przewodnik po stronie</button>
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-sprawdz')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Sprawdź link lub wiadomość</button>
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-ostrzezenia')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Najnowsze ostrzeżenia CERT Polska</button>
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-jak-to-dziala')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Jak to działa? (3 kroki)</button>
+            <button onclick="toggleMobileMenu(); scrollToSection('sekcja-pomoc')" class="w-full text-left block px-4 py-3 rounded-full text-base font-semibold text-gov-navy hover:bg-sky-50/80 hc-text">Discord i zgłaszanie oszustw</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="relative pt-8 pb-16 sm:pt-12 sm:pb-24">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Nagłówek Hero -->
+                <div class="text-center max-w-3xl mx-auto mb-8 animate-result">
+                    <div class="inline-flex items-center space-x-2.5 ocean-glass px-5 py-2 rounded-full mb-5 hc-card">
+                        <span class="flex h-2.5 w-2.5 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-gov-teal"></span>
+                        </span>
+                        <span id="corpusBadge" class="text-xs font-bold text-gov-navy hc-text">Odpowiadamy tylko na podstawie jawnych, wiarygodnych źródeł</span>
+                    </div>
+                    <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[52px] text-gov-navy tracking-tight leading-[1.14] mb-4 drop-shadow-[0_2px_12px_rgba(255,255,255,0.9)] hc-text">
+                        Sprawdź, zanim klikniesz <br class="hidden sm:inline">lub uwierzysz.
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-700 font-medium leading-relaxed max-w-2xl mx-auto bg-white/75 backdrop-blur-md px-5 py-2.5 rounded-3xl border border-white/90 hc-text-muted">
+                        Wklej podejrzaną wiadomość, pogłoskę albo link. Pokażemy, co mówią na ten temat komunikaty urzędowe i fact-checkerzy – z cytatami i linkami do źródeł.
+                    </p>
+                </div>
+
+                <!-- Szybki przewodnik (czytelna tabelka dla seniorów) -->
+                <div id="sekcja-przewodnik" class="mb-10 animate-result">
+                    <div class="ocean-glass-strong rounded-[2.25rem] overflow-hidden hc-card">
+                        <div class="bg-gradient-to-r from-gov-navy via-gov-oceanDark to-gov-teal px-6 sm:px-8 py-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 hc-bg">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-11 h-11 rounded-full bg-white/15 border border-white/30 flex items-center justify-center shrink-0">
+                                    <i data-lucide="compass" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-display font-extrabold text-lg sm:text-xl leading-snug hc-text">Szybki przewodnik po stronie – kliknij, aby przejść do wybranej części</h2>
+                                    <p class="text-xs sm:text-sm text-sky-100 hc-text-muted">Strona automatycznie przewinie się w odpowiednie miejsce.</p>
+                                </div>
+                            </div>
+                            <span class="self-start sm:self-center inline-flex items-center space-x-1.5 bg-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shrink-0">
+                                <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5"></i>
+                                <span>4 proste sekcje</span>
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse" aria-label="Szybki przewodnik po sekcjach strony">
+                                <thead class="hidden md:table-header-group bg-sky-50/90 border-b border-sky-100 text-xs font-extrabold uppercase tracking-wider text-gov-oceanDark hc-bg">
+                                    <tr>
+                                        <th scope="col" class="py-3.5 pl-8 pr-4 w-2/5">Część strony</th>
+                                        <th scope="col" class="py-3.5 px-4 w-2/5">Co tutaj znajdziesz?</th>
+                                        <th scope="col" class="py-3.5 pl-4 pr-8 text-right w-1/5">Nawigacja</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="guideRows" class="divide-y divide-sky-100/90 text-sm sm:text-base"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- GŁÓWNY PANEL WERYFIKACJI (#sekcja-sprawdz)                -->
+                <!-- ========================================================= -->
+                <div id="sekcja-sprawdz" class="scroll-mt-28 ocean-glass-strong rounded-[2.5rem] p-6 sm:p-9 lg:p-11 relative overflow-hidden transition-all duration-500 hc-card">
+                    <div class="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-gradient-to-br from-sky-200/45 via-teal-100/40 to-transparent blur-2xl"></div>
+
+                    <!-- Ekran analizy (widoczny podczas sprawdzania) -->
+                    <div id="scannerOverlay" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xl z-20 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-300 hc-bg" role="status" aria-live="polite">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <span class="w-4 h-4 rounded-full bg-gov-ocean animate-dot-pulse" style="animation-delay: 0s;"></span>
+                            <span class="w-6 h-6 rounded-full bg-gov-teal animate-dot-pulse" style="animation-delay: 0.2s;"></span>
+                            <span class="w-4 h-4 rounded-full bg-gov-navy animate-dot-pulse" style="animation-delay: 0.4s;"></span>
+                        </div>
+                        <div class="w-full max-w-md h-2.5 bg-sky-100 rounded-full overflow-hidden mb-6 relative p-0.5">
+                            <div class="h-full bg-gradient-to-r from-gov-navy via-gov-ocean to-gov-teal w-1/2 rounded-full animate-scan-sweep"></div>
+                        </div>
+                        <div class="p-4 rounded-full bg-sky-50 border-2 border-sky-200 text-gov-oceanDark flex items-center justify-center mb-4 shadow-md hc-card">
+                            <i data-lucide="radar" class="w-8 h-8 animate-spin" style="animation-duration: 3s;"></i>
+                        </div>
+                        <h3 class="font-display font-extrabold text-xl text-gov-navy mb-1.5 hc-text">Sprawdzamy w zbiorze źródeł…</h3>
+                        <p id="scanStepText" class="text-sm text-slate-600 transition-opacity duration-300 hc-text-muted">Szukamy twierdzeń do sprawdzenia…</p>
+                        <p class="text-xs text-slate-400 mt-3 hc-text-muted">Zwykle trwa to 10–30 sekund.</p>
+                    </div>
+
+                    <!-- Zakładki -->
+                    <div class="relative grid grid-cols-1 sm:grid-cols-3 gap-1.5 p-2 bg-sky-50/90 rounded-full mb-7 hc-bg border border-sky-200/70" role="tablist" id="tabContainer">
+                        <div id="tabIndicator" class="hidden sm:block absolute top-2 bottom-2 left-2 bg-white rounded-full shadow-md pointer-events-none hc-card"></div>
+                        <button onclick="switchTab('text')" id="tab-text" role="tab" aria-selected="true" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-bold text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
+                            <i data-lucide="message-square-warning" class="w-4 h-4 text-gov-oceanDark"></i>
+                            <span>Wiadomość / SMS / e-mail</span>
+                        </button>
+                        <button onclick="switchTab('news')" id="tab-news" role="tab" aria-selected="false" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
+                            <i data-lucide="newspaper" class="w-4 h-4"></i>
+                            <span>Informacja / pogłoska</span>
+                        </button>
+                        <button onclick="switchTab('link')" id="tab-link" role="tab" aria-selected="false" class="relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text">
+                            <i data-lucide="globe" class="w-4 h-4"></i>
+                            <span>Link do artykułu</span>
+                        </button>
+                    </div>
+
+                    <!-- Pole tekstowe -->
+                    <div class="relative mb-6">
+                        <label for="verifyInput" id="inputLabel" class="block text-sm sm:text-base font-bold text-gov-navy mb-2.5 pl-2 transition-opacity duration-200 hc-text">
+                            Wklej treść podejrzanej wiadomości SMS lub e-mail:
+                        </label>
+                        <div class="relative group">
+                            <textarea id="verifyInput" rows="4" maxlength="5000" placeholder="" class="w-full rounded-[1.75rem] border-2 border-sky-200/80 bg-white/95 focus:bg-white focus:border-gov-ocean focus:ring-4 focus:ring-gov-ocean/15 p-5 pr-36 text-base text-gov-navy placeholder-slate-400 transition-all duration-300 resize-none shadow-inner hc-input"></textarea>
+                            <div class="absolute right-3.5 top-3.5 flex items-center space-x-1.5">
+                                <button onclick="clearInput()" id="clearBtn" title="Wyczyść pole" class="hidden p-2.5 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 transition-all duration-200 cursor-pointer">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="pasteFromClipboard()" class="ocean-btn inline-flex items-center space-x-1.5 bg-sky-50 hover:bg-sky-100 text-gov-oceanDark font-bold text-xs sm:text-sm px-4 py-2.5 rounded-full border border-sky-200/80 shadow-xs cursor-pointer hc-card">
+                                    <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
+                                    <span>Wklej</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 pl-2 hc-text-muted">Nie wpisuj swoich danych osobowych. Oczywiste dane (e-mail, telefon, PESEL) automatycznie maskujemy.</p>
+                    </div>
+
+                    <!-- Przykłady + przycisk -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold text-slate-600 mr-1 pl-1 hc-text-muted">Wypróbuj przykład:</span>
+                            <button onclick="runExample('energy')" class="ocean-btn inline-flex items-center space-x-1.5 text-xs font-bold px-4 py-2 rounded-full bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/80 shadow-xs cursor-pointer hc-card">
+                                <span class="w-2 h-2 rounded-full bg-rose-600"></span><span>SMS o zwrocie za prąd</span>
+                            </button>
+                            <button onclick="runExample('rcb')" class="ocean-btn inline-flex items-center space-x-1.5 text-xs font-bold px-4 py-2 rounded-full bg-sky-50 text-gov-oceanDark hover:bg-sky-100 border border-sky-200/80 shadow-xs cursor-pointer hc-card">
+                                <span class="w-2 h-2 rounded-full bg-gov-ocean"></span><span>Alert RCB</span>
+                            </button>
+                            <button onclick="runExample('nato')" class="ocean-btn inline-flex items-center space-x-1.5 text-xs font-bold px-4 py-2 rounded-full bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/80 shadow-xs cursor-pointer hc-card">
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span><span>Pogłoska o NATO</span>
+                            </button>
+                        </div>
+                        <button id="checkBtn" onclick="startVerification()" class="ocean-btn w-full lg:w-auto inline-flex items-center justify-center space-x-2.5 bg-gradient-to-r from-gov-oceanDark via-gov-ocean to-gov-teal text-white font-display font-extrabold text-base px-9 py-4 rounded-full shadow-[0_12px_28px_-6px_rgba(2,132,199,0.45)] hover:shadow-[0_18px_36px_-6px_rgba(2,132,199,0.6)] cursor-pointer hc-btn">
+                            <i data-lucide="search-check" class="w-5 h-5"></i>
+                            <span>Sprawdź teraz</span>
+                        </button>
+                    </div>
+
+                    <!-- Wynik -->
+                    <div id="resultContainer" class="hidden mt-8 pt-8 border-t border-sky-100 animate-result" aria-live="polite"></div>
+                </div>
+
+                <!-- Pasek zaufania (prawdziwe deklaracje) -->
+                <div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-gov-navy hc-text-muted">
+                    <div class="ocean-glass inline-flex items-center space-x-2 px-4 py-2 rounded-full hc-card">
+                        <i data-lucide="shield" class="w-4 h-4 text-gov-oceanDark hc-text"></i><span>Bezpłatnie, bez logowania</span>
+                    </div>
+                    <div class="ocean-glass inline-flex items-center space-x-2 px-4 py-2 rounded-full hc-card">
+                        <i data-lucide="quote" class="w-4 h-4 text-gov-tealDark hc-text"></i><span>Każdy werdykt z cytatem i linkiem do źródła</span>
+                    </div>
+                    <div class="ocean-glass inline-flex items-center space-x-2 px-4 py-2 rounded-full hc-card">
+                        <i data-lucide="eye-off" class="w-4 h-4 text-gov-oceanDark hc-text"></i><span>Dane osobowe maskowane, historia usuwana po 30 dniach</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- NAJNOWSZE OSTRZEŻENIA CERT POLSKA (z korpusu, z linkami)           -->
+        <!-- ================================================================= -->
+        <section id="sekcja-ostrzezenia" class="scroll-mt-28 py-14 sm:py-20 reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="ocean-glass rounded-[2.25rem] p-6 sm:p-8 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 hc-card">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 bg-sky-50 text-gov-oceanDark font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full mb-2.5 border border-sky-200/80 hc-card">
+                            <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i><span>Komunikaty CERT Polska (moje.cert.pl)</span>
+                        </div>
+                        <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy hc-text">Najnowsze ostrzeżenia przed oszustwami</h2>
+                        <p class="text-slate-600 text-sm sm:text-base mt-1 hc-text-muted">Ostatnie komunikaty z naszego zbioru źródeł. Pełna treść – po kliknięciu w link.</p>
+                    </div>
+                    <a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 text-sm font-bold text-white bg-gov-navy hover:bg-gov-oceanDark shadow-md px-6 py-3.5 rounded-full self-start md:self-auto hc-btn">
+                        <span>Wszystkie komunikaty CERT</span><i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div id="warningsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-7">
+                    <p class="md:col-span-3 text-center text-sm text-slate-500 hc-text-muted">Wczytywanie ostrzeżeń…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- JAK TO DZIAŁA? 3 KROKI                                             -->
+        <!-- ================================================================= -->
+        <section id="sekcja-jak-to-dziala" class="scroll-mt-28 py-14 sm:py-20 reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12 ocean-glass rounded-[2.25rem] p-7 hc-card">
+                    <span class="inline-block text-xs font-extrabold uppercase tracking-wider text-gov-tealDark bg-teal-50 px-3.5 py-1 rounded-full mb-2 hc-text">Prosto i przejrzyście</span>
+                    <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy mt-1 mb-2.5 hc-text">Jak działa TAP&amp;CHECK?</h2>
+                    <p class="text-slate-600 text-sm sm:text-base hc-text-muted">Nie musisz być ekspertem. Pokazujemy, na czym opiera się każda odpowiedź – i uczciwie mówimy, gdy czegoś nie wiemy.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">1</div>
+                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Wklej wiadomość lub link</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Treść SMS-a, e-maila, posta albo link do artykułu. System wyszukuje w niej twierdzenia, które da się sprawdzić, i oddziela je od opinii.</p>
+                    </div>
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">2</div>
+                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Szukamy w jawnych źródłach</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Komunikaty RCB, Policji, CERT Polska, urzędów morskich i Straży Ochrony Kolei oraz weryfikacje fact-checkerów (m.in. Demagog, AFP). Lista źródeł jest jawna.</p>
+                    </div>
+                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative hc-card">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-teal to-gov-tealDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg hc-btn">3</div>
+                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Werdykt z cytatami</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Jedna z pięciu ocen: potwierdzone, fałsz, wprowadza w błąd, brak wystarczających dowodów albo nie podlega weryfikacji – z dosłownymi cytatami i siłą dowodów.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- DISCORD + ZGŁASZANIE OSZUSTW (#sekcja-pomoc)                       -->
+        <!-- ================================================================= -->
+        <section id="sekcja-pomoc" class="scroll-mt-28 py-14 sm:py-20 relative overflow-hidden reveal-on-scroll">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                    <div class="bg-gradient-to-br from-gov-navy via-[#0E3159] to-gov-oceanDark text-white border border-white/20 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl ocean-spring flex flex-col justify-between hc-card">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 bg-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-teal-300 mb-5">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i><span>Drugi kanał: Discord</span>
+                            </div>
+                            <h3 class="font-display font-extrabold text-2xl sm:text-3xl mb-4 hc-text">Sprawdzaj bez wychodzenia z czatu</h3>
+                            <p class="text-sky-100 text-sm sm:text-base leading-relaxed mb-4 hc-text-muted">
+                                Napisz do bota <strong>Tap &amp; Check</strong> wiadomość prywatną, oznacz go na kanale albo użyj komendy <strong>/sprawdz</strong>. Odpowiedź jest taka sama jak na tej stronie – ta sama logika i te same źródła – z linkiem do pełnego wyniku.
+                            </p>
+                        </div>
+                        <div id="discordAction" class="flex flex-wrap items-center gap-3">
+                            <span class="inline-flex items-center space-x-2 text-xs text-sky-100 px-3 py-2">
+                                <i data-lucide="info" class="w-4 h-4 text-teal-300"></i><span>Zaproszenie do serwera demonstracyjnego udostępniamy jury.</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ocean-glass-strong rounded-[2.5rem] p-8 sm:p-10 ocean-spring flex flex-col justify-between hc-card">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200/80 px-4 py-1.5 rounded-full text-xs font-bold text-gov-tealDark mb-5">
+                                <i data-lucide="heart-handshake" class="w-4 h-4"></i><span>Gdzie zgłosić oszustwo</span>
+                            </div>
+                            <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy mb-4 hc-text">Dostałeś podejrzany SMS? Zgłoś go do CERT Polska</h3>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-7 hc-text-muted">
+                                Podejrzany SMS możesz bezpłatnie przekazać na numer <strong>8080</strong>, a stronę lub e-mail zgłosić przez <strong>incydent.cert.pl</strong>. To usługi CERT Polska (NASK), niezależne od Tap &amp; Check – my nie przekazujemy zgłoszeń za Ciebie.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-gov-teal to-gov-oceanDark text-white font-display font-extrabold text-base px-7 py-4 rounded-full shadow-lg hc-btn">
+                                <i data-lucide="flag" class="w-5 h-5"></i><span>incydent.cert.pl</span>
+                            </a>
+                            <div class="text-xs text-slate-600 hc-text-muted">
+                                <p class="font-bold text-gov-navy">SMS: przekaż na 8080</p>
+                                <p>Usługa CERT Polska / NASK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- STOPKA                                                                 -->
+    <!-- ===================================================================== -->
+    <footer class="px-3 sm:px-6 lg:px-8 pb-8 pt-4 text-slate-600">
+        <div class="max-w-7xl mx-auto ocean-glass-strong rounded-[2.5rem] p-8 sm:p-12 hc-bg">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-sky-100">
+                <div>
+                    <div class="flex items-center space-x-2.5 mb-4">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-teal flex items-center justify-center text-white shadow-sm">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-display font-extrabold text-lg text-gov-navy hc-text">TAP<span class="text-gov-ocean">&amp;</span>CHECK</span>
+                    </div>
+                    <p class="text-xs leading-relaxed text-slate-500 mb-4 hc-text-muted">
+                        Prototyp przygotowany na hackathon HackNation 2026 w ramach zadania Ministerstwa Spraw Zagranicznych „Prawdowid”. Nie jest oficjalnym serwisem administracji publicznej.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Na skróty</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><button onclick="scrollToSection('sekcja-sprawdz')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Sprawdź wiadomość lub link</button></li>
+                        <li><button onclick="scrollToSection('sekcja-ostrzezenia')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Ostrzeżenia CERT Polska</button></li>
+                        <li><button onclick="scrollToSection('sekcja-jak-to-dziala')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Jak to działa</button></li>
+                        <li><button onclick="scrollToSection('sekcja-pomoc')" class="hover:text-gov-oceanDark hover:underline cursor-pointer hc-text-muted">Discord i zgłaszanie oszustw</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Wybrane źródła</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="https://www.gov.pl/web/rcb/raport-dobowy3" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Raport dobowy RCB</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://moje.cert.pl/komunikaty/" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Komunikaty CERT Polska</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://policja.pl/pol/aktualnosci" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Aktualności Policji</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                        <li><a href="https://demagog.org.pl" target="_blank" rel="noopener noreferrer" class="hover:text-gov-oceanDark hover:underline flex items-center space-x-1 hc-text-muted"><span>Demagog (fact-checking)</span><i data-lucide="external-link" class="w-3 h-3"></i></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Prywatność i przejrzystość</h4>
+                    <ul class="space-y-2.5 text-sm hc-text-muted">
+                        <li>Odpowiedzi przygotowuje system wykorzystujący sztuczną inteligencję.</li>
+                        <li>Zapisujemy pytanie (z zamaskowanymi danymi osobowymi), czas, źródła i wynik – przez 30 dni.</li>
+                        <li><button onclick="deleteMyData()" class="font-semibold text-gov-oceanDark hover:underline cursor-pointer hc-text">Usuń moje sprawdzenia z tej przeglądarki</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 hc-text-muted">
+                <span>© 2026 Tap &amp; Check – prototyp hackathonowy.</span>
+                <span>Narzędzie wspiera samodzielną ocenę informacji – nie jest „sędzią prawdy”.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Powiadomienie -->
+    <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 bg-gov-navy/95 backdrop-blur-md text-white px-6 py-4 rounded-full shadow-2xl text-sm font-semibold max-w-sm hc-bg" role="status">
+        <p id="toastMessage"></p>
+    </div>
+
+    <script>
+        // ------------------------------------------------------------------
+        // Helpers
+        // ------------------------------------------------------------------
+        const $ = (id) => document.getElementById(id);
+        const verifyInput = $('verifyInput');
+        let currentTab = 'text';
+
+        function esc(value) {
+            // Everything that comes from the API or the user is escaped before rendering.
+            return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function safeUrl(url) {
+            try {
+                const u = new URL(url);
+                return u.protocol === 'http:' || u.protocol === 'https:' ? u.href : '#';
+            } catch { return '#'; }
+        }
+
+        function formatDate(value) {
+            if (!value) return 'brak daty';
+            const d = new Date(value);
+            return isNaN(d) ? 'brak daty' : d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function fmt(n, signed = false) {
+            const s = Math.abs(n).toFixed(2).replace('.', ',');
+            return signed ? (n > 0 ? '+' : n < 0 ? '−' : '') + s : s;
+        }
+
+        function refreshIcons() { if (window.lucide) lucide.createIcons(); }
+
+        function showToast(msg) {
+            $('toastMessage').textContent = msg;
+            const t = $('toastNotification');
+            t.classList.remove('hidden');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => t.classList.add('hidden'), 3500);
+        }
+
+        function sessionId() {
+            // Pseudonymous per-browser id so a user can delete their own checks.
+            try {
+                let id = localStorage.getItem('tapcheck-session');
+                if (!id) { id = 'web-' + crypto.randomUUID(); localStorage.setItem('tapcheck-session', id); }
+                return id;
+            } catch { return undefined; }
+        }
+
+        // ------------------------------------------------------------------
+        // Navigation and accessibility (from the original design)
+        // ------------------------------------------------------------------
+        function scrollToSection(sectionId) {
+            const target = $(sectionId);
+            if (!target) return;
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.classList.remove('section-highlight-active');
+            void target.offsetWidth;
+            target.classList.add('section-highlight-active');
+            if (sectionId === 'sekcja-sprawdz') setTimeout(() => verifyInput.focus({ preventScroll: true }), 650);
+        }
+
+        function toggleMobileMenu() { $('mobileMenu').classList.toggle('hidden'); }
+
+        function toggleInfoPanel() {
+            const panel = $('infoPanel');
+            const open = panel.classList.contains('max-h-[30rem]');
+            panel.classList.toggle('max-h-[30rem]', !open);
+            panel.classList.toggle('opacity-100', !open);
+            panel.classList.toggle('max-h-0', open);
+            panel.classList.toggle('opacity-0', open);
+            $('infoChevron').classList.toggle('rotate-180', !open);
+        }
+
+        function setFontSize(size) {
+            const html = document.documentElement;
+            html.classList.remove('font-large', 'font-xlarge');
+            if (size === 'large') html.classList.add('font-large');
+            if (size === 'xlarge') html.classList.add('font-xlarge');
+            showToast(size === 'normal' ? 'Przywrócono domyślny rozmiar tekstu.' : 'Powiększono tekst.');
+        }
+
+        function toggleHighContrast() {
+            document.documentElement.classList.toggle('high-contrast');
+            showToast(document.documentElement.classList.contains('high-contrast') ? 'Włączono tryb wysokiego kontrastu.' : 'Wyłączono tryb wysokiego kontrastu.');
+        }
+
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
+        }
+
+        const GUIDE = [
+            ['sekcja-sprawdz', 'search-check', 'bg-sky-100 text-gov-oceanDark group-hover:bg-gov-ocean', '1. Sprawdź wiadomość lub link', 'Wklej treść SMS-a, e-maila, posta albo link do artykułu i zobacz, co mówią źródła.'],
+            ['sekcja-ostrzezenia', 'alert-triangle', 'bg-amber-100 text-amber-800 group-hover:bg-amber-600', '2. Najnowsze ostrzeżenia CERT Polska', 'Aktualne kampanie oszustów opisane przez CERT Polska – z linkami do komunikatów.'],
+            ['sekcja-jak-to-dziala', 'list-ordered', 'bg-teal-100 text-gov-tealDark group-hover:bg-gov-teal', '3. Jak to działa? (3 kroki)', 'Skąd bierzemy odpowiedzi i jak powstaje ocena – prostym językiem.'],
+            ['sekcja-pomoc', 'message-circle', 'bg-indigo-100 text-indigo-800 group-hover:bg-gov-navy', '4. Discord i zgłaszanie oszustw', 'Sprawdzaj przez bota na Discordzie. Gdzie zgłosić podejrzany SMS lub stronę.'],
+        ];
+
+        function renderGuide() {
+            $('guideRows').innerHTML = GUIDE.map(([target, icon, iconCls, title, desc]) => `
+                <tr onclick="scrollToSection('${target}')" class="group hover:bg-sky-50/85 transition-colors duration-200 cursor-pointer">
+                    <td class="py-4 pl-5 sm:pl-8 pr-3 align-middle">
+                        <div class="flex items-center space-x-3.5">
+                            <span class="w-11 h-11 rounded-full ${iconCls} group-hover:text-white transition-colors flex items-center justify-center shrink-0 shadow-xs hc-card"><i data-lucide="${icon}" class="w-5 h-5"></i></span>
+                            <div>
+                                <span class="block font-display font-extrabold text-gov-navy group-hover:text-gov-oceanDark text-base sm:text-lg leading-tight hc-text">${title}</span>
+                                <span class="md:hidden block text-xs sm:text-sm text-slate-600 mt-1 hc-text-muted">${desc}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-4 text-slate-600 text-sm leading-relaxed align-middle hc-text-muted">${desc}</td>
+                    <td class="py-4 pl-3 pr-5 sm:pr-8 text-right align-middle">
+                        <button type="button" onclick="event.stopPropagation(); scrollToSection('${target}')" class="ocean-btn inline-flex items-center space-x-1.5 bg-sky-100 group-hover:bg-gov-ocean text-gov-navy group-hover:text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-full cursor-pointer hc-btn"><span>Przejdź</span><span aria-hidden="true">↓</span></button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // ------------------------------------------------------------------
+        // Input tabs and examples
+        // ------------------------------------------------------------------
+        const TABS = {
+            text: { label: 'Wklej treść podejrzanej wiadomości SMS lub e-mail:', placeholder: 'np. „PGE: Masz nadpłatę za energię 213,45 zł. Odbierz zwrot na stronie: http://…”' },
+            news: { label: 'Wklej informację, pogłoskę albo cytat do sprawdzenia:', placeholder: 'np. „Wczoraj RCB wysłało alert o ataku powietrznym do mieszkańców Podkarpacia”' },
+            link: { label: 'Wklej link do artykułu lub posta (http lub https):', placeholder: 'np. https://www.przyklad.pl/artykul' },
+        };
+        const EXAMPLES = {
+            energy: ['text', 'PGE informuje: masz nadpłatę za energię elektryczną w wysokości 213,45 zł. Aby odebrać zwrot pieniędzy, zaloguj się na stronie: http://pge-zwrot-nadplaty.pl'],
+            rcb: ['news', 'RCB wysłało SMS-y z ostrzeżeniem o rosyjskim ataku powietrznym na Ukrainę do mieszkańców województwa podkarpackiego.'],
+            nato: ['news', 'Prezydent Rosji Władimir Putin zgodził się w 1996 roku na wejście Polski do NATO.'],
+        };
+
+        function updateTabIndicator(tab) {
+            const indicator = $('tabIndicator');
+            const btn = $(`tab-${tab}`);
+            if (!indicator || !btn) return;
+            const index = Object.keys(TABS).indexOf(tab);
+            indicator.style.width = `${btn.offsetWidth}px`;
+            indicator.style.transform = `translateX(${index * (btn.offsetWidth + 6)}px)`;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            updateTabIndicator(tab);
+            Object.keys(TABS).forEach((t) => {
+                const el = $(`tab-${t}`);
+                const active = t === tab;
+                el.className = active
+                    ? 'relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-bold text-gov-navy bg-white sm:bg-transparent shadow-xs sm:shadow-none transition-colors duration-300 cursor-pointer hc-text'
+                    : 'relative z-10 flex items-center justify-center space-x-2 py-3 px-5 rounded-full text-sm font-semibold text-slate-600 hover:text-gov-navy transition-colors duration-300 cursor-pointer hc-text';
+                el.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+            $('inputLabel').textContent = TABS[tab].label;
+            verifyInput.placeholder = TABS[tab].placeholder;
+        }
+
+        function runExample(name) {
+            const [tab, text] = EXAMPLES[name];
+            switchTab(tab);
+            verifyInput.value = text;
+            $('clearBtn').classList.remove('hidden');
+            startVerification();
+        }
+
+        verifyInput.addEventListener('input', () => $('clearBtn').classList.toggle('hidden', !verifyInput.value.trim()));
+
+        function clearInput() {
+            verifyInput.value = '';
+            $('clearBtn').classList.add('hidden');
+            $('resultContainer').classList.add('hidden');
+            verifyInput.focus();
+        }
+
+        async function pasteFromClipboard() {
+            try {
+                const text = navigator.clipboard && await navigator.clipboard.readText();
+                if (text) { verifyInput.value = text; $('clearBtn').classList.remove('hidden'); showToast('Wklejono treść ze schowka.'); return; }
+            } catch { /* clipboard permission denied */ }
+            showToast('Użyj Ctrl+V (lub przytrzymaj palec w polu), aby wkleić tekst.');
+            verifyInput.focus();
+        }
+
+        // ------------------------------------------------------------------
+        // Verification: calls the real API (POST /api/check)
+        // ------------------------------------------------------------------
+        const SCAN_STEPS = [
+            'Szukamy twierdzeń, które da się sprawdzić…',
+            'Przeszukujemy komunikaty urzędowe i weryfikacje fact-checkerów…',
+            'Porównujemy fragmenty źródeł z twierdzeniem…',
+            'Sprawdzamy, czy cytaty są dosłowne…',
+            'Liczymy siłę dowodów i przygotowujemy odpowiedź…',
+        ];
+
+        async function startVerification() {
+            const value = verifyInput.value.trim();
+            if (!value) { showToast('Najpierw wklej wiadomość, informację lub link.'); verifyInput.focus(); return; }
+            if (currentTab === 'link' && !/^https?:\/\/\S+$/i.test(value)) { showToast('Link musi zaczynać się od http:// lub https://'); return; }
+
+            const overlay = $('scannerOverlay');
+            const stepText = $('scanStepText');
+            let step = 0;
+            stepText.textContent = SCAN_STEPS[0];
+            overlay.classList.remove('hidden');
+            $('checkBtn').disabled = true;
+            const timer = setInterval(() => { step = Math.min(step + 1, SCAN_STEPS.length - 1); stepText.textContent = SCAN_STEPS[step]; }, 4000);
+
+            const body = { channel: 'web', session_id: sessionId() };
+            if (currentTab === 'link') body.url = value; else body.text = value;
+
+            try {
+                const resp = await fetch('/api/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                if (resp.status === 429) throw new Error('Zbyt wiele zapytań. Spróbuj ponownie za minutę.');
+                if (!resp.ok) throw new Error('Usługa jest chwilowo niedostępna.');
+                renderResult(await resp.json());
+            } catch (err) {
+                renderNotice('error', err.message);
+            } finally {
+                clearInterval(timer);
+                overlay.classList.add('hidden');
+                $('checkBtn').disabled = false;
+            }
+        }
+
+        const VERDICTS = {
+            'potwierdzone': { label: 'Potwierdzone', icon: 'check-circle-2', box: 'bg-emerald-50 border-emerald-200 text-emerald-800', dot: 'bg-emerald-600' },
+            'fałszywe': { label: 'Fałsz', icon: 'x-circle', box: 'bg-rose-50 border-rose-200 text-rose-700', dot: 'bg-rose-600' },
+            'wprowadzające_w_błąd': { label: 'Wprowadza w błąd', icon: 'alert-triangle', box: 'bg-amber-50 border-amber-200 text-amber-800', dot: 'bg-amber-500' },
+            'brak_wystarczających_dowodów': { label: 'Brak wystarczających dowodów', icon: 'help-circle', box: 'bg-slate-50 border-slate-200 text-slate-700', dot: 'bg-slate-500' },
+            'nie_podlega_weryfikacji': { label: 'Nie podlega weryfikacji', icon: 'message-square', box: 'bg-indigo-50 border-indigo-200 text-indigo-800', dot: 'bg-indigo-500' },
+        };
+        const STANCES = {
+            supports: { label: 'Potwierdza', cls: 'border-emerald-500' },
+            refutes: { label: 'Zaprzecza', cls: 'border-rose-500' },
+            context: { label: 'Kontekst', cls: 'border-amber-500' },
+        };
+        const SOURCE_TYPES = { official: 'źródło urzędowe', dataset: 'dane publiczne', factcheck: 'fact-checking', media: 'media' };
+
+        function renderNotice(kind, message) {
+            // Technical problems, unclear questions and out-of-scope requests are NOT verdicts.
+            const titles = {
+                error: 'Błąd techniczny – to nie jest wynik sprawdzenia',
+                needs_clarification: 'Potrzebujemy doprecyzowania',
+                out_of_scope: 'Poza zakresem usługi',
+            };
+            const box = $('resultContainer');
+            box.innerHTML = `
+                <div class="rounded-[2rem] border-2 border-sky-200 bg-sky-50/80 p-6 flex items-start space-x-4 hc-card">
+                    <i data-lucide="${kind === 'error' ? 'wifi-off' : 'info'}" class="w-6 h-6 text-gov-oceanDark shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-display font-extrabold text-gov-navy mb-1 hc-text">${esc(titles[kind] || titles.error)}</p>
+                        <p class="text-sm text-slate-700 hc-text-muted">${esc(message)}</p>
+                    </div>
+                </div>`;
+            box.classList.remove('hidden');
+            refreshIcons();
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function scoreBar(score) {
+            const pos = ((score + 1) / 2) * 100;
+            return `
+                <div class="mt-4 max-w-md" aria-label="Wynik dowodów ${fmt(score, true)} w skali od minus 1 do plus 1">
+                    <div class="relative h-2.5 rounded-full" style="background: linear-gradient(to right, #E11D48 0 15%, #E2E8F0 15% 85%, #059669 85% 100%);">
+                        <span class="absolute -top-1 w-1.5 h-[18px] -ml-[3px] rounded bg-gov-navy" style="left:${pos}%"></span>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-500 mt-1 hc-text-muted">
+                        <span>−1 źródła zaprzeczają</span><strong class="text-gov-navy hc-text">wynik ${fmt(score, true)}</strong><span>potwierdzają +1</span>
+                    </div>
+                </div>`;
+        }
+
+        function evidenceCard(e) {
+            const st = STANCES[e.stance] || STANCES.context;
+            const weight = e.role === 'context_only' ? 'tylko kontekst' : `waga ${fmt(e.weight)}`;
+            return `
+                <div class="mt-3 rounded-2xl bg-white/90 border-l-4 ${st.cls} p-4 shadow-xs hc-card">
+                    <div class="text-xs text-slate-500 hc-text-muted">
+                        <strong class="text-gov-navy hc-text">${esc(st.label)}</strong> · ${esc(e.publisher)} (${esc(SOURCE_TYPES[e.source_type] || e.source_type)}) ·
+                        ${esc(formatDate(e.published_at))} · wiarygodność ${esc(e.credibility)}/5 · ${esc(weight)}
+                        ${e.archival_warning ? ' · <span class="text-amber-700 font-semibold">materiał archiwalny</span>' : ''}
+                    </div>
+                    <blockquote class="my-2 text-sm text-gov-navy italic hc-text">„${esc(e.quote)}”</blockquote>
+                    <a href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-gov-oceanDark hover:underline inline-flex items-center space-x-1 hc-text">
+                        <span>${esc(e.title)}</span><i data-lucide="external-link" class="w-3 h-3"></i>
+                    </a>
+                </div>`;
+        }
+
+        function claimCard(c, i) {
+            const v = VERDICTS[c.verdict] || VERDICTS['brak_wystarczających_dowodów'];
+            const list = (title, items) => items && items.length ? `
+                <h4 class="font-display font-bold text-sm text-gov-navy mt-5 mb-1.5 hc-text">${title}</h4>
+                <ul class="list-disc pl-5 space-y-1 text-sm text-slate-700 hc-text-muted">${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+            return `
+                <article class="rounded-[2rem] border-2 ${v.box} p-6 sm:p-7 mb-5 hc-card">
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-extrabold bg-white/90 border ${v.box}">
+                            <i data-lucide="${v.icon}" class="w-4 h-4"></i><span>${v.label}</span>
+                        </span>
+                        ${c.strength ? `<span class="text-xs font-semibold text-slate-600 hc-text-muted">siła podstaw: ${esc(c.strength)}</span>` : ''}
+                    </div>
+                    <p class="font-display font-bold text-lg text-gov-navy hc-text">${i + 1}. „${esc(c.text)}”</p>
+                    ${c.score !== null && c.score !== undefined ? scoreBar(c.score) : ''}
+                    <p class="mt-4 text-sm sm:text-base text-slate-800 leading-relaxed hc-text">${esc(c.explanation)}</p>
+                    ${list('Na czym opiera się ocena', c.reasons)}
+                    ${c.evidence.length ? `<h4 class="font-display font-bold text-sm text-gov-navy mt-5 hc-text">Źródła (cytaty dosłowne)</h4>${c.evidence.map(evidenceCard).join('')}` : ''}
+                    ${list('Informacje o źródle doniesienia', c.source_warnings)}
+                    ${c.limitations ? `<h4 class="font-display font-bold text-sm text-gov-navy mt-5 mb-1 hc-text">Ograniczenia</h4><p class="text-sm text-slate-700 hc-text-muted">${esc(c.limitations)}</p>` : ''}
+                </article>`;
+        }
+
+        function renderResult(data) {
+            if (data.status !== 'ok') { renderNotice(data.status, data.status_detail || 'Nie udało się wykonać sprawdzenia.'); return; }
+            const box = $('resultContainer');
+            const security = data.security_events && data.security_events.length ? `
+                <div class="rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm p-4 mb-5 flex items-start space-x-3 hc-card">
+                    <i data-lucide="shield-alert" class="w-5 h-5 shrink-0"></i>
+                    <span>Wykryto i zignorowano polecenia ukryte w treści lub w źródłach. Zdarzenie zostało zapisane.</span>
+                </div>` : '';
+            const link = data.result_url ? `
+                <button onclick="copyLink('${esc(data.result_url)}')" class="ocean-btn inline-flex items-center space-x-2 text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 border border-sky-200/80 px-4 py-2 rounded-full cursor-pointer hc-card">
+                    <i data-lucide="link" class="w-3.5 h-3.5"></i><span>Skopiuj link do wyniku</span>
+                </button>` : '';
+            box.innerHTML = `
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <h3 class="font-display font-extrabold text-xl text-gov-navy hc-text">Wynik sprawdzenia</h3>${link}
+                </div>
+                ${security}
+                ${data.claims.map(claimCard).join('')}
+                <p class="text-xs text-slate-500 hc-text-muted">Tap &amp; Check pomaga ocenić informacje, ale nie jest „sędzią prawdy”. Zawsze możesz samodzielnie przeczytać źródła.</p>`;
+            box.classList.remove('hidden');
+            refreshIcons();
+            box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        async function copyLink(url) {
+            try { await navigator.clipboard.writeText(url); showToast('Skopiowano link do wyniku.'); }
+            catch { showToast(url); }
+        }
+
+        async function deleteMyData() {
+            const id = sessionId();
+            if (!id) { showToast('Brak zapisanych sprawdzeń w tej przeglądarce.'); return; }
+            try {
+                const resp = await fetch(`/api/session/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                const body = await resp.json();
+                $('resultContainer').classList.add('hidden');
+                showToast(`Usunięto zapisane sprawdzenia: ${body.deleted}.`);
+            } catch { showToast('Nie udało się usunąć danych. Spróbuj ponownie.'); }
+        }
+
+        // ------------------------------------------------------------------
+        // Live data: CERT warnings, corpus size, Discord invite, shared results
+        // ------------------------------------------------------------------
+        async function loadWarnings() {
+            const grid = $('warningsGrid');
+            try {
+                const items = await (await fetch('/api/warnings?limit=3')).json();
+                if (!items.length) throw new Error('empty');
+                grid.innerHTML = items.map((w) => `
+                    <article class="ocean-glass-strong rounded-[2.25rem] p-7 sm:p-8 ocean-spring flex flex-col justify-between hc-card">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-4">
+                                <span class="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80 hc-card">
+                                    <span class="w-2 h-2 rounded-full bg-rose-600"></span><span>CERT Polska</span>
+                                </span>
+                                <span class="text-xs text-slate-400 font-semibold hc-text-muted">${esc(formatDate(w.published_at))}</span>
+                            </div>
+                            <h3 class="font-display font-bold text-lg text-gov-navy mb-2.5 hc-text">${esc(w.title)}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-5 hc-text-muted">${esc(w.summary)}</p>
+                        </div>
+                        <div class="pt-4 border-t border-sky-100/80 flex items-center justify-end">
+                            <a href="${esc(safeUrl(w.url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 px-3.5 py-1.5 rounded-full flex items-center space-x-1 group hc-card">
+                                <span>Pełny komunikat</span><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </article>`).join('');
+            } catch {
+                grid.innerHTML = '<p class="md:col-span-3 text-center text-sm text-slate-500 hc-text-muted">Nie udało się wczytać ostrzeżeń. Zobacz je bezpośrednio na moje.cert.pl.</p>';
+            }
+            refreshIcons();
+        }
+
+        async function loadHealth() {
+            try {
+                const h = await (await fetch('/api/health')).json();
+                const c = h.corpus || {};
+                if (c.documents) $('corpusBadge').textContent = `Odpowiadamy tylko na podstawie jawnych źródeł: ${c.documents} dokumentów z ${c.domains} serwisów`;
+                if (h.discord_invite_url) {
+                    $('discordAction').innerHTML = `
+                        <a href="${esc(safeUrl(h.discord_invite_url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn inline-flex items-center space-x-2 bg-white text-gov-navy hover:bg-sky-50 font-extrabold text-sm px-6 py-3.5 rounded-full shadow-md hc-btn">
+                            <span>Dołącz do serwera demonstracyjnego</span><i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>`;
+                    refreshIcons();
+                }
+            } catch { /* page still works without it */ }
+        }
+
+        async function loadSharedResult() {
+            const m = location.pathname.match(/^\/r\/([a-f0-9]+)$/);
+            if (!m) return;
+            try {
+                const resp = await fetch(`/api/check/${m[1]}`);
+                if (!resp.ok) throw new Error();
+                renderResult(await resp.json());
+            } catch {
+                renderNotice('error', 'Nie znaleziono wyniku – mógł zostać usunięty po upływie 30 dni.');
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // Start
+        // ------------------------------------------------------------------
+        renderGuide();
+        switchTab('text');
+        refreshIcons();
+        window.addEventListener('load', () => { updateTabIndicator(currentTab); initScrollReveal(); });
+        window.addEventListener('resize', () => updateTabIndicator(currentTab));
+        loadWarnings();
+        loadHealth();
+        loadSharedResult();
+    </script>
+</body>
+</html>

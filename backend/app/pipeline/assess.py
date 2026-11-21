@@ -42,6 +42,10 @@ For every passage return:
 - quote: the 1-2 sentences that justify the stance, copied VERBATIM from the passage
   (character for character). Empty string for "irrelevant".
 
+Some passages are fact-check records ("Sprawdzane twierdzenie: … Ocena <fact-checker>: <rating>").
+For those, judge whether the checked statement is the same claim, and quote the rating sentence
+("Ocena …: …"), because the rating is what supports or refutes the claim.
+
 Judge only from the passage text, never from your own knowledge. Consider dates: a passage
 about a different year or place than the claim does not support it.
 

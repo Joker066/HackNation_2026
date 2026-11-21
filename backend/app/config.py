@@ -47,9 +47,10 @@ class Settings(BaseSettings):
     admin_token: str | None = None  # required for /api/logs and /api/metrics
 
     # --- Channels ------------------------------------------------------------
-    public_base_url: str = "http://localhost:5173"  # where result links point
+    public_base_url: str = "http://localhost:8000"  # where result links point (the API serves the web page)
     api_base_url: str = "http://localhost:8000"  # used by the Discord bot
     discord_token: str | None = None
+    discord_invite_url: str | None = None  # shown on the web page if set
 
 
 @lru_cache

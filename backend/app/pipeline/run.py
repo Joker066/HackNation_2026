@@ -111,6 +111,7 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         assessment, u = assess(svc.llm, claim, clean)
         usage.add(u)
         by_id = {p.passage_id: p for p in clean}
+        seen_quotes: set[tuple[str, str]] = set()
         for j in assessment.passages:
             p = by_id.get(j.passage_id)
             if p is None or j.stance == "irrelevant":
@@ -118,6 +119,9 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
             if not quote_is_verbatim(j.quote, p.text):
                 log.info("dropped unverifiable quote for passage %s", p.passage_id)
                 continue
+            if (p.url, j.quote.strip()) in seen_quotes:  # overlapping passages of one document
+                continue
+            seen_quotes.add((p.url, j.quote.strip()))
             evidence.append(
                 Evidence(
                     stance=Stance(j.stance),

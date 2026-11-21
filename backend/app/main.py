@@ -3,8 +3,11 @@
 import hmac
 import logging
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+
+from app.config import REPO_ROOT
 
 from app.config import get_settings
 from app.llm import build_provider
@@ -41,7 +44,7 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.public_base_url],
+    allow_origins=[settings.public_base_url, "http://localhost:5173"],  # page itself + old Vite dev UI
     allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )
@@ -75,12 +78,34 @@ def delete_session(session_id: str) -> dict:
     return {"deleted": services.audit.delete_session(session_id)}
 
 
+WEB_PAGE = REPO_ROOT / "web" / "index.html"
+CERT_CATALOG_ID = 13
+
+
+@app.get("/", include_in_schema=False)
+def web_page() -> FileResponse:
+    return FileResponse(WEB_PAGE, media_type="text/html")
+
+
+@app.get("/r/{request_id}", include_in_schema=False)
+def shared_result_page(request_id: str) -> FileResponse:
+    """Result links shared by Discord open the same page, which then loads /api/check/{id}."""
+    return FileResponse(WEB_PAGE, media_type="text/html")
+
+
+@app.get("/api/warnings")
+def warnings(limit: int = Query(3, ge=1, le=10)) -> list[dict]:
+    """Latest CERT Polska advisories from the corpus (real documents, with links)."""
+    return services.corpus.latest([CERT_CATALOG_ID], limit)
+
+
 @app.get("/api/health")
 def health() -> dict:
     return {
         "status": "ok",
         "llm_provider": services.llm.name,
         "live_sources": {"google_factcheck": services.factcheck is not None},
+        "discord_invite_url": settings.discord_invite_url,
         "corpus": services.corpus.stats(),
     }
 
