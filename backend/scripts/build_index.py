@@ -1,6 +1,6 @@
-"""Build the corpus search index from corpus/records/*.jsonl.
+"""Build the corpus search index from the saved documents in corpus/text_sources/.
 
-Each JSONL line is one document:
+Each JSON file there is one document (see app/store/text_sources.py):
   {"url": "...", "title": "...", "publisher": "...", "published_at": "2025-03-01",
    "retrieved_at": "2026-11-21T10:00:00+00:00", "text": "...", "license": "...", "lang": "pl"}
 
@@ -10,8 +10,9 @@ Run from the backend/ directory:  python -m scripts.build_index [--rebuild]
 import argparse
 import sys
 
-from app.config import REPO_ROOT, get_settings
-from app.store.corpus import Corpus, load_catalog, load_records
+from app.config import get_settings
+from app.store import text_sources
+from app.store.corpus import Corpus, load_catalog
 
 
 def main() -> None:
@@ -25,7 +26,7 @@ def main() -> None:
 
     catalog = load_catalog(settings.sources_catalog_path)
     corpus = Corpus(settings.corpus_db_path)
-    records = load_records(REPO_ROOT / "corpus" / "records")
+    records = list(text_sources.iter_all())
 
     added = skipped = 0
     for record in records:

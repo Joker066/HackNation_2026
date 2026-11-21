@@ -10,6 +10,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from app.config import Settings
+from app.net import http_client
 from app.schemas import CheckRequest, Status
 
 MAX_DOWNLOAD_BYTES = 2_000_000
@@ -80,7 +81,7 @@ def _assert_public_host(url: str) -> None:
 
 def fetch_url(url: str) -> tuple[str | None, str]:
     current = url
-    with httpx.Client(timeout=10.0, follow_redirects=False, headers={"User-Agent": "TapCheck/0.1"}) as client:
+    with http_client(timeout=10.0, follow_redirects=False, headers={"User-Agent": "TapCheck/0.1"}) as client:
         for _ in range(MAX_REDIRECTS + 1):
             _assert_public_host(current)
             try:

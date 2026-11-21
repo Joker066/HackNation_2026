@@ -17,6 +17,7 @@ import httpx
 from discord import app_commands
 
 from app.config import get_settings
+from app.net import async_http_client
 
 log = logging.getLogger("discord_bot")
 settings = get_settings()
@@ -77,7 +78,7 @@ def format_response(data: dict) -> str:
 async def call_api(text: str, user_id: int) -> str:
     payload = {"text": text, "channel": "discord", "session_id": session_id_for(user_id)}
     try:
-        async with httpx.AsyncClient(timeout=90.0) as client:
+        async with async_http_client(timeout=90.0) as client:
             resp = await client.post(f"{settings.api_base_url}/api/check", json=payload)
         if resp.status_code == 429:
             return "ℹ️ Zbyt wiele zapytań. Spróbuj ponownie za minutę."

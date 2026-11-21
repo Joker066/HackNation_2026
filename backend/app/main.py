@@ -12,7 +12,8 @@ from app.pipeline.run import Services, run_check
 from app.schemas import CheckRequest, CheckResponse
 from app.security.ratelimit import RateLimiter
 from app.store.audit import AuditLog
-from app.store.corpus import Corpus
+from app.sources.google_factcheck import GoogleFactCheck, load_factcheckers
+from app.store.corpus import Corpus, load_catalog
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -22,6 +23,13 @@ services = Services(
     llm=build_provider(settings),
     corpus=Corpus(settings.corpus_db_path),
     audit=AuditLog(settings.audit_db_path),
+    catalog=load_catalog(settings.sources_catalog_path),
+    factcheck=(
+        GoogleFactCheck(settings.google_factcheck_api_key, load_factcheckers(settings.factcheckers_path))
+        if settings.google_factcheck_api_key
+        else None
+    ),
+    save_fetched=True,
 )
 services.audit.purge_older_than(settings.retention_days)
 limiter = RateLimiter(settings.rate_limit_per_minute)
@@ -69,7 +77,12 @@ def delete_session(session_id: str) -> dict:
 
 @app.get("/api/health")
 def health() -> dict:
-    return {"status": "ok", "llm_provider": services.llm.name, "corpus": services.corpus.stats()}
+    return {
+        "status": "ok",
+        "llm_provider": services.llm.name,
+        "live_sources": {"google_factcheck": services.factcheck is not None},
+        "corpus": services.corpus.stats(),
+    }
 
 
 @app.get("/api/logs", dependencies=[Depends(require_admin)])

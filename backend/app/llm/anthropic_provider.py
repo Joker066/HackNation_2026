@@ -3,6 +3,7 @@
 import logging
 
 import anthropic
+import httpx2
 
 from app.config import Settings
 
@@ -22,7 +23,12 @@ class AnthropicProvider:
         self.price_in = settings.llm_price_input_per_mtok
         self.price_out = settings.llm_price_output_per_mtok
         # api_key=None lets the SDK resolve credentials from the environment.
-        self.client = anthropic.Anthropic(api_key=settings.anthropic_api_key, timeout=45.0, max_retries=1)
+        http_client = None
+        if settings.force_ipv4:  # see app/net.py
+            http_client = anthropic.DefaultHttpxClient(transport=httpx2.HTTPTransport(local_address="0.0.0.0"))
+        self.client = anthropic.Anthropic(
+            api_key=settings.anthropic_api_key, timeout=45.0, max_retries=1, http_client=http_client
+        )
 
     def generate(self, *, system: str, user: str, schema: type[T]) -> tuple[T, LLMUsage]:
         try:

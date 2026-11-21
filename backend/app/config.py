@@ -21,10 +21,15 @@ class Settings(BaseSettings):
     llm_price_input_per_mtok: float = 4.0
     llm_price_output_per_mtok: float = 20.0
 
+    # --- Live sources ------------------------------------------------------
+    google_factcheck_api_key: str | None = None
+    factcheck_queries_per_claim: int = 3
+
     # --- Storage ------------------------------------------------------------
     corpus_db_path: Path = REPO_ROOT / "var" / "corpus.db"
     audit_db_path: Path = REPO_ROOT / "var" / "audit.db"
     sources_catalog_path: Path = REPO_ROOT / "corpus" / "sources.csv"
+    factcheckers_path: Path = REPO_ROOT / "corpus" / "factcheckers.csv"
     retention_days: int = 30
 
     # --- Verification behaviour ----------------------------------------------
@@ -33,6 +38,9 @@ class Settings(BaseSettings):
     max_claims: int = 5
     passages_per_claim: int = 8
     archival_after_days: int = 365
+
+    # --- Network ------------------------------------------------------------
+    force_ipv4: bool = True  # see app/net.py (broken IPv6 on WSL2 adds seconds per request)
 
     # --- Abuse protection --------------------------------------------------
     rate_limit_per_minute: int = 10

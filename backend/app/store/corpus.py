@@ -6,7 +6,6 @@ inherits publisher, credibility, role and update frequency from its catalogue ro
 """
 
 import csv
-import json
 import re
 import sqlite3
 from dataclasses import dataclass
@@ -266,12 +265,3 @@ class Corpus:
             types = [r[0] for r in conn.execute("SELECT DISTINCT source_type FROM documents")]
             passages = conn.execute("SELECT COUNT(*) FROM passages").fetchone()[0]
         return {"documents": docs, "domains": domains, "source_types": types, "passages": passages}
-
-
-def load_records(records_dir: Path) -> list[dict]:
-    records = []
-    for path in sorted(records_dir.glob("*.jsonl")):
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                records.append(json.loads(line))
-    return records

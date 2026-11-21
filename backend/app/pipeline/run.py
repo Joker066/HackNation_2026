@@ -13,7 +13,9 @@ from app.schemas import CheckRequest, CheckResponse, ClaimResult, Evidence, Stan
 from app.security.injection import looks_like_injection
 from app.security.pii import mask_pii
 from app.store.audit import AuditLog
-from app.store.corpus import Corpus
+from app.sources.google_factcheck import FactCheckError, GoogleFactCheck
+from app.store import text_sources
+from app.store.corpus import CatalogEntry, Corpus
 
 from .assess import assess, quote_is_verbatim
 from .claims import ExtractedClaim, extract_claims
@@ -40,6 +42,9 @@ class Services:
     llm: LLMProvider
     corpus: Corpus
     audit: AuditLog
+    catalog: list[CatalogEntry] = field(default_factory=list)
+    factcheck: GoogleFactCheck | None = None
+    save_fetched: bool = False  # write live-fetched documents to corpus/text_sources/
 
 
 @dataclass
@@ -48,6 +53,34 @@ class _ClaimOutcome:
     usage: LLMUsage
     security_events: list[str] = field(default_factory=list)
     retrieval_error: bool = False
+
+
+def _fetch_live_factchecks(svc: Services, claim: ExtractedClaim) -> str:
+    """Query Google Fact Check for this claim and cache the reviews in the corpus.
+
+    Returns a limitation note for the user if the service failed, otherwise "".
+    """
+    if svc.factcheck is None:
+        return ""
+    queries = list(dict.fromkeys(claim.search_queries))[: svc.settings.factcheck_queries_per_claim]
+    if not queries:
+        return ""
+    with ThreadPoolExecutor(max_workers=len(queries)) as pool:
+        futures = [pool.submit(svc.factcheck.search, q) for q in queries]
+    failed = 0
+    for future in futures:
+        try:
+            for record in future.result():
+                if svc.corpus.add_document(record, svc.catalog) and svc.save_fetched:
+                    text_sources.save(record)  # keep it for future index rebuilds
+        except FactCheckError as e:
+            log.warning("fact-check search failed: %s", e)
+            failed += 1
+        except ValueError:
+            log.exception("could not store a fact-check record")
+    if failed == len(queries):
+        return "Baza weryfikacji fact-checkerów (Google Fact Check) była niedostępna — wynik opiera się tylko na pozostałych źródłach."
+    return ""
 
 
 def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
@@ -59,6 +92,7 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
         return _ClaimOutcome(compose(claim.text, decision, [], "", []), usage)
 
     retrieval_error = False
+    live_note = _fetch_live_factchecks(svc, claim)
     try:
         passages = svc.corpus.search([claim.text, *claim.search_queries], k=svc.settings.passages_per_claim)
     except Exception:  # a search failure must not turn into a verdict
@@ -116,6 +150,9 @@ def _check_claim(svc: Services, claim: ExtractedClaim) -> _ClaimOutcome:
     )
     if retrieval_error:
         decision.limitations = (decision.limitations + " Wyszukiwanie w źródłach nie powiodło się.").strip()
+    if live_note:
+        decision.limitations = (decision.limitations + " " + live_note).strip()
+        retrieval_error = True
     return _ClaimOutcome(compose(claim.text, decision, evidence, findings, []), usage, events, retrieval_error)
 
 

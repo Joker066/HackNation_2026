@@ -1,0 +1,6 @@
+site,name,credibility,status,notes
+demagog.org.pl,Demagog,4,to_verify,"Believed IFCN signatory and EFCSN member; confirm at https://ifcncodeofprinciples.poynter.org/signatories"
+sprawdzam.afp.com,AFP Sprawdzam,4,to_verify,"AFP fact-checking is believed to be an IFCN signatory; confirm on the IFCN list"
+factcheck.afp.com,AFP Fact Check,4,to_verify,"Same organisation as AFP Sprawdzam"
+oko.press,OKO.press,3,to_verify,"Check IFCN/EFCSN status; raise to 4 if a signatory"
+fakenews.pl,Fakenews.pl,3,to_verify,"Check IFCN/EFCSN status; raise to 4 if a signatory"
