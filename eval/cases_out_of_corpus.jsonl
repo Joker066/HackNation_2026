@@ -1,0 +1,15 @@
+{"id": "X1", "scenario": "ogólna wiedza: fakt", "input": "Czy Polska przystąpiła do NATO w 1999 roku?", "expected": "potwierdzone"}
+{"id": "X2", "scenario": "ogólna wiedza: fakt", "input": "Czy Finlandia jest członkiem NATO?", "expected": "potwierdzone"}
+{"id": "X3", "scenario": "ogólna wiedza: fakt", "input": "Czy od 2024 roku w Polsce wypłacane jest 800 plus zamiast 500 plus?", "expected": "potwierdzone"}
+{"id": "X4", "scenario": "ogólna wiedza: fakt", "input": "Czy Międzynarodowy Trybunał Karny wydał nakaz aresztowania Władimira Putina?", "expected": "potwierdzone"}
+{"id": "X5", "scenario": "ogólna wiedza: fakt", "input": "Czy Polska sprawowała prezydencję w Radzie Unii Europejskiej w pierwszej połowie 2025 roku?", "expected": "potwierdzone"}
+{"id": "X6", "scenario": "ogólna wiedza: fakt", "input": "Czy Karol Nawrocki wygrał wybory prezydenckie w Polsce w 2025 roku?", "expected": "potwierdzone"}
+{"id": "X7", "scenario": "ogólna wiedza: fakt", "input": "Czy Donald Trump wprowadził cła na towary z Unii Europejskiej?", "expected": "potwierdzone"}
+{"id": "X8", "scenario": "znany fałsz", "input": "Czy szczepionki przeciw COVID-19 zawierają mikroczipy?", "expected": "fałszywe"}
+{"id": "X9", "scenario": "znany fałsz", "input": "Czy sieć 5G rozprzestrzenia koronawirusa?", "expected": "fałszywe"}
+{"id": "X10", "scenario": "znany fałsz", "input": "Czy Polska wystąpiła z Unii Europejskiej?", "expected": "fałszywe"}
+{"id": "X11", "scenario": "znany fałsz", "input": "Czy Polska przyjęła euro jako swoją walutę?", "expected": "fałszywe"}
+{"id": "X12", "scenario": "znany fałsz", "input": "Czy Ukraina jest członkiem NATO?", "expected": "fałszywe"}
+{"id": "X13", "scenario": "brak dowodów", "input": "Czy od jutra w Rzeszowie obowiązuje godzina policyjna od 21:00?", "expected": "brak_wystarczających_dowodów"}
+{"id": "X14", "scenario": "brak dowodów", "input": "Podobno w przyszły piątek w całej Polsce na 24 godziny zostanie wyłączony internet.", "expected": "brak_wystarczających_dowodów"}
+{"id": "X15", "scenario": "opinia", "input": "Czy Warszawa jest najpiękniejszym miastem w Europie?", "expected": "nie_podlega_weryfikacji"}

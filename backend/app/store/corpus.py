@@ -129,7 +129,9 @@ def match_catalog(url: str, catalog: list[CatalogEntry], catalog_id: int | None 
     best, best_rank = None, None
     for entry in catalog:
         for priority, key in _match_keys(entry):
-            if doc == key or doc.startswith(key + "/"):
+            host = doc.split("/", 1)[0]
+            # priority 1 = a dedicated host; its subdomains belong to it too (wiadomosci.wp.pl → wp.pl)
+            if doc == key or doc.startswith(key + "/") or (priority == 1 and host.endswith("." + key)):
                 rank = (priority, len(key), entry.credibility)
                 if best_rank is None or rank > best_rank:
                     best, best_rank = entry, rank

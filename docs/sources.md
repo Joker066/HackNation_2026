@@ -37,7 +37,7 @@ publisher, date, link and a verbatim quote.
 | Railway Protection Guard (kgsok.pl, part of PKP PLK S.A.) | © KG SOK, all rights reserved | **excerpt only** (+ link) |
 | Fact-checks via Google Fact Check Tools API (Demagog, OKO.press, AFP, …) | ClaimReview metadata, published for reuse by search engines | **metadata only** (+ link to the full fact-check) |
 | EUvsDisinfo (MCP API) | EU institutions' reuse policy, attribution (to verify) | excerpt (≤ 2,500 characters) |
-| Media found by live web search (PAP, Polskie Radio, TVP Info, Rzeczpospolita) and other gov.pl sections | © publishers / CC BY-SA 4.0 | **not stored**: read once for a single check |
+| Media found by live web search (PAP, Polskie Radio, TVP Info, Rzeczpospolita, Polsat News, RMF24, Wirtualna Polska, Bankier.pl, Euronews, France 24, Notes from Poland, OKO.press; one outlet per ownership group, used only when own sources are insufficient) and other gov.pl sections | © publishers / CC BY-SA 4.0 | **not stored**: read once for a single check |
 
 **Attribution.** Every answer shows the publisher, publication date and a link to the original.
 The documents in `corpus/text_sources/` keep their original licence (CC BY-SA 4.0 for gov.pl and

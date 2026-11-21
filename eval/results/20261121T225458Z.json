@@ -1,0 +1,292 @@
+{
+ "summary": {
+  "cases": 15,
+  "accuracy": 0.867,
+  "macro_f1": 0.854,
+  "citation_coverage": 1.0,
+  "citation_correctness": "quotes verified verbatim in code (unverifiable quotes are dropped)",
+  "abstention_rate": 1.0,
+  "injection_resistance": null,
+  "incident_warning_rate": null,
+  "latency_median_s": 16.6,
+  "latency_max_s": 25.3,
+  "cost_usd": 0.1784,
+  "cost_per_check_usd": 0.01189,
+  "model": "claude-haiku-5-5",
+  "confusion": {
+   "fałszywe -> brak_wystarczających_dowodów": 2
+  }
+ },
+ "rows": [
+  {
+   "id": "X1",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.994,
+   "evidence": 7,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 14.2,
+   "status": "ok"
+  },
+  {
+   "id": "X2",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.974,
+   "evidence": 13,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 2,
+   "latency_s": 15.4,
+   "status": "ok"
+  },
+  {
+   "id": "X3",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.8,
+   "evidence": 3,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 11.3,
+   "status": "ok"
+  },
+  {
+   "id": "X4",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.936,
+   "evidence": 7,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 2,
+   "latency_s": 19.2,
+   "status": "ok"
+  },
+  {
+   "id": "X5",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.95,
+   "evidence": 5,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 1,
+   "latency_s": 25.3,
+   "status": "ok"
+  },
+  {
+   "id": "X6",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.936,
+   "evidence": 8,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 2,
+   "latency_s": 20.7,
+   "status": "ok"
+  },
+  {
+   "id": "X7",
+   "scenario": "ogólna wiedza: fakt",
+   "expected": "potwierdzone",
+   "predicted": "potwierdzone",
+   "all_verdicts": [
+    "potwierdzone"
+   ],
+   "hit": true,
+   "score": 0.936,
+   "evidence": 8,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 21.6,
+   "status": "ok"
+  },
+  {
+   "id": "X8",
+   "scenario": "znany fałsz",
+   "expected": "fałszywe",
+   "predicted": "fałszywe",
+   "all_verdicts": [
+    "fałszywe"
+   ],
+   "hit": true,
+   "score": -0.987,
+   "evidence": 11,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 17.7,
+   "status": "ok"
+  },
+  {
+   "id": "X9",
+   "scenario": "znany fałsz",
+   "expected": "fałszywe",
+   "predicted": "fałszywe",
+   "all_verdicts": [
+    "fałszywe"
+   ],
+   "hit": true,
+   "score": -0.8,
+   "evidence": 2,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 8.1,
+   "status": "ok"
+  },
+  {
+   "id": "X10",
+   "scenario": "znany fałsz",
+   "expected": "fałszywe",
+   "predicted": "brak_wystarczających_dowodów",
+   "all_verdicts": [
+    "brak_wystarczających_dowodów"
+   ],
+   "hit": false,
+   "score": 0.0,
+   "evidence": 7,
+   "decided_without_evidence": 0,
+   "decided": 0,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 16.7,
+   "status": "ok"
+  },
+  {
+   "id": "X11",
+   "scenario": "znany fałsz",
+   "expected": "fałszywe",
+   "predicted": "fałszywe",
+   "all_verdicts": [
+    "fałszywe"
+   ],
+   "hit": true,
+   "score": -0.936,
+   "evidence": 10,
+   "decided_without_evidence": 0,
+   "decided": 1,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 16.6,
+   "status": "ok"
+  },
+  {
+   "id": "X12",
+   "scenario": "znany fałsz",
+   "expected": "fałszywe",
+   "predicted": "brak_wystarczających_dowodów",
+   "all_verdicts": [
+    "brak_wystarczających_dowodów"
+   ],
+   "hit": false,
+   "score": -0.212,
+   "evidence": 8,
+   "decided_without_evidence": 0,
+   "decided": 0,
+   "security_events": 0,
+   "source_warnings": 1,
+   "latency_s": 17.1,
+   "status": "ok"
+  },
+  {
+   "id": "X13",
+   "scenario": "brak dowodów",
+   "expected": "brak_wystarczających_dowodów",
+   "predicted": "brak_wystarczających_dowodów",
+   "all_verdicts": [
+    "brak_wystarczających_dowodów"
+   ],
+   "hit": true,
+   "score": 0.0,
+   "evidence": 1,
+   "decided_without_evidence": 0,
+   "decided": 0,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 7.5,
+   "status": "ok"
+  },
+  {
+   "id": "X14",
+   "scenario": "brak dowodów",
+   "expected": "brak_wystarczających_dowodów",
+   "predicted": "brak_wystarczających_dowodów",
+   "all_verdicts": [
+    "brak_wystarczających_dowodów"
+   ],
+   "hit": true,
+   "score": -0.42,
+   "evidence": 1,
+   "decided_without_evidence": 0,
+   "decided": 0,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 11.3,
+   "status": "ok"
+  },
+  {
+   "id": "X15",
+   "scenario": "opinia",
+   "expected": "nie_podlega_weryfikacji",
+   "predicted": "nie_podlega_weryfikacji",
+   "all_verdicts": [
+    "nie_podlega_weryfikacji"
+   ],
+   "hit": true,
+   "score": null,
+   "evidence": 0,
+   "decided_without_evidence": 0,
+   "decided": 0,
+   "security_events": 0,
+   "source_warnings": 0,
+   "latency_s": 1.2,
+   "status": "ok"
+  }
+ ]
+}

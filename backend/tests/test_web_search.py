@@ -95,3 +95,16 @@ def test_search_results_alone_cannot_make_a_claim_misleading(tmp_path, monkeypat
     svc = make(tmp_path, StubSearch(hits), monkeypatch)
     svc.llm.handlers[AssessmentOutput] = assess_misleading
     assert run_check(svc, CheckRequest(text="Czy we Włoszech był strajk?")).claims[0].verdict == Verdict.confirmed
+
+
+def test_subdomain_of_catalogue_host_matches():
+    from app.store.corpus import CatalogEntry, match_catalog
+    import inspect
+    fields = inspect.signature(CatalogEntry).parameters
+    base = {k: "" for k in fields}
+    base.update(id=1, url="https://wiadomosci.wp.pl/", publisher="WP", domain="wp.pl", credibility=3, role="evidence")
+    wp = CatalogEntry(**{k: v for k, v in base.items() if k in fields})
+    assert match_catalog("https://wiadomosci.wp.pl/finlandia-w-nato-123", [wp]) is wp
+    pl = CatalogEntry(**{**{k: v for k, v in base.items() if k in fields}, "url": "https://www.euronews.com/", "publisher": "Euronews", "domain": "euronews.com"})
+    assert match_catalog("https://pl.euronews.com/2023/04/04/finlandia", [pl]) is pl
+    assert match_catalog("https://evil-euronews.com/x", [pl]) is None
