@@ -36,3 +36,6 @@ Czy*.docx
 
 # Windows download markers
 *:Zone.Identifier
+
+# Background music: licensed for use in the video, not for redistribution
+demo/*.mp3
