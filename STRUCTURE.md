@@ -147,11 +147,11 @@ HackNation_2026/
 ├── corpus/
 │   ├── sources.csv              # audited catalogue: claim types, credibility 1-5, role, update frequency
 │   ├── factcheckers.csv         # fact-checker names and credibility, by website
+│   ├── lista_źródeł.txt         # source list provided by the organisers (reference only)
 │   └── text_sources/            # one JSON file per fetched document
 ├── eval/                        # cases.jsonl (30 cases), run_eval.py, results/
 ├── web/index.html               # web page (served by the API at /)
 ├── var/                         # local SQLite databases (gitignored)
-├── TODO.md
 └── README.md
 ```
 
@@ -161,4 +161,4 @@ Done: skeleton, corpus (490+ documents, 10 domains, 2 source types), full pipeli
 Discord bot (scenarios G and J tested live), safety and privacy basics, URL input, EUvsDisinfo
 matching (scenario I), single input box (model recognises the input kind, links fetched by code),
 screenshot input (scenario F), web-search fallback. 30-case evaluation (latest: macro-F1 0.97,
-accuracy 97%, abstention 100%, injection 100%, median 7.2 s, $0.004 per check). Open items and priorities: see `TODO.md`.
+accuracy 97%, abstention 100%, injection 100%, median 7.2 s, $0.004 per check).

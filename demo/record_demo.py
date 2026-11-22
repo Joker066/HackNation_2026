@@ -3,7 +3,7 @@
 Usage (from demo/, with ./start.sh running):
   python make_screens.py screens                      # once: screenshots for the "Dla każdego" train
   python make_tab_screens.py tabs                     # once: tab pages for the "Więcej informacji" scene
-  python record_demo.py stage.html ../icon.jpg screens tapcheck_demo.mp4 [site_url]
+  python record_demo.py stage.html icon.jpg screens tapcheck_demo.mp4 [site_url]
 
 The site runs for real (real questions, real answers). Only the waiting time is shown
 faster (×6), and the video says so on screen while it happens. If a verdict is not the
