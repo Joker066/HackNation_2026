@@ -66,6 +66,33 @@
   #speed span { background: rgba(7,26,48,0.9); border: 2px solid #38BDF8; font: 700 22px 'Inter', Arial, sans-serif; padding: 6px 18px; border-radius: 999px; }
   #speed.show { opacity: 1; }
 
+  /* "Więcej informacji": tab bar, mouse pointer, page under the hovered tab */
+  .tabbar {
+    position: absolute; left: 720px; top: 150px; width: 1120px; height: 78px; border-radius: 39px; background: #FFFFFF;
+    display: flex; align-items: center; padding: 0 16px 0 22px; box-shadow: 0 30px 60px -24px rgba(0,0,0,0.6);
+  }
+  .tabbar .brandmini { display: flex; align-items: center; gap: 10px; font: 800 24px 'Plus Jakarta Sans', Arial, sans-serif; color: #0C2442; }
+  .tabbar .brandmini img { width: 40px; height: 40px; border-radius: 50%; }
+  .tabbar .brandmini span { color: #0284C7; }
+  .tabbar nav { margin-left: auto; display: flex; gap: 6px; }
+  .tabbar nav b {
+    font: 600 21px 'Inter', Arial, sans-serif; color: #334155; padding: 11px 20px; border-radius: 999px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .tabbar nav b.active { background: #0C2442; color: #FFFFFF; }
+  .preview { position: absolute; left: 720px; top: 252px; width: 1120px; height: 569px; border-radius: 22px; overflow: hidden;
+    box-shadow: 0 50px 100px -30px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.10); background: #F8FAFC; }
+  .preview img { position: absolute; inset: 0; width: 1120px; height: 569px; opacity: 0; transform: translateY(24px);
+    transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .preview img.show { opacity: 1; transform: none; }
+  #tabsub { transition: opacity 0.25s ease; min-height: 88px; }
+  #tabsub b { color: #F5F8FB; }
+  #tabsub .dc { display: inline-flex; align-items: center; gap: 12px; color: #F5F8FB; font-weight: 700; }
+  #tabsub .dc i { width: 40px; height: 40px; border-radius: 12px; background: #5865F2; display: inline-flex; align-items: center; justify-content: center; }
+  #cursor { position: absolute; left: 1500px; top: 900px; width: 34px; height: 50px; z-index: 5;
+    transition: left 0.75s cubic-bezier(0.45, 0, 0.2, 1), top 0.75s cubic-bezier(0.45, 0, 0.2, 1);
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.45)); }
+
   /* the train of screens */
   .train-cap { position: absolute; left: 110px; top: 110px; width: 1700px; }
   .train-cap h2 { font: 800 66px/1.08 'Plus Jakarta Sans', Arial, sans-serif; letter-spacing: -1.5px; display: flex; align-items: center; gap: 26px; }
@@ -122,10 +149,25 @@
     <div id="speed"><span>przyspieszone ×6</span></div>
   </div>
 
+  <!-- more information: hovering the tabs -->
+  <div class="scene" id="tabs">
+    <div class="caption"><div class="inner">
+      <div class="num">4</div>
+      <h2>Więcej <em>informacji</em></h2>
+      <p id="tabsub">Ostrzeżenia, jak to działa, Discord i zgłaszanie oszustw.</p>
+    </div></div>
+    <div class="tabbar">
+      <div class="brandmini"><img src="ICON_DATA_URI" alt="">TAP<span>&amp;</span>CHECK</div>
+      <nav><b>Ostrzeżenia</b><b>Jak to działa</b><b>Discord i zgłaszanie</b><b>O projekcie</b></nav>
+    </div>
+    <div class="preview">TAB_IMAGES</div>
+    <svg id="cursor" viewBox="0 0 17 25" aria-hidden="true"><path d="M1 1 L1 19.5 L5.6 15.3 L8.6 22.8 L11.7 21.5 L8.7 14.2 L14.8 14.2 Z" fill="#FFFFFF" stroke="#111111" stroke-width="1.3" stroke-linejoin="round"/></svg>
+  </div>
+
   <!-- the train -->
   <div class="scene" id="train">
     <div class="train-cap">
-      <h2><span class="num" style="margin:0">4</span>Dla <em>każdego</em></h2>
+      <h2><span class="num" style="margin:0">5</span>Dla <em>każdego</em></h2>
       <p>Komputer i telefon · duży tekst · tryb ciemny i jasny</p>
     </div>
     <div id="track">TRAIN_IMAGES</div>
@@ -172,6 +214,23 @@
                   { duration: ms, easing: 'cubic-bezier(0.55, 0, 0.9, 0.35)', fill: 'forwards' });
   }
   function outro() { $('outro').classList.add('on'); }
+  const DISCORD_SVG = '<svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.1.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>';
+  const TAB_SUBS = [
+    '<b>Ostrzeżenia</b> – najnowsze komunikaty CERT Polska o oszustwach.',
+    '<b>Jak to działa</b> – skąd bierze się każda odpowiedź.',
+    '<span class="dc"><i>' + DISCORD_SVG + '</i>Działa też na Discordzie</span><br>Komenda /sprawdz – ta sama odpowiedź i źródła.',
+    '<b>O projekcie</b> – źródła, prywatność, usuwanie danych.',
+  ];
+  function hoverTab(i) {                     // the pointer glides to tab i, then the tab lights up and its page rises in
+    const tab = document.querySelectorAll('.tabbar nav b')[i], r = tab.getBoundingClientRect(), c = $('cursor');
+    c.style.left = (r.left + r.width * 0.55) + 'px'; c.style.top = (r.top + r.height * 0.55) + 'px';
+    setTimeout(() => {
+      document.querySelectorAll('.tabbar nav b').forEach((b, k) => b.classList.toggle('active', k === i));
+      document.querySelectorAll('.preview img').forEach((im, k) => im.classList.toggle('show', k === i));
+      const sub = $('tabsub'); sub.style.opacity = 0;
+      setTimeout(() => { sub.innerHTML = TAB_SUBS[i]; sub.style.opacity = 1; }, 250);
+    }, 700);
+  }
 </script>
 </body>
 </html>

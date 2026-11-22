@@ -2,6 +2,7 @@
 
 Usage (from demo/, with ./start.sh running):
   python make_screens.py screens                      # once: screenshots for the "Dla każdego" train
+  python make_tab_screens.py tabs                     # once: tab pages for the "Więcej informacji" scene
   python record_demo.py stage.html ../icon.jpg screens tapcheck_demo.mp4 [site_url]
 
 The site runs for real (real questions, real answers). Only the waiting time is shown
@@ -42,7 +43,9 @@ train = "".join(
     f'<img class="{"phone" if p.stem in PHONES else "desk"}" src="{data_uri(p, "image/jpeg")}" alt="">'
     for p in sorted(SCREENS.glob("*.jpg"))
 )
+tab_imgs = "".join(f'<img src="{data_uri(p, "image/jpeg")}" alt="">' for p in sorted((SCREENS.parent / "tabs").glob("*.jpg")))
 html = (STAGE.read_text(encoding="utf-8")
+        .replace("TAB_IMAGES", tab_imgs)
         .replace("ICON_DATA_URI", data_uri(ICON, "image/jpeg"))
         .replace("TRAIN_IMAGES", train))
 
@@ -96,7 +99,12 @@ with sync_playwright() as p:
     ask(*Q2, nth=2)
     pause(3200)
 
-    # --- 4. the train: many screens, accelerating to the left
+    # --- 4. more information: the pointer hovers each tab, its page appears
+    js("scene('tabs')"); pause(1100)
+    for i in range(4):
+        js(f"hoverTab({i})"); pause(2600 if i == 2 else 2000)   # a little longer on Discord
+
+    # --- 5. the train: many screens, accelerating to the left
     js("scene('train')"); pause(900)
     js("runTrain(5200)"); pause(5300)
 

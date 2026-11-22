@@ -33,3 +33,6 @@ var/
 ideas_*.md
 
 Czy*.docx
+
+# Windows download markers
+*:Zone.Identifier
