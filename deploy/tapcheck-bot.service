@@ -1,0 +1,20 @@
+# Tap & Check Discord bot (thin adapter: calls the local API).
+[Unit]
+Description=Tap & Check Discord bot
+After=tapcheck-api.service
+Requires=tapcheck-api.service
+
+[Service]
+User=tapcheck
+WorkingDirectory=/opt/tapcheck/backend
+EnvironmentFile=/opt/tapcheck/.env
+Environment=API_BASE_URL=http://127.0.0.1:8000
+ExecStart=/opt/tapcheck/.venv/bin/python -m channels.discord_bot
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

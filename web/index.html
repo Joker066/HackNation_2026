@@ -83,7 +83,8 @@
             background: rgba(22, 22, 25, 0.94); border-color: #2C2C31;
             box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
         }
-        html.dark .glass-half { background: rgba(28, 28, 32, 0.5); border-color: rgba(255, 255, 255, 0.08); }
+        html.dark .glass-half { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.05); backdrop-filter: none; -webkit-backdrop-filter: none; }
+        html.dark #chatHelp, html.dark .chat-welcome .hc-text-muted { color: #9A9AA3; }
         html.dark .bg-\[\#091B33\]\/95 { background-color: #000; }
         html.dark .text-gov-navy, html.dark .text-slate-800, html.dark .text-slate-700 { color: #F4F4F5; }
         html.dark .text-slate-600, html.dark .text-slate-500, html.dark .text-slate-400 { color: #B4B4BB; }
@@ -178,17 +179,6 @@
                 inset 0 3px 6px rgba(255, 255, 255, 1);
         }
 
-        /* Sprężyste przejścia kart i przycisków */
-        .ocean-spring {
-            transition: transform 0.45s var(--ease-bubble), box-shadow 0.4s var(--ease-fluid), background-color 0.3s ease, border-color 0.3s ease;
-        }
-        .ocean-spring:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow:
-                0 26px 50px -12px rgba(12, 36, 66, 0.14),
-                0 12px 28px -6px rgba(2, 132, 199, 0.16),
-                inset 0 2px 5px rgba(255, 255, 255, 1);
-        }
         .ocean-btn {
             transition: transform 0.38s var(--ease-bubble), box-shadow 0.35s var(--ease-fluid), background-color 0.25s ease;
         }
@@ -197,50 +187,6 @@
         }
         .ocean-btn:active {
             transform: translateY(1px) scale(0.98);
-        }
-
-        /* Delikatne podświetlenie docelowej sekcji po kliknięciu w tabelkę nawigacyjną */
-        @keyframes sectionHighlightPulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.65);
-            }
-            45% {
-                box-shadow: 0 0 0 14px rgba(2, 132, 199, 0.18);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(2, 132, 199, 0);
-            }
-        }
-        .section-highlight-active {
-            animation: sectionHighlightPulse 1.8s var(--ease-fluid);
-            border-color: #0284C7 !important;
-        }
-
-
-        /* Płynne pojawianie się karty wyniku i modali */
-        @keyframes slideFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(18px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        .animate-result {
-            animation: slideFadeIn 0.55s var(--ease-bubble) forwards;
-        }
-
-        /* Animacja przy przewijaniu (Scroll Reveal) */
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(22px);
-            transition: opacity 0.65s var(--ease-fluid), transform 0.65s var(--ease-bubble);
-        }
-        .reveal-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* Pulsujące punkty skanera */
@@ -252,13 +198,19 @@
             animation: dotPulse 1.4s ease-in-out infinite;
         }
 
-        /* Pasek postępu skanowania */
-        @keyframes scanSweep {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(220%); }
+        /* „Jak to działa”: karty odwracane – tytuł z przodu, szczegóły z tyłu */
+        .flip-card { perspective: 1400px; cursor: pointer; border-radius: 2.25rem; outline-offset: 4px; }
+        .flip-inner { position: relative; min-height: 21rem; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; }
+        .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .flip-back { transform: rotateY(180deg); }
+        .flip-card.flipped .flip-inner, .flip-card:focus-visible .flip-inner { transform: rotateY(180deg); }
+        .hint-touch { display: none; }
+        @media (hover: hover) {
+            .flip-card:hover .flip-inner { transform: rotateY(180deg); }
         }
-        .animate-scan-sweep {
-            animation: scanSweep 1.3s var(--ease-fluid) infinite;
+        @media (hover: none) {
+            .hint-hover { display: none; }
+            .hint-touch { display: inline; }
         }
 
         /* Przejścia między zakładkami: cała strona przesuwa się w stronę klikniętej zakładki */
@@ -287,7 +239,6 @@
                 backdrop-filter: blur(12px) saturate(150%);
                 -webkit-backdrop-filter: blur(12px) saturate(150%);
             }
-            .ocean-spring:hover { transform: none; }
         }
 
         /* Osoby, które wyłączyły animacje w systemie */
@@ -481,21 +432,45 @@
                     <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy mt-1 mb-2.5 hc-text">Jak działa TAP&amp;CHECK?</h2>
                     <p class="text-slate-600 text-sm sm:text-base hc-text-muted">Nie musisz być ekspertem. Pokazujemy, na czym opiera się każda odpowiedź – i uczciwie mówimy, gdy czegoś nie wiemy.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">1</div>
-                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Wklej cokolwiek</h3>
-                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Pytanie, treść SMS-a lub e-maila, post, link albo zrzut ekranu – nie musisz wybierać rodzaju. System sam rozpoznaje, co to jest, pobiera podane strony i wyszukuje twierdzenia, które da się sprawdzić, oddzielając je od opinii.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="flip-card" tabindex="0" role="button" aria-label="1. Wklej cokolwiek – pokaż szczegóły" onclick="this.classList.toggle('flipped')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.classList.toggle('flipped'); }">
+                        <div class="flip-inner">
+                            <div class="flip-face ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col items-center justify-center text-center">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gov-navy to-gov-oceanDark text-white font-display font-extrabold text-4xl flex items-center justify-center mb-6 shadow-lg">1</div>
+                                <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy hc-text">Wklej cokolwiek</h3>
+                                <p class="flip-hint mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gov-oceanDark"><i data-lucide="rotate-cw" class="w-4 h-4"></i><span class="hint-hover">Najedź, aby zobaczyć szczegóły</span><span class="hint-touch">Dotknij, aby zobaczyć szczegóły</span></p>
+                            </div>
+                            <div class="flip-face flip-back ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col justify-center">
+                                <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">1. Wklej cokolwiek</h3>
+                                <p class="text-slate-700 text-base leading-relaxed hc-text-muted">Pytanie, treść SMS-a lub e-maila, post, link albo zrzut ekranu – nie musisz wybierać rodzaju. System sam rozpoznaje, co to jest, pobiera podane strony i wyszukuje twierdzenia, które da się sprawdzić, oddzielając je od opinii.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">2</div>
-                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Szukamy w jawnych źródłach</h3>
-                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Komunikaty RCB, Policji, CERT Polska, urzędów morskich i Straży Ochrony Kolei oraz weryfikacje fact-checkerów (m.in. Demagog, AFP). Lista źródeł jest jawna.</p>
+                    <div class="flip-card" tabindex="0" role="button" aria-label="2. Szukamy w jawnych źródłach – pokaż szczegóły" onclick="this.classList.toggle('flipped')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.classList.toggle('flipped'); }">
+                        <div class="flip-inner">
+                            <div class="flip-face ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col items-center justify-center text-center">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-ocean text-white font-display font-extrabold text-4xl flex items-center justify-center mb-6 shadow-lg">2</div>
+                                <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy hc-text">Szukamy w jawnych źródłach</h3>
+                                <p class="flip-hint mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gov-oceanDark"><i data-lucide="rotate-cw" class="w-4 h-4"></i><span class="hint-hover">Najedź, aby zobaczyć szczegóły</span><span class="hint-touch">Dotknij, aby zobaczyć szczegóły</span></p>
+                            </div>
+                            <div class="flip-face flip-back ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col justify-center">
+                                <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">2. Szukamy w jawnych źródłach</h3>
+                                <p class="text-slate-700 text-base leading-relaxed hc-text-muted">Najpierw komunikaty urzędów (m.in. RCB, Policja, CERT Polska, GIS, ministerstwa) i weryfikacje fact-checkerów (Demagog, EUvsDisinfo, AFP, Google Fact Check). Gdy to nie wystarcza – kilkanaście zaufanych redakcji. Każde źródło ma opisaną wiarygodność.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="ocean-glass-strong rounded-[2.25rem] p-8 ocean-spring relative">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gov-teal to-gov-tealDark text-white font-display font-extrabold text-xl flex items-center justify-center mb-6 shadow-lg">3</div>
-                        <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">Werdykt z cytatami</h3>
-                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed hc-text-muted">Jedna z pięciu ocen: potwierdzone, fałsz, wprowadza w błąd, brak wystarczających dowodów albo nie podlega weryfikacji – z dosłownymi cytatami i siłą dowodów.</p>
+                    <div class="flip-card" tabindex="0" role="button" aria-label="3. Werdykt liczony jawnymi regułami – pokaż szczegóły" onclick="this.classList.toggle('flipped')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.classList.toggle('flipped'); }">
+                        <div class="flip-inner">
+                            <div class="flip-face ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col items-center justify-center text-center">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gov-teal to-gov-tealDark text-white font-display font-extrabold text-4xl flex items-center justify-center mb-6 shadow-lg">3</div>
+                                <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-gov-navy hc-text">Werdykt liczony jawnymi regułami</h3>
+                                <p class="flip-hint mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gov-oceanDark"><i data-lucide="rotate-cw" class="w-4 h-4"></i><span class="hint-hover">Najedź, aby zobaczyć szczegóły</span><span class="hint-touch">Dotknij, aby zobaczyć szczegóły</span></p>
+                            </div>
+                            <div class="flip-face flip-back ocean-glass-strong rounded-[2.25rem] p-8 flex flex-col justify-center">
+                                <h3 class="font-display font-bold text-xl text-gov-navy mb-3 hc-text">3. Werdykt liczony jawnymi regułami</h3>
+                                <p class="text-slate-700 text-base leading-relaxed hc-text-muted">Jedna z pięciu ocen: potwierdzone, fałsz, wprowadza w błąd, brak wystarczających dowodów albo nie podlega weryfikacji. Wynik zależy od wiarygodności i aktualności źródeł oraz liczby niezależnych potwierdzeń, a każdy cytat sprawdzamy słowo w słowo.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -503,12 +478,12 @@
         <section data-page="discord" class="hidden py-10 sm:py-14">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                    <div class="bg-gradient-to-br from-gov-navy via-[#0E3159] to-gov-oceanDark text-white border border-white/20 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl ocean-spring flex flex-col justify-between">
+                    <div class="bg-gradient-to-br from-gov-navy via-[#0E3159] to-gov-oceanDark text-white border border-white/20 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl flex flex-col justify-between">
                         <div>
                             <div class="inline-flex items-center space-x-2 bg-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-teal-300 mb-5">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i><span>Drugi kanał: Discord</span>
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="w-4 h-4"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.1.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg><span>Drugi kanał: Discord</span>
                             </div>
-                            <h3 class="font-display font-extrabold text-2xl sm:text-3xl mb-4 hc-text">Sprawdzaj bez wychodzenia z czatu</h3>
+                            <div class="flex items-center gap-4 mb-4"><span class="shrink-0 w-14 h-14 rounded-2xl bg-[#5865F2] flex items-center justify-center shadow-lg"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="w-8 h-8 text-white"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.1.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></span><h3 class="font-display font-extrabold text-2xl sm:text-3xl hc-text">Sprawdzaj bez wychodzenia z czatu</h3></div>
                             <p class="text-sky-100 text-sm sm:text-base leading-relaxed mb-4 hc-text-muted">
                                 Napisz do bota <strong>Tap &amp; Check</strong> wiadomość prywatną, oznacz go na kanale albo użyj komendy <strong>/sprawdz</strong>. Odpowiedź jest taka sama jak na tej stronie – ta sama logika i te same źródła – z linkiem do pełnego wyniku.
                             </p>
@@ -520,7 +495,7 @@
                         </div>
                     </div>
 
-                    <div class="ocean-glass-strong rounded-[2.5rem] p-8 sm:p-10 ocean-spring flex flex-col justify-between">
+                    <div class="ocean-glass-strong rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between">
                         <div>
                             <div class="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200/80 px-4 py-1.5 rounded-full text-xs font-bold text-gov-tealDark mb-5">
                                 <i data-lucide="heart-handshake" class="w-4 h-4"></i><span>Gdzie zgłosić oszustwo</span>
@@ -545,7 +520,7 @@
         </section>
         <section data-page="o-projekcie" class="hidden py-10 sm:py-14 px-3 sm:px-6 lg:px-8 text-slate-600">
         <div class="max-w-7xl mx-auto ocean-glass-strong rounded-[2.5rem] p-8 sm:p-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-sky-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-sky-100">
                 <div>
                     <div class="flex items-center space-x-2.5 mb-4">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gov-oceanDark to-gov-teal flex items-center justify-center text-white shadow-sm">
@@ -556,6 +531,7 @@
                     <p class="text-xs leading-relaxed text-slate-500 mb-4 hc-text-muted">
                         Prototyp przygotowany na hackathon HackNation 2026 w ramach zadania Ministerstwa Spraw Zagranicznych „Prawdowid”. Nie jest oficjalnym serwisem administracji publicznej.
                     </p>
+                    <p id="corpusBadge" class="text-xs leading-relaxed text-slate-600 hc-text-muted"></p>
                 </div>
                 <div>
                     <h4 class="font-display font-bold text-sm text-gov-navy uppercase tracking-wider mb-4 hc-text">Wybrane źródła</h4>
@@ -580,7 +556,6 @@
                 <span>Narzędzie wspiera samodzielną ocenę informacji – nie jest „sędzią prawdy”.</span>
             </div>
         </div>
-            <p id="corpusBadge" class="max-w-7xl mx-auto mt-6 text-center text-xs text-slate-500 hc-text-muted"></p>
         </section>
     </main>
 
@@ -1054,7 +1029,7 @@
                 const items = await (await fetch('/api/warnings?limit=6')).json();
                 if (!items.length) throw new Error('empty');
                 grid.innerHTML = items.map((w) => `
-                    <article class="ocean-glass-strong rounded-[2.25rem] p-7 sm:p-8 ocean-spring flex flex-col justify-between">
+                    <article class="min-w-0 ocean-glass-strong rounded-[2.25rem] p-7 sm:p-8 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between gap-2 mb-4">
                                 <span class="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
@@ -1062,8 +1037,8 @@
                                 </span>
                                 <span class="text-xs text-slate-400 font-semibold hc-text-muted">${esc(formatDate(w.published_at))}</span>
                             </div>
-                            <h3 class="font-display font-bold text-lg text-gov-navy mb-2.5 hc-text">${esc(w.title)}</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed mb-5 hc-text-muted">${esc(w.summary)}</p>
+                            <h3 class="font-display font-bold text-lg text-gov-navy mb-2.5 [overflow-wrap:anywhere] hc-text">${esc(w.title)}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-5 [overflow-wrap:anywhere] hc-text-muted">${esc(w.summary)}</p>
                         </div>
                         <div class="pt-4 border-t border-sky-100/80 flex items-center justify-end">
                             <a href="${esc(safeUrl(w.url))}" target="_blank" rel="noopener noreferrer" class="ocean-btn text-xs font-bold text-gov-oceanDark bg-sky-50 hover:bg-sky-100 px-3.5 py-1.5 rounded-full flex items-center space-x-1 group">

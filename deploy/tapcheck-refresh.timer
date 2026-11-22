@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh the Tap & Check corpus every hour
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

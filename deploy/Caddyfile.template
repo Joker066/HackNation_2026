@@ -1,0 +1,13 @@
+# Caddy obtains and renews the HTTPS certificate automatically.
+{$TAPCHECK_HOST} {
+	encode gzip
+	request_body {
+		max_size 8MB
+	}
+	reverse_proxy 127.0.0.1:8000
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

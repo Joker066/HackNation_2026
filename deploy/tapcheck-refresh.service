@@ -1,0 +1,15 @@
+# Fetch new official documents and add them to the live index (no rebuild: the API keeps
+# serving). Retention deletions take full effect at the next restart (start rebuilds the index).
+[Unit]
+Description=Tap & Check corpus refresh
+
+[Service]
+Type=oneshot
+User=tapcheck
+WorkingDirectory=/opt/tapcheck/backend
+EnvironmentFile=/opt/tapcheck/.env
+ExecStart=/opt/tapcheck/.venv/bin/python -m crawlers.run --all --max 20
+ExecStart=/opt/tapcheck/.venv/bin/python -m scripts.purge_sources --quiet
+ExecStart=/opt/tapcheck/.venv/bin/python -m scripts.build_index
+# crawler failures (a site down) must not stop the rest
+SuccessExitStatus=0 1

@@ -1,0 +1,25 @@
+# Tap & Check API + web page. Listens only on localhost; Caddy serves it over HTTPS.
+[Unit]
+Description=Tap & Check API and web page
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=tapcheck
+WorkingDirectory=/opt/tapcheck/backend
+EnvironmentFile=/opt/tapcheck/.env
+# Rebuild the search index from corpus/text_sources/ on every (re)start
+ExecStartPre=/opt/tapcheck/.venv/bin/python -m scripts.purge_sources --quiet
+ExecStartPre=/opt/tapcheck/.venv/bin/python -m scripts.build_index --rebuild
+# --proxy-headers: take the visitor's IP from Caddy (otherwise every visitor looks like 127.0.0.1
+# and the per-IP rate limit would block everyone together)
+ExecStart=/opt/tapcheck/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/tapcheck/var /opt/tapcheck/corpus
+
+[Install]
+WantedBy=multi-user.target
